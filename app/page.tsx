@@ -74,7 +74,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center">
+      <section className="relative flex h-[600px] items-center">
         <Image
           src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1920&q=80"
           alt="Hero"
@@ -84,10 +84,10 @@ export default function Home() {
         />
         <div className="container relative z-10 mx-auto px-4">
           <div className="max-w-2xl">
-            <h1 className="text-5xl font-bold text-white mb-6">
+            <h1 className="mb-6 text-5xl font-bold text-white">
               Discover Your Style
             </h1>
-            <p className="text-xl text-gray-200 mb-8">
+            <p className="mb-8 text-xl text-gray-200">
               Shop the latest trends in fashion, electronics, and home decor.
             </p>
             <Button size="lg" className="bg-white text-black hover:bg-gray-100">
@@ -98,15 +98,15 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-white">
+      <section className="bg-white py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="flex items-center space-x-4 p-6 rounded-lg bg-gray-50"
+                className="flex items-center space-x-4 rounded-lg bg-gray-50 p-6"
               >
-                <div className="p-3 rounded-full bg-primary/10">
+                <div className="rounded-full bg-primary/10 p-3">
                   {feature.icon}
                 </div>
                 <div>
@@ -122,10 +122,10 @@ export default function Home() {
       {/* Featured Products */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8">Featured Products</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <h2 className="mb-8 text-3xl font-bold">Featured Products</h2>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden group">
+              <Card key={product.id} className="group overflow-hidden">
                 <div className="relative h-64">
                   <Image
                     src={product.image}
@@ -136,7 +136,7 @@ export default function Home() {
                 </div>
                 <CardContent className="p-4">
                   <h3 className="font-semibold">{product.name}</h3>
-                  <div className="flex justify-between items-center mt-2">
+                  <div className="mt-2 flex items-center justify-between">
                     <span className="text-lg font-bold">{product.price}</span>
                     <Button variant="ghost" size="sm">
                       Add to Cart
@@ -150,14 +150,14 @@ export default function Home() {
       </section>
 
       {/* Categories */}
-      <section className="py-16 bg-gray-50">
+      <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8">Shop by Category</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <h2 className="mb-8 text-3xl font-bold">Shop by Category</h2>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="relative h-64 group cursor-pointer overflow-hidden rounded-lg"
+                className="group relative h-64 cursor-pointer overflow-hidden rounded-lg"
               >
                 <Image
                   src={category.image}
@@ -165,37 +165,13 @@ export default function Home() {
                   fill
                   className="object-cover transition-transform group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                   <h3 className="text-2xl font-bold text-white">
                     {category.name}
                   </h3>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter */}
-      <section className="py-16 bg-primary">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Subscribe to Our Newsletter
-            </h2>
-            <p className="text-gray-200 mb-6">
-              Get the latest updates on new products and upcoming sales.
-            </p>
-            <div className="flex gap-2 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-white"
-              />
-              <Button className="bg-white text-primary hover:bg-gray-100">
-                Subscribe <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
           </div>
         </div>
       </section>
