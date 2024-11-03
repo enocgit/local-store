@@ -1,4 +1,12 @@
-import { ShoppingBag, Truck, Shield, Clock, ArrowRight } from "lucide-react";
+import {
+  ShoppingBag,
+  Truck,
+  Shield,
+  Clock,
+  ArrowRight,
+  Star,
+  StarHalf,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
@@ -6,13 +14,13 @@ import Image from "next/image";
 const features = [
   {
     icon: <Truck className="h-6 w-6" />,
-    title: "Free Shipping",
-    description: "On orders over $100",
+    title: "Express Delivery",
+    description: "Same-day delivery available",
   },
   {
     icon: <Shield className="h-6 w-6" />,
-    title: "Secure Payment",
-    description: "100% secure checkout",
+    title: "Quality Guaranteed",
+    description: "Fresh or full refund",
   },
   {
     icon: <Clock className="h-6 w-6" />,
@@ -24,51 +32,88 @@ const features = [
 const products = [
   {
     id: 1,
-    name: "Minimalist Watch",
-    price: "$149.99",
+    name: "Premium Frozen Pizza Pack",
+    currentPrice: "$12.99",
+    originalPrice: "$15.99",
+    rating: 4.5,
+    reviews: 128,
     image:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    badge: "Best Seller",
   },
   {
     id: 2,
-    name: "Leather Backpack",
-    price: "$89.99",
+    name: "Organic Mixed Berries",
+    currentPrice: "$8.99",
+    originalPrice: "$10.99",
+    rating: 4.8,
+    reviews: 96,
     image:
-      "https://images.unsplash.com/photo-1491637639811-60e2756cc1c7?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1563746098251-d35aef196e83?auto=format&fit=crop&w=800&q=80",
+    badge: "Organic",
   },
   {
     id: 3,
-    name: "Wireless Earbuds",
-    price: "$129.99",
+    name: "Premium Ice Cream Pack",
+    currentPrice: "$14.99",
+    originalPrice: "$19.99",
+    rating: 3,
+    reviews: 215,
     image:
-      "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=800&q=80",
+    badge: "Limited Time",
   },
   {
     id: 4,
-    name: "Smart Speaker",
-    price: "$199.99",
+    name: "Frozen Vegetable Mix",
+    currentPrice: "$6.99",
+    originalPrice: "$8.99",
+    rating: 4.3,
+    reviews: 167,
     image:
-      "https://images.unsplash.com/photo-1589003077984-894e133dabab?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
 const categories = [
   {
-    name: "Electronics",
+    name: "Frozen Foods",
+    description: "Premium quality frozen meals and ingredients",
     image:
-      "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1603137071981-8c4ed11cad9c?auto=format&fit=crop&w=800&q=80",
   },
   {
-    name: "Fashion",
+    name: "Fresh Produce",
+    description: "Farm-fresh fruits and vegetables",
     image:
-      "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=800&q=80",
   },
   {
-    name: "Home & Living",
+    name: "Dairy & Eggs",
+    description: "Fresh dairy products and free-range eggs",
     image:
-      "https://images.unsplash.com/photo-1484101403633-562f891dc89a?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1630431341973-02e1b662ec35?auto=format&fit=crop&w=800&q=80",
   },
 ];
+
+const RatingStars = ({ rating }: { rating: number }) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+
+  return (
+    <div className="flex items-center">
+      {[...Array(fullStars)].map((_, i) => (
+        <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+      ))}
+      {hasHalfStar && (
+        <StarHalf className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+      )}
+      {[...Array(5 - Math.ceil(rating))].map((_, i) => (
+        <Star key={`empty-${i}`} className="h-4 w-4 text-gray-300" />
+      ))}
+    </div>
+  );
+};
 
 export default function Home() {
   return (
@@ -76,8 +121,8 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative flex h-[600px] items-center">
         <Image
-          src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1920&q=80"
-          alt="Hero"
+          src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&w=1920&q=80"
+          alt="Fresh food background"
           fill
           className="object-cover brightness-50"
           priority
@@ -85,10 +130,11 @@ export default function Home() {
         <div className="container relative z-10 mx-auto px-4">
           <div className="max-w-2xl">
             <h1 className="mb-6 text-5xl font-bold text-white">
-              Discover Your Style
+              Fresh Food, Delivered Fresh
             </h1>
             <p className="mb-8 text-xl text-gray-200">
-              Shop the latest trends in fashion, electronics, and home decor.
+              Premium quality frozen foods and fresh ingredients delivered to
+              your doorstep
             </p>
             <Button size="lg" className="bg-white text-black hover:bg-gray-100">
               Shop Now <ShoppingBag className="ml-2 h-5 w-5" />
@@ -133,11 +179,29 @@ export default function Home() {
                     fill
                     className="object-cover transition-transform group-hover:scale-105"
                   />
+                  {product.badge && (
+                    <span className="absolute right-2 top-2 rounded-md bg-primary px-2 py-1 text-sm text-white">
+                      {product.badge}
+                    </span>
+                  )}
                 </div>
                 <CardContent className="p-4">
-                  <h3 className="font-semibold">{product.name}</h3>
+                  <h3 className="mb-2 font-semibold">{product.name}</h3>
+                  <div className="mb-2 flex items-center space-x-2">
+                    <RatingStars rating={product.rating} />
+                    <span className="text-sm text-gray-600">
+                      ({product.reviews})
+                    </span>
+                  </div>
                   <div className="mt-2 flex items-center justify-between">
-                    <span className="text-lg font-bold">{product.price}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg font-bold">
+                        {product.currentPrice}
+                      </span>
+                      <span className="text-sm text-gray-500 line-through">
+                        {product.originalPrice}
+                      </span>
+                    </div>
                     <Button variant="ghost" size="sm">
                       Add to Cart
                     </Button>
@@ -157,7 +221,7 @@ export default function Home() {
             {categories.map((category, index) => (
               <div
                 key={index}
-                className="group relative h-64 cursor-pointer overflow-hidden rounded-lg"
+                className="group relative h-80 cursor-pointer overflow-hidden rounded-lg"
               >
                 <Image
                   src={category.image}
@@ -165,13 +229,40 @@ export default function Home() {
                   fill
                   className="object-cover transition-transform group-hover:scale-105"
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                  <h3 className="text-2xl font-bold text-white">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 p-4 text-center">
+                  <h3 className="mb-2 text-2xl font-bold text-white">
                     {category.name}
                   </h3>
+                  <p className="text-sm text-gray-200">
+                    {category.description}
+                  </p>
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="bg-primary py-16">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="mb-4 text-3xl font-bold text-white">
+              Get Fresh Deals in Your Inbox
+            </h2>
+            <p className="mb-6 text-gray-200">
+              Subscribe to receive weekly specials and cooking inspiration.
+            </p>
+            <div className="mx-auto flex max-w-md gap-2">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white"
+              />
+              <Button className="bg-white text-primary hover:bg-gray-100">
+                Subscribe <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </section>

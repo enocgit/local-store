@@ -17,9 +17,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navigation = [
   { name: "New Arrivals", href: "#" },
-  { name: "Electronics", href: "#" },
-  { name: "Fashion", href: "#" },
-  { name: "Home & Living", href: "#" },
+  { name: "Frozen Foods", href: "#" },
+  { name: "Fresh Produce", href: "#" },
+  { name: "Dairy & Eggs", href: "#" },
   { name: "Sale", href: "#" },
 ];
 
@@ -28,7 +28,7 @@ export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b">
+    <header className="sticky top-0 z-50 border-b bg-white">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -45,7 +45,7 @@ export function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
               >
                 {item.name}
               </Link>
@@ -66,7 +66,7 @@ export function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="top" className="w-full">
-                <div className="mt-8 max-w-2xl mx-auto">
+                <div className="mx-auto mt-8 max-w-2xl">
                   <div className="flex items-center space-x-2">
                     <Input
                       type="search"
@@ -85,7 +85,7 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="hidden sm:flex hover:bg-gray-100"
+              className="hidden hover:bg-gray-100 sm:flex"
             >
               <Heart className="h-5 w-5" />
             </Button>
@@ -94,10 +94,10 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="hover:bg-gray-100 relative"
+              className="relative hover:bg-gray-100"
             >
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 text-xs bg-primary text-white rounded-full flex items-center justify-center">
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
                 0
               </span>
             </Button>
@@ -106,7 +106,7 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="hidden sm:flex hover:bg-gray-100"
+              className="hidden hover:bg-gray-100 sm:flex"
             >
               <User className="h-5 w-5" />
             </Button>
@@ -117,7 +117,7 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="lg:hidden hover:bg-gray-100"
+                  className="hover:bg-gray-100 lg:hidden"
                 >
                   <Menu className="h-5 w-5" />
                 </Button>

@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
       {
         hostname: "images.unsplash.com",
       },
+      {
+        hostname: "www.google.com",
+      },
+      {
+        hostname: "www.facebook.com",
+      },
     ],
   },
 };
