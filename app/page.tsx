@@ -81,18 +81,21 @@ const categories = [
     description: "Premium quality frozen meals and ingredients",
     image:
       "https://images.unsplash.com/photo-1603137071981-8c4ed11cad9c?auto=format&fit=crop&w=800&q=80",
+    href: "/category/frozen-foods",
   },
   {
     name: "Fresh Produce",
     description: "Farm-fresh fruits and vegetables",
     image:
       "https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=800&q=80",
+    href: "/category/fresh-produce",
   },
   {
     name: "Dairy & Eggs",
     description: "Fresh dairy products and free-range eggs",
     image:
       "https://images.unsplash.com/photo-1630431341973-02e1b662ec35?auto=format&fit=crop&w=800&q=80",
+    href: "/category/dairy-eggs",
   },
 ];
 
@@ -171,43 +174,45 @@ export default function Home() {
           <h2 className="mb-8 text-3xl font-bold">Featured Products</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {products.map((product) => (
-              <Card key={product.id} className="group overflow-hidden">
-                <div className="relative h-64">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105"
-                  />
-                  {product.badge && (
-                    <span className="absolute right-2 top-2 rounded-md bg-primary px-2 py-1 text-sm text-white">
-                      {product.badge}
-                    </span>
-                  )}
-                </div>
-                <CardContent className="p-4">
-                  <h3 className="mb-2 font-semibold">{product.name}</h3>
-                  <div className="mb-2 flex items-center space-x-2">
-                    <RatingStars rating={product.rating} />
-                    <span className="text-sm text-gray-600">
-                      ({product.reviews})
-                    </span>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg font-bold">
-                        {product.currentPrice}
+              <a href="/product/1">
+                <Card key={product.id} className="group overflow-hidden">
+                  <div className="relative h-64">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
+                    {product.badge && (
+                      <span className="absolute right-2 top-2 rounded-md bg-primary px-2 py-1 text-sm text-white">
+                        {product.badge}
                       </span>
-                      <span className="text-sm text-gray-500 line-through">
-                        {product.originalPrice}
+                    )}
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="mb-2 font-semibold">{product.name}</h3>
+                    <div className="mb-2 flex items-center space-x-2">
+                      <RatingStars rating={product.rating} />
+                      <span className="text-sm text-gray-600">
+                        ({product.reviews})
                       </span>
                     </div>
-                    <Button variant="ghost" size="sm">
-                      Add to Cart
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg font-bold">
+                          {product.currentPrice}
+                        </span>
+                        <span className="text-sm text-gray-500 line-through">
+                          {product.originalPrice}
+                        </span>
+                      </div>
+                      <Button variant="ghost" size="sm">
+                        Add to Cart
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
             ))}
           </div>
         </div>
@@ -219,25 +224,27 @@ export default function Home() {
           <h2 className="mb-8 text-3xl font-bold">Shop by Category</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {categories.map((category, index) => (
-              <div
-                key={index}
-                className="group relative h-80 cursor-pointer overflow-hidden rounded-lg"
-              >
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  fill
-                  className="object-cover transition-transform group-hover:scale-105"
-                />
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 p-4 text-center">
-                  <h3 className="mb-2 text-2xl font-bold text-white">
-                    {category.name}
-                  </h3>
-                  <p className="text-sm text-gray-200">
-                    {category.description}
-                  </p>
+              <a key={category.name} href={category.href}>
+                <div
+                  key={index}
+                  className="group relative h-80 cursor-pointer overflow-hidden rounded-lg"
+                >
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 p-4 text-center">
+                    <h3 className="mb-2 text-2xl font-bold text-white">
+                      {category.name}
+                    </h3>
+                    <p className="text-sm text-gray-200">
+                      {category.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>

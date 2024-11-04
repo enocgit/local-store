@@ -1,25 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   Search,
   ShoppingCart,
   User,
   Menu,
-  X,
   Heart,
-  Store,
+  CakeIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navigation = [
-  { name: "New Arrivals", href: "#" },
-  { name: "Frozen Foods", href: "#" },
-  { name: "Fresh Produce", href: "#" },
-  { name: "Dairy & Eggs", href: "#" },
+  { name: "New Arrivals", href: "/category/new-arrivals" },
+  { name: "Frozen Foods", href: "/category/frozen-foods" },
+  { name: "Fresh Produce", href: "/category/fresh-produce" },
+  { name: "Dairy & Eggs", href: "/category/dairy-eggs" },
   { name: "Sale", href: "#" },
 ];
 
@@ -33,22 +31,22 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <Store className="h-8 w-8" />
-              <span className="text-xl font-bold">StyleStore</span>
-            </Link>
+            <a href="/" className="flex items-center space-x-2">
+              <CakeIcon className="h-8 w-8" />
+              <span className="text-xl font-bold">TropicalFoods</span>
+            </a>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:space-x-6">
             {navigation.map((item) => (
-              <Link
+              <a
                 key={item.name}
                 href={item.href}
                 className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
               >
                 {item.name}
-              </Link>
+              </a>
             ))}
           </div>
 
@@ -127,22 +125,22 @@ export function Navbar() {
                   <div className="-my-6 divide-y divide-gray-200">
                     <div className="space-y-2 py-6">
                       {navigation.map((item) => (
-                        <Link
+                        <a
                           key={item.name}
                           href={item.href}
                           className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                         >
                           {item.name}
-                        </Link>
+                        </a>
                       ))}
                     </div>
                     <div className="py-6">
-                      <Link
-                        href="#"
+                      <a
+                        href="/auth"
                         className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
                         Log in
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 </div>

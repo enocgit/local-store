@@ -24,7 +24,7 @@ const footerLinks = {
 const socialLinks = [
   { name: "Facebook", icon: Facebook, href: "#" },
   { name: "Instagram", icon: Instagram, href: "#" },
-  { name: "Twitter", icon: Twitter, href: "#" },
+  { name: "X", icon: Twitter, href: "#" },
 ];
 
 export function Footer() {
@@ -132,7 +132,7 @@ export function Footer() {
               })}
             </div>
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} StyleStore. All rights reserved.
+              © {new Date().getFullYear()} TropicalFoods. All rights reserved.
             </p>
           </div>
         </div>

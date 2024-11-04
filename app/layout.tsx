@@ -18,9 +18,8 @@ const geistMono = localFont({
 // const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "StyleStore - Your Fashion Destination",
-  description:
-    "Discover the latest trends in fashion, electronics, and home decor.",
+  title: "TropicalFoods - Your Local Food Market",
+  description: "TropicalFoods - Your Local Food Market",
 };
 
 export default function RootLayout({

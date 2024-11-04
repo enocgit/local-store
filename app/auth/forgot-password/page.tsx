@@ -35,8 +35,8 @@ export default function ForgotPasswordPage() {
         <CardHeader>
           <CardTitle>Reset Password</CardTitle>
           <CardDescription>
-            Enter your email address and we'll send you instructions to reset
-            your password
+            Enter your email address and we&apos;ll send you instructions to
+            reset your password
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -73,7 +73,8 @@ export default function ForgotPasswordPage() {
                   Check your email for password reset instructions.
                 </div>
                 <p className="text-sm text-gray-500">
-                  Didn't receive the email? Check your spam folder or try again.
+                  Didn&apos;t receive the email? Check your spam folder or try
+                  again.
                 </p>
               </div>
             )}
