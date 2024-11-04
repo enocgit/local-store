@@ -33,7 +33,7 @@ export function Navbar() {
           <div className="flex items-center">
             <a href="/" className="flex items-center space-x-2">
               <CakeIcon className="h-8 w-8" />
-              <span className="text-xl font-bold">TropicalFoods</span>
+              <span className="text-xl font-bold">TropikalFoods</span>
             </a>
           </div>
 
@@ -89,16 +89,18 @@ export function Navbar() {
             </Button>
 
             {/* Cart */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative hover:bg-gray-100"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
-                0
-              </span>
-            </Button>
+            <a href="/cart">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-gray-100"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
+                  0
+                </span>
+              </Button>
+            </a>
 
             {/* Account */}
             <Button

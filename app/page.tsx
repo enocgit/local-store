@@ -146,28 +146,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-4 rounded-lg bg-gray-50 p-6"
-              >
-                <div className="rounded-full bg-primary/10 p-3">
-                  {feature.icon}
-                </div>
-                <div>
-                  <h3 className="font-semibold">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Featured Products */}
       <section className="py-16">
         <div className="container mx-auto px-4">
