@@ -270,18 +270,20 @@ export default function CartPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button
-                  className="w-full"
-                  disabled={
-                    !deliveryDate ||
-                    !deliveryTime ||
-                    !isValidPostcode(postcode) ||
-                    items.length === 0
-                  }
-                >
-                  <Truck className="mr-2 h-4 w-4" />
-                  Proceed to Checkout
-                </Button>
+                <a href="/checkout" className="w-full">
+                  <Button
+                    className="w-full"
+                    disabled={
+                      !deliveryDate ||
+                      !deliveryTime ||
+                      !isValidPostcode(postcode) ||
+                      items.length === 0
+                    }
+                  >
+                    <Truck className="mr-2 h-4 w-4" />
+                    Proceed to Checkout
+                  </Button>
+                </a>
               </CardFooter>
             </Card>
           </div>

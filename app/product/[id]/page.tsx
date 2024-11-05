@@ -1,4 +1,3 @@
-//@ts-nocheck
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
@@ -9,68 +8,66 @@ import {
   Heart,
   Share2,
   Shield,
+  Scale,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ProductReviews } from "@/components/product/ProductReviews";
-import { NutritionalInfo } from "@/components/product/NutritionalInfo";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
 
 // This would typically come from an API or database
-const products = {
+const products: Record<string, any> = {
   "1": {
     id: "1",
-    name: "Premium Frozen Pizza Pack",
+    name: "Fresh Atlantic Salmon",
     description:
-      "Artisanal frozen pizzas made with organic ingredients and our signature sourdough crust. Each pack contains 2 Margherita and 2 Pepperoni pizzas.",
-    currentPrice: "$12.99",
-    originalPrice: "$15.99",
+      "Premium fresh Atlantic salmon, perfect for grilling or baking. Rich in omega-3 fatty acids and protein.",
+    currentPrice: 12.99, // Price per kg
+    originalPrice: 15.99,
     rating: 4.5,
     reviews: 128,
     image:
       "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
-    badge: "Best Seller",
-    category: "frozen-foods",
-    stock: 15,
-    servingSize: "1/4 pizza (156g)",
-    servingsPerContainer: 16,
-    preparationTime: "12-15 minutes",
+    badge: "Fresh Today",
+    category: "seafood",
+    stock: 50, // in kg
+    origin: "Scotland",
     storageInstructions:
-      "Keep frozen at 0°F (-18°C) or below. Do not thaw before cooking.",
-    ingredients: [
-      "Organic Wheat Flour",
-      "Purified Water",
-      "Extra Virgin Olive Oil",
-      "Sea Salt",
-      "Active Dry Yeast",
-      "Organic Tomatoes",
-      "Fresh Mozzarella",
-      "Fresh Basil",
-      "Italian Herbs",
-    ],
-    allergens: ["Wheat", "Milk"],
-    nutritionalFacts: {
-      calories: 320,
-      totalFat: 14,
-      saturatedFat: 6,
-      transFat: 0,
-      cholesterol: 30,
-      sodium: 680,
-      totalCarbohydrates: 34,
-      dietaryFiber: 2,
-      sugars: 3,
-      protein: 15,
-      vitamins: {
-        vitaminD: 2,
-        calcium: 15,
-        iron: 10,
-        potassium: 4,
-      },
-    },
-    certifications: ["USDA Organic", "Non-GMO Project Verified"],
-    dietaryInfo: ["Vegetarian Option Available"],
+      "Keep refrigerated at 0-4°C. Consume within 2 days of purchase.",
+    weightOptions: [0.5, 1, 1.5, 2], // in kg
+    certifications: ["Responsibly Sourced", "MSC Certified"],
+    dietaryInfo: ["High Protein", "Omega-3 Rich"],
     relatedProducts: ["2", "3", "4"],
+  },
+  "2": {
+    id: "2",
+    name: "Nigerian Yam",
+    description:
+      "Fresh, high-quality Nigerian yam. Perfect for pounding or boiling.",
+    currentPrice: 4.99,
+    originalPrice: 6.99,
+    rating: 4.8,
+    reviews: 96,
+    image:
+      "https://images.unsplash.com/photo-1590165482129-1b8b27698780?auto=format&fit=crop&w=800&q=80",
+    badge: "Best Quality",
+    category: "tubers",
+    stock: 200,
+    origin: "Nigeria",
+    storageInstructions:
+      "Store in a cool, dry place. Can last up to 2-3 weeks.",
+    weightOptions: [1, 2, 5, 10], // in kg
+    certifications: ["Premium Quality"],
+    dietaryInfo: ["Gluten-Free", "Vegan"],
+    relatedProducts: ["3", "4", "5"],
   },
 };
 
@@ -138,16 +135,37 @@ export default async function ProductPage({
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className="text-3xl font-bold">{product.currentPrice}</span>
+              <span className="text-3xl font-bold">
+                £{product.currentPrice}
+                {product.weightOptions ? "/kg" : ""}
+              </span>
               <span className="text-xl text-gray-500 line-through">
-                {product.originalPrice}
+                £{product.originalPrice}
+                {product.weightOptions ? "/kg" : ""}
               </span>
             </div>
 
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Clock className="h-4 w-4" />
-              <span>Prep Time: {product.preparationTime}</span>
-            </div>
+            {product.weightOptions && (
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-medium">
+                  <Scale className="mr-2 h-4 w-4" />
+                  Select Weight
+                </label>
+                <Select>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Choose weight" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {product.weightOptions.map((weight: number) => (
+                      <SelectItem key={weight} value={weight.toString()}>
+                        {weight} kg - £
+                        {(product.currentPrice * weight).toFixed(2)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <div className="space-y-4">
               <div className="flex space-x-4">
@@ -164,15 +182,42 @@ export default async function ProductPage({
 
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <Shield className="h-4 w-4" />
-                <span>100% Quality Guarantee</span>
+                <span>Quality Guaranteed</span>
               </div>
             </div>
 
-            {/* Certifications */}
+            {/* Product Details */}
+            <div className="space-y-4 border-t pt-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-semibold">Origin:</span>
+                  <p className="text-gray-600">{product.origin}</p>
+                </div>
+                <div>
+                  <span className="font-semibold">Stock:</span>
+                  <p className="text-gray-600">
+                    {product.stock} {product.weightOptions ? "kg" : "units"}{" "}
+                    available
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-sm">
+                <span className="font-semibold">Storage Instructions:</span>
+                <p className="text-gray-600">{product.storageInstructions}</p>
+              </div>
+            </div>
+
+            {/* Certifications & Dietary Info */}
             <div className="flex flex-wrap gap-2">
-              {product.certifications.map((cert) => (
+              {product.certifications.map((cert: string) => (
                 <Badge key={cert} variant="secondary">
                   {cert}
+                </Badge>
+              ))}
+              {product.dietaryInfo.map((info: string) => (
+                <Badge key={info} variant="outline">
+                  {info}
                 </Badge>
               ))}
             </div>
@@ -183,7 +228,6 @@ export default async function ProductPage({
         <Tabs defaultValue="details" className="mb-12">
           <TabsList className="w-full justify-start">
             <TabsTrigger value="details">Product Details</TabsTrigger>
-            <TabsTrigger value="nutrition">Nutrition Facts</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
           </TabsList>
 
@@ -191,12 +235,10 @@ export default async function ProductPage({
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               <div className="space-y-6">
                 <div>
-                  <h3 className="mb-2 text-lg font-semibold">Ingredients</h3>
-                  <ul className="list-inside list-disc space-y-1 text-gray-600">
-                    {product.ingredients.map((ingredient) => (
-                      <li key={ingredient}>{ingredient}</li>
-                    ))}
-                  </ul>
+                  <h3 className="mb-2 text-lg font-semibold">
+                    Product Information
+                  </h3>
+                  <p className="text-gray-600">{product.description}</p>
                 </div>
 
                 <div>
@@ -206,46 +248,45 @@ export default async function ProductPage({
                   <p className="text-gray-600">{product.storageInstructions}</p>
                 </div>
 
-                <div>
-                  <h3 className="mb-2 text-lg font-semibold">
-                    Allergen Information
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.allergens.map((allergen) => (
-                      <Badge key={allergen} variant="destructive">
-                        Contains {allergen}
-                      </Badge>
-                    ))}
+                {product.dietaryInfo.length > 0 && (
+                  <div>
+                    <h3 className="mb-2 text-lg font-semibold">
+                      Dietary Information
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {product.dietaryInfo.map((info: string) => (
+                        <Badge key={info} variant="outline">
+                          {info}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div>
                 <h3 className="mb-2 text-lg font-semibold">
-                  Preparation Guide
+                  Quality Assurance
                 </h3>
                 <div className="rounded-lg bg-gray-50 p-6">
-                  <ol className="list-inside list-decimal space-y-4 text-gray-600">
-                    <li>Preheat oven to 425°F (220°C)</li>
-                    <li>Remove pizza from all packaging and shrink wrap</li>
-                    <li>Place pizza directly on center oven rack</li>
-                    <li>
-                      Bake for 12-15 minutes or until cheese is melted and crust
-                      is golden brown
+                  <ul className="space-y-4 text-gray-600">
+                    <li className="flex items-start">
+                      <Shield className="mr-2 mt-0.5 h-5 w-5 text-green-600" />
+                      <span>
+                        All our products are carefully selected and quality
+                        checked
+                      </span>
                     </li>
-                    <li>Let stand 2-3 minutes before serving</li>
-                  </ol>
+                    {product.certifications.map((cert: string) => (
+                      <li key={cert} className="flex items-start">
+                        <Shield className="mr-2 mt-0.5 h-5 w-5 text-green-600" />
+                        <span>{cert}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
-          </TabsContent>
-
-          <TabsContent value="nutrition">
-            <NutritionalInfo
-              servingSize={product.servingSize}
-              servingsPerContainer={product.servingsPerContainer}
-              nutritionalFacts={product.nutritionalFacts}
-            />
           </TabsContent>
 
           <TabsContent value="reviews">
