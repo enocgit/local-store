@@ -11,10 +11,13 @@ datasource db {
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
-  password  String
-  firstName String
-  lastName  String
+  password  String?
+  firstName String?
+  lastName  String?
   phone     String?
+  image     String?
+  role      UserRole  @default(USER)
+  accounts  Account[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -26,6 +29,27 @@ model User {
 
   @@map("users")
 }
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_token     String? @db.String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
 
 model Product {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -173,4 +197,9 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }
