@@ -11,24 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 
-const features = [
-  {
-    icon: <Truck className="h-6 w-6" />,
-    title: "Express Delivery",
-    description: "Same-day delivery available",
-  },
-  {
-    icon: <Shield className="h-6 w-6" />,
-    title: "Quality Guaranteed",
-    description: "Fresh or full refund",
-  },
-  {
-    icon: <Clock className="h-6 w-6" />,
-    title: "24/7 Support",
-    description: "Always here to help",
-  },
-];
-
 const products = [
   {
     id: 1,
