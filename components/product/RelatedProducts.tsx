@@ -44,16 +44,16 @@ export function RelatedProducts({ productIds }: RelatedProductsProps) {
               <Card className="group overflow-hidden">
                 <div className="relative h-48">
                   <Image
-                    src={product.image}
-                    alt={product.name}
+                    src={product?.image}
+                    alt={product?.name}
                     fill
                     className="object-cover transition-transform group-hover:scale-105"
                   />
                 </div>
                 <CardContent className="p-4">
-                  <h3 className="mb-2 font-semibold">{product.name}</h3>
+                  <h3 className="mb-2 font-semibold">{product?.name}</h3>
                   <span className="text-lg font-bold">
-                    {product.currentPrice}
+                    {product?.currentPrice}
                   </span>
                 </CardContent>
               </Card>
