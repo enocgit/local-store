@@ -51,61 +51,33 @@ model Account {
 }
 
 model Product {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   description  String
   price        Float
   comparePrice Float?
-  rating       Float    @default(0)
+  rating       Float          @default(0)
   reviews      Review[]
-  stock        Int      @default(0)
+  stock        Int            @default(0)
   images       ProductImage[]
   badge        String?
-  category     Category @relation(fields: [categoryId], references: [id])
-  categoryId   String   @db.ObjectId
+  featured     Boolean?        @default(false)
+  category     Category       @relation(fields: [categoryId], references: [id])
+  categoryId   String         @db.ObjectId
 
   // Product specific fields
-  origin              String?
   storageInstructions String?
   weightOptions       Float[]
   certifications      String[]
-  dietaryInfo         String[]
-  nutritionalInfo     NutritionalInfo?
 
   orderItems  OrderItem[]
   wishedBy    User[]      @relation(fields: [wishedByIds], references: [id])
   wishedByIds String[]    @db.ObjectId
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime? @updatedAt
 
   @@map("products")
-}
-
-model NutritionalInfo {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  product   Product @relation(fields: [productId], references: [id])
-  productId String  @unique @db.ObjectId
-
-  servingSize          String
-  servingsPerContainer Int
-  calories             Int
-  totalFat             Float
-  saturatedFat         Float
-  transFat             Float
-  cholesterol          Int
-  sodium               Int
-  totalCarbohydrates   Int
-  dietaryFiber         Int
-  sugars               Int
-  protein              Int
-
-  vitaminD  Float
-  calcium   Int
-  iron      Float
-  potassium Int
-
-  @@map("nutritional_info")
 }
 
 model Category {
@@ -141,10 +113,10 @@ model Review {
 
 model ProductImage {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  fileName  String
-  fileSize  Int
+  fileName  String?
+  fileSize  Int?
   publicUrl String
-  mimeType  String
+  mimeType  String?
   Product   Product? @relation(fields: [productId], references: [id])
   productId String?  @db.ObjectId
 

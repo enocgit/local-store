@@ -1,38 +1,17 @@
 import Image from "next/image";
 import React from "react";
+import { getCategories } from "@/lib/api/categories";
 
-const categories = [
-  {
-    name: "Frozen Foods",
-    description: "Premium quality frozen meals and ingredients",
-    image:
-      "https://images.unsplash.com/photo-1603137071981-8c4ed11cad9c?auto=format&fit=crop&w=800&q=80",
-    href: "/category/frozen-foods",
-  },
-  {
-    name: "Fresh Produce",
-    description: "Farm-fresh fruits and vegetables",
-    image:
-      "https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=800&q=80",
-    href: "/category/fresh-produce",
-  },
-  {
-    name: "Dairy & Eggs",
-    description: "Fresh dairy products and free-range eggs",
-    image:
-      "https://images.unsplash.com/photo-1630431341973-02e1b662ec35?auto=format&fit=crop&w=800&q=80",
-    href: "/category/dairy-eggs",
-  },
-];
+async function ShopByCategory() {
+  const categories = await getCategories();
 
-function ShopByCategory() {
   return (
     <section className="bg-gray-50 py-16">
       <div className="container mx-auto px-4">
         <h2 className="mb-8 text-3xl font-bold">Shop by Category</h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {categories.map((category, index) => (
-            <a key={category.name} href={category.href}>
+            <a key={category.id} href={`/category/${category.id}`}>
               <div
                 key={index}
                 className="group relative h-80 cursor-pointer overflow-hidden rounded-lg"
