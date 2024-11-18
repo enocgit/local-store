@@ -2,6 +2,7 @@ import { CategoryHeader } from "@/components/category/CategoryHeader";
 import { ProductGrid } from "@/components/category/ProductGrid";
 import { FilterSidebar } from "@/components/category/FilterSidebar";
 import { getProductsByCategory } from "@/lib/api/products";
+import { ProductType } from "@/interfaces";
 
 export default async function CategoryPage({
   params,
@@ -29,7 +30,7 @@ export default async function CategoryPage({
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-8 lg:flex-row">
           <FilterSidebar />
-          <ProductGrid products={category?.products} />
+          <ProductGrid products={category?.products as ProductType[]} />
         </div>
       </div>
     </div>

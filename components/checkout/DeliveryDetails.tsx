@@ -17,7 +17,7 @@ export function DeliveryDetails() {
           <div className="text-sm text-gray-600">
             <h4 className="mb-2 font-semibold">Delivery Notes:</h4>
             <ul className="list-inside list-disc space-y-1">
-              <li>We'll text you when your delivery is on its way</li>
+              <li>We&apos;ll text you when your delivery is on its way</li>
               <li>
                 Please ensure someone is available to receive the delivery
               </li>

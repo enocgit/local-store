@@ -4,6 +4,16 @@ import { prisma } from "@/lib/prisma";
 import authConfig from "@/auth.config";
 import { getUserById } from "@/lib/auth/data";
 import { UserRole } from "@prisma/client";
+import { DefaultSession } from "next-auth";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      role?: UserRole;
+    } & DefaultSession["user"];
+  }
+}
 
 export const {
   handlers: { GET, POST },

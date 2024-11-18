@@ -19,7 +19,7 @@ export default function SuccessPage() {
           </div>
           <CardTitle className="text-2xl">Order Confirmed!</CardTitle>
           <CardDescription>
-            Thank you for your order. We'll email you the details shortly.
+            Thank you for your order. We&apos;ll email you the details shortly.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -32,9 +32,9 @@ export default function SuccessPage() {
           <div className="text-sm text-gray-600">
             <p className="mb-2">What happens next?</p>
             <ul className="list-inside list-disc space-y-1">
-              <li>You'll receive an order confirmation email</li>
-              <li>We'll send updates about your delivery</li>
-              <li>You'll get a text when your delivery is on its way</li>
+              <li>You&apos;ll receive an order confirmation email</li>
+              <li>We&apos;ll send updates about your delivery</li>
+              <li>You&apos;ll get a text when your delivery is on its way</li>
             </ul>
           </div>
 
