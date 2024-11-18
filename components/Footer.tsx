@@ -3,7 +3,7 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 
 const footerLinks = {
   company: [
-    { name: "About Us", href: "#" },
+    { name: "About Us", href: "/about" },
     { name: "Careers", href: "#" },
     { name: "Press", href: "#" },
     { name: "Our Blog", href: "#" },
@@ -132,7 +132,7 @@ export function Footer() {
               })}
             </div>
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} TropicalFoods. All rights reserved.
+              © {new Date().getFullYear()} TropikalFoods. All rights reserved.
             </p>
           </div>
         </div>

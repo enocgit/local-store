@@ -12,18 +12,45 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useCart } from "@/lib/store/cart-context";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const navigation = [
-  { name: "New Arrivals", href: "/category/new-arrivals" },
-  { name: "Frozen Foods", href: "/category/frozen-foods" },
-  { name: "Fresh Produce", href: "/category/fresh-produce" },
-  { name: "Dairy & Eggs", href: "/category/dairy-eggs" },
-  { name: "Sale", href: "#" },
-];
+const NEW_ARRIVALS_SLUG = "new-arrivals";
+
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+}
+
+async function getCats(): Promise<Category[]> {
+  const res = await fetch("/api/categories");
+  if (!res.ok) {
+    throw new Error("Failed to fetch categories");
+  }
+  const data = await res.json();
+  return data;
+}
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { state } = useCart();
+
+  const { data: categories = [], isLoading } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: getCats,
+  });
+
+  const navigation = [
+    { name: "New Arrivals", href: `/category/${NEW_ARRIVALS_SLUG}` },
+    ...categories.map((category: Category) => ({
+      name: category.name,
+      href: `/category/${category.id}`,
+    })),
+  ];
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white">
@@ -31,23 +58,33 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <a href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2">
               <CakeIcon className="h-8 w-8" />
-              <span className="text-xl font-bold">TropicalFoods</span>
-            </a>
+              <span className="text-xl font-bold max-[330px]:hidden">
+                TropikalFoods
+              </span>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:space-x-6">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
-              >
-                {item.name}
-              </a>
-            ))}
+            {isLoading ? (
+              <>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Skeleton key={index} className="h-3 w-10 rounded-md" />
+                ))}
+              </>
+            ) : (
+              navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
+                >
+                  {item.name}
+                </Link>
+              ))
+            )}
           </div>
 
           {/* Search, Cart, Account */}
@@ -89,16 +126,18 @@ export function Navbar() {
             </Button>
 
             {/* Cart */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative hover:bg-gray-100"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
-                0
-              </span>
-            </Button>
+            <Link href="/cart">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-gray-100"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
+                  {state.items.length}
+                </span>
+              </Button>
+            </Link>
 
             {/* Account */}
             <Button
@@ -125,22 +164,22 @@ export function Navbar() {
                   <div className="-my-6 divide-y divide-gray-200">
                     <div className="space-y-2 py-6">
                       {navigation.map((item) => (
-                        <a
+                        <Link
                           key={item.name}
                           href={item.href}
                           className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                         >
                           {item.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                     <div className="py-6">
-                      <a
+                      <Link
                         href="/auth"
                         className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                       >
                         Log in
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
