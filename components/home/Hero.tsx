@@ -14,15 +14,18 @@ function Hero() {
         priority
       />
       <div className="container relative z-10 mx-auto px-4">
-        <div className="max-w-2xl">
-          <h1 className="mb-6 text-5xl font-bold text-white">
+        <div className="animate-fade-in max-w-2xl">
+          <h1 className="animate-slide-up mb-6 text-5xl font-bold text-white">
             Fresh Food, Delivered Fresh
           </h1>
-          <p className="mb-8 text-xl text-gray-200">
+          <p className="animate-slide-up-delay mb-8 text-xl text-gray-200">
             Premium quality frozen foods and fresh ingredients delivered to your
             doorstep
           </p>
-          <Button size="lg" className="bg-white text-black hover:bg-gray-100">
+          <Button
+            size="lg"
+            className="animate-fade-in-delay bg-white text-black transition-all duration-300 hover:translate-y-[-2px] hover:bg-gray-100 hover:shadow-lg"
+          >
             Shop Now <ShoppingBag className="ml-2 h-5 w-5" />
           </Button>
         </div>

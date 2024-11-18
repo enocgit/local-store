@@ -20,7 +20,10 @@ const geistMono = localFont({
 // const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "TropikalFoods - Your Local Food Market",
+  title: {
+    default: "TropikalFoods - Your Local Food Market",
+    template: "%s | TropikalFoods",
+  },
   description: "TropikalFoods - Your Local Food Market",
 };
 

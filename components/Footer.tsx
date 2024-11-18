@@ -3,7 +3,7 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 
 const footerLinks = {
   company: [
-    { name: "About Us", href: "#" },
+    { name: "About Us", href: "/about" },
     { name: "Careers", href: "#" },
     { name: "Press", href: "#" },
     { name: "Our Blog", href: "#" },

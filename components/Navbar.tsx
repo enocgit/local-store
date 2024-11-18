@@ -14,9 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useCart } from "@/lib/store/cart-context";
 import Link from "next/link";
-import { getCategories } from "@/lib/api/categories";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -27,11 +26,12 @@ interface Category {
 }
 
 async function getCats(): Promise<Category[]> {
-  const res = await axios.get("/api/categories");
-  if (res.status !== 200) {
+  const res = await fetch("/api/categories");
+  if (!res.ok) {
     throw new Error("Failed to fetch categories");
   }
-  return res.data;
+  const data = await res.json();
+  return data;
 }
 
 export function Navbar() {
@@ -39,7 +39,7 @@ export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { state } = useCart();
 
-  const { data: categories = [] } = useQuery<Category[]>({
+  const { data: categories = [], isLoading } = useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: getCats,
   });
@@ -60,21 +60,31 @@ export function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <CakeIcon className="h-8 w-8" />
-              <span className="text-xl font-bold">TropikalFoods</span>
+              <span className="text-xl font-bold max-[330px]:hidden">
+                TropikalFoods
+              </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:space-x-6">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
-              >
-                {item.name}
-              </Link>
-            ))}
+            {isLoading ? (
+              <>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Skeleton key={index} className="h-3 w-10 rounded-md" />
+                ))}
+              </>
+            ) : (
+              navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
+                >
+                  {item.name}
+                </Link>
+              ))
+            )}
           </div>
 
           {/* Search, Cart, Account */}

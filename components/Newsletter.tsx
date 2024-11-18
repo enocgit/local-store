@@ -13,7 +13,7 @@ function Newsletter() {
           <p className="mb-6 text-gray-200">
             Subscribe to receive weekly specials and cooking inspiration.
           </p>
-          <div className="mx-auto flex max-w-md gap-2">
+          <div className="mx-auto flex min-w-0 max-w-md flex-wrap gap-2">
             <input
               type="email"
               placeholder="Enter your email"
