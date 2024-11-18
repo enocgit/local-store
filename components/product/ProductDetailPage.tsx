@@ -43,7 +43,7 @@ function ProductDetailPage({ product }: Props) {
   const currentPrice = calculatePriceForDate(product.price, state.deliveryDate);
 
   const handleAddToCart = () => {
-    if (product?.weightOptions && !selectedWeight) {
+    if (product?.weightOptions?.length && !selectedWeight) {
       toast({
         title: "Please select a weight",
         variant: "destructive",
@@ -101,7 +101,7 @@ function ProductDetailPage({ product }: Props) {
               </span>
             </div>
 
-            {product.weightOptions && (
+            {product.weightOptions?.length > 0 && (
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-medium">
                   <Scale className="mr-2 h-4 w-4" />
