@@ -2,7 +2,7 @@ import { Product, Review } from "@prisma/client";
 
 export interface ProductType extends Product {
   images: any[];
-  reviews: number;
+  reviews: Review[];
   category: {
     name: string;
   };

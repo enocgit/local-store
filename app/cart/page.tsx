@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { format, addDays, isThursday, isFriday, isSaturday } from "date-fns";
+import Image from "next/image";
+import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,77 +22,40 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Minus, Plus, Trash2, Truck } from "lucide-react";
-
-// Mock cart data - would come from a cart context/store
-const cartItems = [
-  {
-    id: 1,
-    name: "Premium Frozen Pizza Pack",
-    image:
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
-    price: 12.99,
-    quantity: 2,
-    fridayPrice: 12.99,
-    saturdayPrice: 14.99,
-  },
-  {
-    id: 2,
-    name: "Organic Mixed Berries",
-    image:
-      "https://images.unsplash.com/photo-1563746098251-d35aef196e83?auto=format&fit=crop&w=800&q=80",
-    price: 8.99,
-    quantity: 1,
-    fridayPrice: 8.99,
-    saturdayPrice: 10.99,
-  },
-];
-
-const deliveryTimeSlots = [
-  "08:00 - 10:00",
-  "10:00 - 12:00",
-  "12:00 - 14:00",
-  "14:00 - 16:00",
-  "16:00 - 18:00",
-  "18:00 - 20:00",
-];
+import { useCart } from "@/lib/store/cart-context";
+import { DELIVERY_TIME_SLOTS } from "@/lib/constants";
+import { formatPrice, isDeliveryDay } from "@/lib/utils";
 
 export default function CartPage() {
-  const [items, setItems] = useState(cartItems);
-  const [deliveryDate, setDeliveryDate] = useState<Date>();
-  const [deliveryTime, setDeliveryTime] = useState<string>();
+  const { state, dispatch } = useCart();
   const [postcode, setPostcode] = useState("");
 
   const isValidPostcode = (postcode: string) => {
-    // UK postcode regex pattern
     const postcodeRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
     return postcodeRegex.test(postcode);
   };
 
-  const updateQuantity = (id: number, change: number) => {
-    setItems(
-      items.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(0, item.quantity + change) }
-          : item,
-      ),
-    );
+  const updateQuantity = (id: string, change: number) => {
+    const item = state.items.find((item) => item.id === id);
+    if (!item) return;
+
+    const newQuantity = Math.max(0, item.quantity + change);
+    if (newQuantity === 0) {
+      dispatch({ type: "REMOVE_ITEM", payload: id });
+    } else {
+      dispatch({
+        type: "UPDATE_QUANTITY",
+        payload: { id, quantity: newQuantity },
+      });
+    }
   };
 
-  const removeItem = (id: number) => {
-    setItems(items.filter((item) => item.id !== id));
+  const removeItem = (id: string) => {
+    dispatch({ type: "REMOVE_ITEM", payload: id });
   };
 
-  const isDeliveryDay = (date: Date) => {
-    return isThursday(date) || isFriday(date) || isSaturday(date);
-  };
-
-  const getItemPrice = (item: (typeof cartItems)[0]) => {
-    if (!deliveryDate) return item.price;
-    return isSaturday(deliveryDate) ? item.saturdayPrice : item.fridayPrice;
-  };
-
-  const subtotal = items.reduce(
-    (sum, item) => sum + getItemPrice(item) * item.quantity,
+  const subtotal = state.items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
     0,
   );
   const deliveryFee = subtotal > 50 ? 0 : 4.99;
@@ -106,7 +69,7 @@ export default function CartPage() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Cart Items */}
           <div className="space-y-4 lg:col-span-2">
-            {items.length === 0 ? (
+            {state.items.length === 0 ? (
               <Card>
                 <CardContent className="p-6 text-center">
                   <p className="mb-4 text-gray-600">Your cart is empty</p>
@@ -116,7 +79,7 @@ export default function CartPage() {
                 </CardContent>
               </Card>
             ) : (
-              items.map((item) => (
+              state.items.map((item) => (
                 <Card key={item.id}>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-4">
@@ -131,8 +94,14 @@ export default function CartPage() {
                       <div className="flex-1">
                         <h3 className="font-semibold">{item.name}</h3>
                         <p className="mb-2 text-sm text-gray-600">
-                          £{getItemPrice(item).toFixed(2)}
+                          {formatPrice(item.price)}
+                          {item.weight ? ` per kg` : ""}
                         </p>
+                        {item.weight && (
+                          <p className="mb-2 text-sm text-gray-600">
+                            Weight: {item.weight}kg
+                          </p>
+                        )}
                         <div className="flex items-center space-x-2">
                           <Button
                             variant="outline"
@@ -163,7 +132,7 @@ export default function CartPage() {
                       </div>
                       <div className="text-right">
                         <p className="font-semibold">
-                          £{(getItemPrice(item) * item.quantity).toFixed(2)}
+                          {formatPrice(item.price * item.quantity)}
                         </p>
                       </div>
                     </div>
@@ -199,34 +168,38 @@ export default function CartPage() {
                   <label className="text-sm font-medium">Delivery Date</label>
                   <Calendar
                     mode="single"
-                    selected={deliveryDate}
-                    onSelect={setDeliveryDate}
+                    selected={state.deliveryDate}
+                    onSelect={(date) =>
+                      date &&
+                      dispatch({ type: "SET_DELIVERY_DATE", payload: date })
+                    }
                     disabled={(date) => !isDeliveryDay(date)}
                     modifiers={{
-                      thursday: (date) => isThursday(date),
-                      friday: (date) => isFriday(date),
-                      saturday: (date) => isSaturday(date),
+                      thursday: (date) => isDeliveryDay(date),
                     }}
                     modifiersClassNames={{
-                      thursday: "bg-red-100",
-                      friday: "bg-green-100",
-                      saturday: "bg-blue-100",
+                      thursday: "bg-green-100",
                     }}
                   />
                   <p className="text-sm text-gray-600">
-                    Delivery available only on Thursday, Friday and Saturday
+                    Delivery available Thursday through Saturday
                   </p>
                 </div>
 
-                {deliveryDate && (
+                {state.deliveryDate && (
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Delivery Time</label>
-                    <Select onValueChange={setDeliveryTime}>
+                    <Select
+                      value={state.deliveryTime}
+                      onValueChange={(value) =>
+                        dispatch({ type: "SET_DELIVERY_TIME", payload: value })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a time slot" />
                       </SelectTrigger>
                       <SelectContent>
-                        {deliveryTimeSlots.map((slot) => (
+                        {DELIVERY_TIME_SLOTS.map((slot) => (
                           <SelectItem key={slot} value={slot}>
                             {slot}
                           </SelectItem>
@@ -245,7 +218,7 @@ export default function CartPage() {
               <CardContent className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>£{subtotal.toFixed(2)}</span>
+                  <span>{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery</span>
@@ -253,7 +226,7 @@ export default function CartPage() {
                     {deliveryFee === 0 ? (
                       <span className="text-green-600">Free</span>
                     ) : (
-                      `£${deliveryFee.toFixed(2)}`
+                      formatPrice(deliveryFee)
                     )}
                   </span>
                 </div>
@@ -265,25 +238,25 @@ export default function CartPage() {
                 <div className="mt-2 border-t pt-2">
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span>£{total.toFixed(2)}</span>
+                    <span>{formatPrice(total)}</span>
                   </div>
                 </div>
               </CardContent>
               <CardFooter>
-                <a href="/checkout" className="w-full">
+                <Link href="/checkout" className="w-full">
                   <Button
                     className="w-full"
                     disabled={
-                      !deliveryDate ||
-                      !deliveryTime ||
+                      !state.deliveryDate ||
+                      !state.deliveryTime ||
                       !isValidPostcode(postcode) ||
-                      items.length === 0
+                      state.items.length === 0
                     }
                   >
                     <Truck className="mr-2 h-4 w-4" />
                     Proceed to Checkout
                   </Button>
-                </a>
+                </Link>
               </CardFooter>
             </Card>
           </div>

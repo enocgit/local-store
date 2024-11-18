@@ -1,0 +1,102 @@
+[
+  {
+    "_id": { "$oid": "673b1727f8ddbe052c444ff6" },
+    "name": "Product 1",
+    "description": "A delicious frozen pizza with a mix of veggies.",
+    "price": 10.99,
+    "comparePrice": 13.99,
+    "rating": 4.2,
+    "stock": 50,
+    "images": [
+      { "$oid": "673b1727f8ddbe052c444ffe" },
+      { "$oid": "673b1727f8ddbe052c444fff" },
+      { "$oid": "673b1727f8ddbe052c445000" },
+      { "$oid": "673b1727f8ddbe052c445001" },
+      { "$oid": "673b1727f8ddbe052c445002" }
+    ],
+    "badge": "Sale",
+    "featured": true,
+    "categoryId": { "$oid": "605c72ef153207001f7dcb1a" },
+    "storageInstructions": "Keep frozen at -18°C",
+    "weightOptions": [400, 600],
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "605c72ef153207001f7dcb2b" },
+    "name": "Product 2",
+    "description": "A classic cheese pizza with mozzarella.",
+    "price": 12.99,
+    "rating": 4.5,
+    "stock": 40,
+    "images": [
+      { "$oid": "673b1727f8ddbe052c445000" },
+      { "$oid": "673b1727f8ddbe052c445001" }
+    ],
+    "categoryId": { "$oid": "605c72ef153207001f7dcb3c" },
+    "storageInstructions": "Keep frozen at -18°C",
+    "weightOptions": [400],
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "673b1727f8ddbe052c444ff8" },
+    "name": "Product 3",
+    "description": "Frozen vegetables mix including peas, carrots, and corn.",
+    "price": 5.99,
+    "comparePrice": 7.99,
+    "rating": 4.0,
+    "stock": 100,
+    "images": [
+      { "$oid": "673b1727f8ddbe052c445002" },
+      { "$oid": "673b1727f8ddbe052c445003" }
+    ],
+    "badge": "Organic",
+    "categoryId": { "$oid": "605c72ef153207001f7dcb1a" },
+    "certifications": ["Organic", "Non-GMO"],
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "673b1727f8ddbe052c444ff9" },
+    "name": "Product 4",
+    "description": "Fresh butter, perfect for cooking and baking.",
+    "price": 3.99,
+    "rating": 4.7,
+    "stock": 120,
+    "images": [{ "$oid": "673b1727f8ddbe052c445004" }],
+    "featured": true,
+    "categoryId": { "$oid": "605c72ef153207001f7dcb1a" },
+    "weightOptions": [250, 500],
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "673b1727f8ddbe052c444ffa" },
+    "name": "Product 5",
+    "description": "Fresh eggs, grade A large.",
+    "price": 2.99,
+    "rating": 4.8,
+    "stock": 200,
+    "images": [{ "$oid": "673b1727f8ddbe052c445005" }],
+    "badge": "Free Range",
+    "categoryId": { "$oid": "605c72ef153207001f7dcb2b" },
+    "certifications": ["Free Range", "Organic"],
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "673b1727f8ddbe052c444ffb" },
+    "name": "Product 6",
+    "description": "Organic milk, perfect for your morning coffee.",
+    "price": 4.49,
+    "rating": 4.3,
+    "stock": 60,
+    "images": [{ "$oid": "673b1727f8ddbe052c445006" }],
+    "categoryId": { "$oid": "605c72ef153207001f7dcb2b" },
+    "storageInstructions": "Keep refrigerated",
+    "weightOptions": [1000, 2000],
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" }
+  }
+]

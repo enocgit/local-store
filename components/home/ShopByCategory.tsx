@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { getCategories } from "@/lib/api/categories";
+import Link from "next/link";
 
 async function ShopByCategory() {
   const categories = await getCategories();
@@ -11,7 +12,7 @@ async function ShopByCategory() {
         <h2 className="mb-8 text-3xl font-bold">Shop by Category</h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {categories.map((category, index) => (
-            <a key={category.id} href={`/category/${category.id}`}>
+            <Link key={category.id} href={`/category/${category.id}`}>
               <div
                 key={index}
                 className="group relative h-80 cursor-pointer overflow-hidden rounded-lg"
@@ -31,7 +32,7 @@ async function ShopByCategory() {
                   </p>
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

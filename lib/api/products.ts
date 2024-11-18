@@ -33,6 +33,43 @@ export async function getFeaturedProducts() {
 
 export async function getProductsByCategory(categoryId: string) {
   try {
+    if (categoryId === "new-arrivals") {
+      const newArrivals = await prisma.product.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 20,
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          comparePrice: true,
+          rating: true,
+          images: true,
+          badge: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          reviews: {
+            select: {
+              rating: true,
+            },
+          },
+        },
+      });
+
+      return {
+        name: "New Arrivals",
+        description: "Check out our latest products",
+        image:
+          "https://images.unsplash.com/photo-1593642632845-7d4b3db9a4c5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        products: newArrivals,
+      };
+    }
+
     return await prisma.category.findUnique({
       where: {
         id: categoryId,

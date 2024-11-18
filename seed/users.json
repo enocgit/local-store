@@ -1,0 +1,14 @@
+[
+  {
+    "_id": { "$oid": "673b1727f8ddbe052c444ff5" },
+    "name": "User",
+    "email": "john.doe@example.com",
+    "password": "hashed_password",
+    "firstName": "John",
+    "lastName": "Doe",
+    "role": "USER",
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" },
+    "wishlistIds": [{ "$oid": "673b1727f8ddbe052c444ff6" }]
+  }
+]

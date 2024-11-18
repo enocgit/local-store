@@ -70,6 +70,9 @@ model Product {
   weightOptions       Float[]
   certifications      String[]
 
+  // Dynamic pricing
+  priceMultiplier Float?    @default(1.0) // For special days pricing
+
   orderItems  OrderItem[]
   wishedBy    User[]      @relation(fields: [wishedByIds], references: [id])
   wishedByIds String[]    @db.ObjectId

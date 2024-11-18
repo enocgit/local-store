@@ -1,0 +1,22 @@
+[
+  {
+    "_id": { "$oid": "673b1727f8ddbe052c444ffc" },
+    "rating": 5.0,
+    "title": "Great Frozen Pizza",
+    "content": "Really enjoyed this frozen pizza! Will buy again.",
+    "userId": { "$oid": "673b1727f8ddbe052c444ff5" },
+    "productId": { "$oid": "673b1727f8ddbe052c444ff6" },
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "673b1727f8ddbe052c444ffd" },
+    "rating": 5.0,
+    "title": "Perfect Butter",
+    "content": "This butter is smooth, rich, and perfect for baking.",
+    "userId": { "$oid": "673b1727f8ddbe052c444ff5" },
+    "productId": { "$oid": "673b1727f8ddbe052c444ff9" },
+    "createdAt": { "$date": "2024-11-18T10:00:00Z" },
+    "updatedAt": { "$date": "2024-11-18T10:00:00Z" }
+  }
+]
