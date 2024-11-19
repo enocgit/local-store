@@ -15,9 +15,7 @@ export default function AboutPage() {
     <div className="container mx-auto px-4 py-16">
       {/* Hero Section */}
       <section className="mb-20">
-        <h1 className="mb-6 text-4xl font-bold md:text-5xl">
-          About TropikalFoods
-        </h1>
+        <h1 className="mb-6 text-4xl font-bold md:text-5xl">About Us</h1>
         <p className="max-w-3xl text-xl text-muted-foreground">
           We&apos;re on a mission to revolutionize online shopping by providing
           exceptional products and unparalleled customer experiences.

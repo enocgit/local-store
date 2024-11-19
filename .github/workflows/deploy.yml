@@ -1,8 +1,8 @@
 name: Deploy
 on:
   push:
-    # paths:
-    #   - prisma/schema.prisma
+    paths:
+      - prisma/schema.prisma
     branches:
       - staging
 

@@ -46,7 +46,7 @@ export function Navbar() {
 
   const navigation = [
     { name: "New Arrivals", href: `/category/${NEW_ARRIVALS_SLUG}` },
-    ...categories.map((category: Category) => ({
+    ...categories.slice(0, 4).map((category: Category) => ({
       name: category.name,
       href: `/category/${category.id}`,
     })),
@@ -140,13 +140,15 @@ export function Navbar() {
             </Link>
 
             {/* Account */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hidden hover:bg-gray-100 sm:flex"
-            >
-              <User className="h-5 w-5" />
-            </Button>
+            <Link href="/auth">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden hover:bg-gray-100 sm:flex"
+              >
+                <User className="h-5 w-5" />
+              </Button>
+            </Link>
 
             {/* Mobile menu button */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -163,20 +165,33 @@ export function Navbar() {
                 <div className="mt-6 flow-root">
                   <div className="-my-6 divide-y divide-gray-200">
                     <div className="space-y-2 py-6">
-                      {navigation.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
+                      {isLoading ? (
+                        <>
+                          {Array.from({ length: 5 }).map((_, index) => (
+                            <Skeleton
+                              key={index}
+                              className="-mx-3 mb-6 block h-3 w-full rounded-md"
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        navigation.map((item) => (
+                          <Link
+                            key={item.name}
+                            href={item.href}
+                            className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                          >
+                            {item.name}
+                          </Link>
+                        ))
+                      )}
                     </div>
                     <div className="py-6">
                       <Link
                         href="/auth"
                         className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                        onClick={() => setIsMobileMenuOpen(false)}
                       >
                         Log in
                       </Link>
