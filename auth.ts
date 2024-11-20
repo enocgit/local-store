@@ -1,10 +1,11 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-import authConfig from "@/auth.config";
+// import authConfig from "@/auth.config";
 import { getUserById } from "@/lib/auth/data";
 import { UserRole } from "@prisma/client";
 import { DefaultSession } from "next-auth";
+import Google from "next-auth/providers/google";
 
 declare module "next-auth" {
   interface Session {
@@ -23,7 +24,25 @@ export const {
 } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
-  ...authConfig,
+  providers: [
+    Google({
+      profile(profile) {
+        // Split the name into firstName and lastName
+        const nameParts = profile.name?.split(" ") || ["", ""];
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(" ");
+
+        return {
+          id: profile.sub,
+          email: profile.email,
+          emailVerified: profile.email_verified,
+          firstName,
+          lastName,
+          image: profile.picture,
+        };
+      },
+    }),
+  ],
   callbacks: {
     async session({ token, session }) {
       if (token.sub && session.user) {

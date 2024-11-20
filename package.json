@@ -39,7 +39,7 @@
     "input-otp": "^1.4.1",
     "lucide-react": "^0.453.0",
     "next": "15.0.1",
-    "next-auth": "^4.24.10",
+    "next-auth": "beta",
     "next-themes": "^0.4.3",
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-day-picker": "^8.10.1",
@@ -65,5 +65,8 @@
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "overrides": {
+    "oidc-token-hash": "5.0.1"
   }
 }

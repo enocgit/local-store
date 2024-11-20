@@ -1,9 +1,10 @@
 [
   {
     "_id": { "$oid": "673b1727f8ddbe052c444ff5" },
-    "name": "User",
     "email": "john.doe@example.com",
     "password": "hashed_password",
+    "image": "https://example.com/image.png",
+    "phone": "1234567890",
     "firstName": "John",
     "lastName": "Doe",
     "role": "USER",

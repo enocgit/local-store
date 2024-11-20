@@ -9,17 +9,18 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  email     String    @unique
-  password  String?
-  firstName String?
-  lastName  String?
-  phone     String?
-  image     String?
-  role      UserRole  @default(USER)
-  accounts  Account[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  email         String    @unique
+  password      String?
+  firstName     String?
+  lastName      String?
+  phone         String?
+  image         String?
+  role          UserRole  @default(USER)
+  accounts      Account[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  emailVerified Boolean?  @default(false)
 
   addresses   Address[]
   orders      Order[]
@@ -61,7 +62,7 @@ model Product {
   stock        Int            @default(0)
   images       ProductImage[]
   badge        String?
-  featured     Boolean?        @default(false)
+  featured     Boolean?       @default(false)
   category     Category       @relation(fields: [categoryId], references: [id])
   categoryId   String         @db.ObjectId
 
@@ -71,13 +72,13 @@ model Product {
   certifications      String[]
 
   // Dynamic pricing
-  priceMultiplier Float?    @default(1.0) // For special days pricing
+  priceMultiplier Float? @default(1.0) // For special days pricing
 
   orderItems  OrderItem[]
   wishedBy    User[]      @relation(fields: [wishedByIds], references: [id])
   wishedByIds String[]    @db.ObjectId
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
   @@map("products")
