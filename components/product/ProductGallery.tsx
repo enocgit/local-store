@@ -37,8 +37,8 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
             )}
           >
             <Image
-              src={image.publicUrl}
-              alt={image.alt || `Product image ${index + 1}`}
+              src={image?.publicUrl || ""}
+              alt={image?.alt || `Product image ${index + 1}`}
               fill
               className="object-cover"
             />
@@ -50,8 +50,8 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
       <div className="relative flex-1">
         <div className="relative h-[500px] overflow-hidden rounded-lg">
           <Image
-            src={displayImages[selectedImage].publicUrl}
-            alt={displayImages[selectedImage].alt || "Product image"}
+            src={displayImages[selectedImage]?.publicUrl || ""}
+            alt={displayImages[selectedImage]?.alt || "Product image"}
             fill
             className="object-cover"
             priority

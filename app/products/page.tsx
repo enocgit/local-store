@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { FilterSidebar } from "@/components/category/FilterSidebar";
+import { ProductType } from "@/interfaces";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -39,7 +40,7 @@ export default async function ProductsPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-8 lg:flex-row">
           <FilterSidebar />
-          <ProductGrid products={products} />
+          <ProductGrid products={products as ProductType[]} />
         </div>
       </div>
     </div>

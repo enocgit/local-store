@@ -9,6 +9,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 interface WishlistButtonProps {
   productId: string;
@@ -21,6 +22,7 @@ export function WishlistButton({ productId, className }: WishlistButtonProps) {
   const { mutate: toggleWishlist, variables, isError } = useToggleWishlist();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [optimisticState, setOptimisticState] = useState<boolean | null>(null);
+  const { toast } = useToast();
 
   const isWished =
     optimisticState !== null
@@ -32,8 +34,12 @@ export function WishlistButton({ productId, className }: WishlistButtonProps) {
   useEffect(() => {
     if (isError) {
       setOptimisticState(null);
+      toast({
+        title: "Please select a weight",
+        variant: "destructive",
+      });
     }
-  }, [isError]);
+  }, [isError, toast]);
 
   const handleWishClick = () => {
     if (!session) {
