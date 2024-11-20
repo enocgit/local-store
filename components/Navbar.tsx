@@ -230,13 +230,15 @@ export function Navbar() {
             </Sheet>
 
             {/* Wishlist */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hidden hover:bg-gray-100 sm:flex"
-            >
-              <Heart className="h-5 w-5" />
-            </Button>
+            <Link href="/wishlist">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden hover:bg-gray-100 sm:flex"
+              >
+                <Heart className="h-5 w-5" />
+              </Button>
+            </Link>
 
             {/* Cart */}
             <Link href="/cart">

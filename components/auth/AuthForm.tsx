@@ -26,6 +26,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Mail, Lock, User } from "lucide-react";
+import { Session } from "next-auth";
 
 type FormData = {
   email: string;
@@ -34,7 +35,7 @@ type FormData = {
   lastName?: string;
 };
 
-export function AuthForm() {
+export function AuthForm({ session }: { session: Session | null }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
@@ -183,7 +184,10 @@ export function AuthForm() {
               </form>
             </Form>
             <div className="mt-6">
-              <SocialAuth isLoading={isLoading} />
+              <SocialAuth
+                isLoading={isLoading}
+                userRole={session?.user?.role}
+              />
             </div>
           </CardContent>
         </TabsContent>
@@ -277,7 +281,10 @@ export function AuthForm() {
               </form>
             </Form>
             <div className="mt-6">
-              <SocialAuth isLoading={isLoading} />
+              <SocialAuth
+                isLoading={isLoading}
+                userRole={session?.user?.role}
+              />
             </div>
           </CardContent>
         </TabsContent>

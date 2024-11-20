@@ -21,6 +21,9 @@ import { useState } from "react";
 import { useCart } from "@/lib/store/cart-context";
 import { Product, Review } from "@prisma/client";
 import { useToast } from "@/hooks/use-toast";
+import { addToWishlist } from "@/app/actions";
+import { Session } from "next-auth";
+import { WishlistButton } from "../ui/wishlist-button";
 
 interface ProductImage {
   publicUrl: string;
@@ -33,9 +36,10 @@ interface ProductWithDetails extends Product {
 
 type Props = {
   product: ProductWithDetails; // Update the Props type
+  session: Session | null;
 };
 
-function ProductDetailPage({ product }: Props) {
+function ProductDetailPage({ product, session }: Props) {
   const [selectedWeight, setSelectedWeight] = useState<number>();
   const { state, dispatch } = useCart();
   const { toast } = useToast();
@@ -132,10 +136,13 @@ function ProductDetailPage({ product }: Props) {
                 <Button className="flex-1" onClick={handleAddToCart}>
                   <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                 </Button>
-                <Button variant="outline" size="icon">
-                  <Heart className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon">
+                <WishlistButton productId={product.id} />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  title="Share"
+                  aria-label="Share"
+                >
                   <Share2 className="h-4 w-4" />
                 </Button>
               </div>

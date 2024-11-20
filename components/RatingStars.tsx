@@ -1,7 +1,17 @@
 import { Star, StarHalf } from "lucide-react";
 
-function RatingStars({ rating }: { rating: number }) {
-  const fullStars = Math.floor(rating);
+function RatingStars({ rating }: { rating?: number }) {
+  if (!rating) {
+    return (
+      <div className="flex items-center">
+        {[...Array(0)].map((_, i) => (
+          <Star key={i} className="h-4 w-4 text-gray-300" />
+        ))}
+      </div>
+    );
+  }
+
+  const fullStars = Math.floor(rating) || 0;
   const hasHalfStar = rating % 1 !== 0;
 
   return (

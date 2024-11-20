@@ -18,7 +18,7 @@ export function slugify(text: string): string {
 }
 
 export function formatPrice(price: number): string {
-  return price.toLocaleString("en-GB", {
+  return price?.toLocaleString("en-GB", {
     style: "currency",
     currency: "GBP",
   });

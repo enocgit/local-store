@@ -14,16 +14,19 @@ export function ProductCard({ product }: ProductCardProps) {
   const { state, dispatch } = useCart();
   const { toast } = useToast();
 
-  const currentPrice = calculatePriceForDate(product.price, state.deliveryDate);
+  const currentPrice = calculatePriceForDate(
+    product?.price,
+    state?.deliveryDate,
+  );
 
   const handleAddToCart = () => {
     dispatch({
       type: "ADD_ITEM",
       payload: {
-        id: product.id,
-        name: product.name,
+        id: product?.id,
+        name: product?.name,
         price: currentPrice,
-        image: product.images[0].publicUrl,
+        image: product?.images[0].publicUrl,
         quantity: 1,
         // weight: selectedWeight,
       },
@@ -37,15 +40,15 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card className="group overflow-hidden">
-      <Link href={`/product/${product.id}`}>
+      <Link href={`/product/${product?.id}`}>
         <div className="relative h-64">
           <Image
-            src={product.images?.[0]?.publicUrl}
-            alt={product.name || ""}
+            src={product?.images?.[0]?.publicUrl}
+            alt={product?.name || ""}
             fill
             className="object-cover transition-transform group-hover:scale-105"
           />
-          {product.badge && (
+          {product?.badge && (
             <span className="absolute right-2 top-2 rounded-md bg-primary px-2 py-1 text-sm text-white">
               {product.badge}
             </span>
@@ -57,15 +60,15 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="mb-2 flex items-center space-x-2">
           <RatingStars rating={product?.rating} />
           <span className="text-sm text-gray-600">
-            ({product.reviews?.length})
+            ({product?.reviews?.length})
           </span>
         </div>
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold">
-              {formatPrice(product.price)}
+              {formatPrice(product?.price)}
             </span>
-            {product.comparePrice ? (
+            {product?.comparePrice ? (
               <span className="text-sm text-gray-500 line-through">
                 {formatPrice(product.comparePrice)}
               </span>

@@ -110,9 +110,31 @@ export async function getProductsByCategory(categoryId: string) {
 
 export async function getAllProducts() {
   try {
-    return await prisma.product.findMany();
+    return await prisma.product.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        comparePrice: true,
+        rating: true,
+        images: true,
+        badge: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
+      },
+    });
   } catch (error) {
     console.error("Failed to fetch products:", error);
+    return [];
   }
 }
 

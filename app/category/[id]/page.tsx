@@ -1,5 +1,5 @@
 import { CategoryHeader } from "@/components/category/CategoryHeader";
-import { ProductGrid } from "@/components/category/ProductGrid";
+import { ProductGrid } from "@/components/product/ProductGrid";
 import { FilterSidebar } from "@/components/category/FilterSidebar";
 import { getProductsByCategory } from "@/lib/api/products";
 import { ProductType } from "@/interfaces";
