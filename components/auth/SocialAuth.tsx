@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { getCallbackUrl } from "@/lib/auth/utils";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 interface SocialAuthProps {
   isLoading?: boolean;
@@ -13,10 +14,15 @@ interface SocialAuthProps {
 
 export function SocialAuth({ isLoading, userRole }: SocialAuthProps) {
   const pathname = usePathname();
+  const [loadingProvider, setLoadingProvider] = useState<
+    "google" | "facebook" | null
+  >(null);
 
-  const handleSignIn = (provider: "google" | "facebook") => {
+  const handleSignIn = async (provider: "google" | "facebook") => {
+    setLoadingProvider(provider);
     const callbackUrl = getCallbackUrl(pathname, userRole);
-    signIn(provider, { callbackUrl });
+    await signIn(provider, { callbackUrl });
+    setLoadingProvider(null);
   };
 
   return (
@@ -34,29 +40,37 @@ export function SocialAuth({ isLoading, userRole }: SocialAuthProps) {
         <Button
           variant="outline"
           onClick={() => handleSignIn("google")}
-          disabled={isLoading}
+          disabled={isLoading || loadingProvider === "google"}
         >
-          <Image
-            src="https://www.google.com/favicon.ico"
-            alt="Google"
-            width={16}
-            height={16}
-            className="mr-2"
-          />
+          {loadingProvider === "google" ? (
+            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-black" />
+          ) : (
+            <Image
+              src="https://www.google.com/favicon.ico"
+              alt="Google"
+              width={16}
+              height={16}
+              className="mr-2"
+            />
+          )}
           Google
         </Button>
         <Button
           variant="outline"
           onClick={() => handleSignIn("facebook")}
-          disabled={isLoading}
+          disabled={isLoading || loadingProvider === "facebook"}
         >
-          <Image
-            src="https://www.facebook.com/favicon.ico"
-            alt="Facebook"
-            width={16}
-            height={16}
-            className="mr-2"
-          />
+          {loadingProvider === "facebook" ? (
+            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-black" />
+          ) : (
+            <Image
+              src="https://www.facebook.com/favicon.ico"
+              alt="Facebook"
+              width={16}
+              height={16}
+              className="mr-2"
+            />
+          )}
           Facebook
         </Button>
       </div>

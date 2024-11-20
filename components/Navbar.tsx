@@ -3,7 +3,6 @@
 import { useState } from "react";
 import {
   Search,
-  ShoppingCart,
   User,
   Menu,
   Heart,
@@ -27,6 +26,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession, signOut } from "next-auth/react";
+import { CartIcon } from "./ui/cart-icon";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -49,6 +49,7 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { state } = useCart();
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const { data: categories = [], isLoading } = useQuery<Category[]>({
     queryKey: ["categories"],
@@ -86,12 +87,13 @@ export function Navbar() {
       icon: CreditCard,
       href: "/account/billing",
     },
-    {
-      label: "Settings",
-      icon: Settings,
-      href: "/account/settings",
-    },
   ];
+
+  const handleSignOut = async () => {
+    setLoggingOut(true);
+    await signOut();
+    setLoggingOut(false);
+  };
 
   const UserAccountNav = () => {
     if (!session?.user) {
@@ -153,9 +155,13 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 className="w-full justify-start space-x-2 px-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700"
-                onClick={() => signOut()}
+                onClick={handleSignOut}
               >
-                <LogOut className="h-4 w-4" />
+                {loggingOut ? (
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-red-700" />
+                ) : (
+                  <LogOut className="h-4 w-4" />
+                )}
                 <span>Log out</span>
               </Button>
             </div>
@@ -230,29 +236,17 @@ export function Navbar() {
             </Sheet>
 
             {/* Wishlist */}
-            <Link href="/wishlist">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hidden hover:bg-gray-100 sm:flex"
-              >
+            <Link href="/wishlist" className="max-sm:hidden">
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
                 <Heart className="h-5 w-5" />
               </Button>
             </Link>
 
             {/* Cart */}
-            <Link href="/cart">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative hover:bg-gray-100"
-              >
-                <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
-                  {state.items.length}
-                </span>
-              </Button>
-            </Link>
+            <CartIcon
+              count={state.items.length}
+              className="max-[420px]:hidden"
+            />
 
             {/* Account */}
             <UserAccountNav />
@@ -293,6 +287,24 @@ export function Navbar() {
                           </Link>
                         ))
                       )}
+                    </div>
+                    <div className="py-6 sm:hidden">
+                      <Link
+                        href="/wishlist"
+                        className="-mx-3 flex items-center gap-2 rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 sm:hidden"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Heart className="h-5 w-5" />
+                        Wishlist
+                      </Link>
+                      <Link
+                        href="/cart"
+                        className="-mx-3 flex items-center gap-2 rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 min-[420px]:hidden"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <CartIcon count={state.items.length} isLink={false} />
+                        Cart
+                      </Link>
                     </div>
                     <div className="py-6">
                       <Link
