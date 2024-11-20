@@ -3,12 +3,22 @@
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { getCallbackUrl } from "@/lib/auth/utils";
+import { usePathname } from "next/navigation";
 
 interface SocialAuthProps {
   isLoading?: boolean;
+  userRole?: string | null;
 }
 
-export function SocialAuth({ isLoading }: SocialAuthProps) {
+export function SocialAuth({ isLoading, userRole }: SocialAuthProps) {
+  const pathname = usePathname();
+
+  const handleSignIn = (provider: "google" | "facebook") => {
+    const callbackUrl = getCallbackUrl(pathname, userRole);
+    signIn(provider, { callbackUrl });
+  };
+
   return (
     <div className="space-y-4">
       <div className="relative">
@@ -23,9 +33,7 @@ export function SocialAuth({ isLoading }: SocialAuthProps) {
       <div className="grid grid-cols-2 gap-4">
         <Button
           variant="outline"
-          onClick={() =>
-            signIn("google", { callbackUrl: window.location.href })
-          }
+          onClick={() => handleSignIn("google")}
           disabled={isLoading}
         >
           <Image
@@ -39,9 +47,7 @@ export function SocialAuth({ isLoading }: SocialAuthProps) {
         </Button>
         <Button
           variant="outline"
-          onClick={() =>
-            signIn("facebook", { callbackUrl: window.location.href })
-          }
+          onClick={() => handleSignIn("facebook")}
           disabled={isLoading}
         >
           <Image

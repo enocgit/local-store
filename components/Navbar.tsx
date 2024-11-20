@@ -8,14 +8,25 @@ import {
   Menu,
   Heart,
   CakeIcon,
+  LogOut,
+  Settings,
+  CreditCard,
+  Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCart } from "@/lib/store/cart-context";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSession, signOut } from "next-auth/react";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -44,6 +55,8 @@ export function Navbar() {
     queryFn: getCats,
   });
 
+  const { data: session } = useSession();
+
   const navigation = [
     { name: "New Arrivals", href: `/category/${NEW_ARRIVALS_SLUG}` },
     ...categories.slice(0, 4).map((category: Category) => ({
@@ -51,6 +64,106 @@ export function Navbar() {
       href: `/category/${category.id}`,
     })),
   ];
+
+  const userMenuItems = [
+    {
+      label: "My Account",
+      icon: User,
+      href: "/account",
+    },
+    {
+      label: "My Orders",
+      icon: Package,
+      href: "/account/orders",
+    },
+    {
+      label: "Wishlist",
+      icon: Heart,
+      href: "/account/wishlist",
+    },
+    {
+      label: "Billing",
+      icon: CreditCard,
+      href: "/account/billing",
+    },
+    {
+      label: "Settings",
+      icon: Settings,
+      href: "/account/settings",
+    },
+  ];
+
+  const UserAccountNav = () => {
+    if (!session?.user) {
+      return (
+        <Link href="/auth">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden hover:bg-gray-100 sm:flex"
+          >
+            <User className="h-5 w-5" />
+          </Button>
+        </Link>
+      );
+    }
+
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative h-8 w-8 rounded-full"
+          >
+            <Avatar className="h-8 w-8">
+              <AvatarImage
+                src={session.user.image ?? undefined}
+                alt={session.user.name ?? "User avatar"}
+              />
+              <AvatarFallback>
+                {session.user.name
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase() ?? "U"}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-56" align="end">
+          <div className="space-y-4">
+            <div className="border-b border-gray-200 pb-3">
+              <p className="text-sm font-medium">{session.user.name}</p>
+              <p className="text-xs text-gray-500">{session.user.email}</p>
+            </div>
+            <div className="space-y-1">
+              {userMenuItems.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="flex items-center space-x-2 rounded-md p-2 text-sm hover:bg-gray-100"
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </div>
+            <div className="border-t border-gray-200 pt-3">
+              <Button
+                variant="ghost"
+                className="w-full justify-start space-x-2 px-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700"
+                onClick={() => signOut()}
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Log out</span>
+              </Button>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white">
@@ -140,15 +253,7 @@ export function Navbar() {
             </Link>
 
             {/* Account */}
-            <Link href="/auth">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hidden hover:bg-gray-100 sm:flex"
-              >
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
+            <UserAccountNav />
 
             {/* Mobile menu button */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
