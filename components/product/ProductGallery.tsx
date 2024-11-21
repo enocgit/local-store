@@ -22,15 +22,15 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
   const displayImages = images.slice(0, 5);
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 max-[500px]:flex-col">
       {/* Thumbnails */}
-      <div className="flex flex-col gap-4">
+      <div className="hide-scrollbar flex flex-col gap-4 max-[500px]:flex-row max-[500px]:overflow-x-auto">
         {displayImages.map((image, index) => (
           <button
             key={index}
             onClick={() => setSelectedImage(index)}
             className={cn(
-              "relative h-20 w-20 overflow-hidden rounded-lg border-2 transition-all",
+              "relative h-20 w-20 overflow-hidden rounded-lg border-2 transition-all max-[500px]:flex-shrink-0",
               selectedImage === index
                 ? "border-primary ring-2 ring-primary/20"
                 : "border-transparent hover:border-gray-200",

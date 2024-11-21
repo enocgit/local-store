@@ -28,6 +28,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSession, signOut } from "next-auth/react";
 import { CartIcon } from "./ui/cart-icon";
 import Loader from "./ui/loader";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -137,14 +138,15 @@ export function Navbar() {
             </div>
             <div className="space-y-1">
               {userMenuItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="flex items-center space-x-2 rounded-md p-2 text-sm hover:bg-gray-100"
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.label}</span>
-                </Link>
+                <PopoverClose asChild key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="flex items-center space-x-2 rounded-md p-2 text-sm hover:bg-gray-100"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                </PopoverClose>
               ))}
             </div>
             <div className="border-t border-gray-200 pt-3">
@@ -302,15 +304,17 @@ export function Navbar() {
                         Cart
                       </Link>
                     </div>
-                    <div className="py-6">
-                      <Link
-                        href="/auth"
-                        className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Log in
-                      </Link>
-                    </div>
+                    {!session?.user ? (
+                      <div className="py-6">
+                        <Link
+                          href="/auth"
+                          className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          Log in
+                        </Link>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </SheetContent>
