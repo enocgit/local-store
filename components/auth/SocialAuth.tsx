@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getCallbackUrl } from "@/lib/auth/utils";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import Loader from "../ui/loader";
 
 interface SocialAuthProps {
   isLoading?: boolean;
@@ -43,7 +44,7 @@ export function SocialAuth({ isLoading, userRole }: SocialAuthProps) {
           disabled={isLoading || loadingProvider === "google"}
         >
           {loadingProvider === "google" ? (
-            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-black" />
+            <Loader className="mr-2 border-t-black" />
           ) : (
             <Image
               src="https://www.google.com/favicon.ico"
@@ -61,7 +62,7 @@ export function SocialAuth({ isLoading, userRole }: SocialAuthProps) {
           disabled={isLoading || loadingProvider === "facebook"}
         >
           {loadingProvider === "facebook" ? (
-            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-black" />
+            <Loader className="mr-2 border-t-black" />
           ) : (
             <Image
               src="https://www.facebook.com/favicon.ico"

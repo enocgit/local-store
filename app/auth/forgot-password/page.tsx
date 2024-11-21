@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Loader from "@/components/ui/loader";
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +60,7 @@ export default function ForgotPasswordPage() {
                 <Button className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <div className="flex items-center gap-2">
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <Loader className="border-white border-t-transparent" />
                       Sending...
                     </div>
                   ) : (

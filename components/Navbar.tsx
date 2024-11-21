@@ -27,6 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession, signOut } from "next-auth/react";
 import { CartIcon } from "./ui/cart-icon";
+import Loader from "./ui/loader";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -76,11 +77,6 @@ export function Navbar() {
       label: "My Orders",
       icon: Package,
       href: "/account/orders",
-    },
-    {
-      label: "Wishlist",
-      icon: Heart,
-      href: "/account/wishlist",
     },
     {
       label: "Billing",
@@ -158,7 +154,7 @@ export function Navbar() {
                 onClick={handleSignOut}
               >
                 {loggingOut ? (
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-red-700" />
+                  <Loader className="mr-2 border-t-red-700" />
                 ) : (
                   <LogOut className="h-4 w-4" />
                 )}
