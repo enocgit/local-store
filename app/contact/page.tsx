@@ -189,7 +189,7 @@ export default function ContactPage() {
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="your.email@example.com"
+                          placeholder="example@email.com"
                           {...field}
                         />
                       </FormControl>

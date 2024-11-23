@@ -10,7 +10,7 @@ const footerLinks = {
   connect: [
     { name: "Contact Us", href: "/contact" },
     { name: "Store Locator", href: "#" },
-    { name: "Feedback", href: "#" },
+    { name: "Feedback", href: "/feedback" },
   ],
 };
 
