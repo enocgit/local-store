@@ -213,26 +213,28 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                <div className="mb-4">
-                  <RadioGroup
-                    value={useNewAddress.toString()}
-                    onValueChange={(value) =>
-                      setUseNewAddress(value === "true")
-                    }
-                  >
-                    <RadioGroupItem value="true">
-                      Enter new address
-                    </RadioGroupItem>
-                    {savedAddresses?.map((address) => (
-                      <RadioGroupItem
-                        key={address.id}
-                        value={address.id.toString()}
-                      >
-                        {address.address1}, {address.city}, {address.postcode}
+                {savedAddresses.length > 0 && (
+                  <div className="mb-4">
+                    <RadioGroup
+                      value={useNewAddress.toString()}
+                      onValueChange={(value) =>
+                        setUseNewAddress(value === "true")
+                      }
+                    >
+                      <RadioGroupItem value="true">
+                        Enter new address
                       </RadioGroupItem>
-                    ))}
-                  </RadioGroup>
-                </div>
+                      {savedAddresses?.map((address) => (
+                        <RadioGroupItem
+                          key={address.id}
+                          value={address.id.toString()}
+                        >
+                          {address.address1}, {address.city}, {address.postcode}
+                        </RadioGroupItem>
+                      ))}
+                    </RadioGroup>
+                  </div>
+                )}
 
                 {useNewAddress && (
                   <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm">

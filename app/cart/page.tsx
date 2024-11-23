@@ -233,7 +233,10 @@ export default function CartPage() {
                       date &&
                       dispatch({ type: "SET_DELIVERY_DATE", payload: date })
                     }
-                    disabled={(date) => !isDeliveryDay(date)}
+                    disabled={(date) =>
+                      !isDeliveryDay(date) ||
+                      date < new Date(new Date().setHours(0, 0, 0, 0))
+                    }
                     modifiers={{
                       thursday: (date) => isDeliveryDay(date),
                     }}
@@ -302,7 +305,7 @@ export default function CartPage() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex flex-col items-start gap-2">
                 <Button
                   className="w-full"
                   disabled={!canCheckout}
@@ -317,6 +320,12 @@ export default function CartPage() {
                     <>Sign in to Checkout</>
                   )}
                 </Button>
+                <ul className="list-inside list-disc text-sm text-red-500">
+                  {!state.postcode && <li>Please enter your postcode</li>}
+                  {!state.deliveryDate && (
+                    <li>Please select a delivery date</li>
+                  )}
+                </ul>
               </CardFooter>
             </Card>
           </div>

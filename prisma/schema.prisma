@@ -192,6 +192,17 @@ model WishlistItem {
   @@unique([userId, productId])
 }
 
+model Contact {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  message   String
+  subject   String?
+  createdAt DateTime @default(now())
+
+  @@map("contacts")
+}
+
 enum OrderStatus {
   PENDING
   PAID

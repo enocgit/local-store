@@ -6,14 +6,9 @@ const footerLinks = {
     { name: "About Us", href: "/about" },
     { name: "Our Blog", href: "#" },
   ],
-  support: [
-    { name: "Help Center", href: "#" },
-    { name: "Returns & Exchanges", href: "#" },
-    { name: "Shipping Info", href: "#" },
-    { name: "Track Order", href: "#" },
-  ],
+  support: [{ name: "Track Order", href: "#" }],
   connect: [
-    { name: "Contact Us", href: "#" },
+    { name: "Contact Us", href: "/contact" },
     { name: "Store Locator", href: "#" },
     { name: "Feedback", href: "#" },
   ],
