@@ -48,7 +48,7 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
 
       {/* Main Image */}
       <div className="relative flex-1">
-        <div className="relative h-[500px] overflow-hidden rounded-lg">
+        <div className="relative overflow-hidden rounded-lg max-[500px]:aspect-video min-[500px]:h-[500px]">
           <Image
             src={displayImages[selectedImage]?.publicUrl || ""}
             alt={displayImages[selectedImage]?.alt || "Product image"}

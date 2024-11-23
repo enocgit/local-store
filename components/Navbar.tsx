@@ -2,18 +2,16 @@
 
 import { useState } from "react";
 import {
-  Search,
   User,
   Menu,
   Heart,
   CakeIcon,
   LogOut,
-  Settings,
   CreditCard,
   Package,
+  ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Popover,
@@ -26,9 +24,9 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession, signOut } from "next-auth/react";
-import { CartIcon } from "./ui/cart-icon";
 import Loader from "./ui/loader";
 import { PopoverClose } from "@radix-ui/react-popover";
+import { SearchButton } from "./ui/search-button";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -207,31 +205,11 @@ export function Navbar() {
           {/* Search, Cart, Account */}
           <div className="flex items-center space-x-4">
             {/* Search */}
-            <Sheet open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:bg-gray-100"
-                >
-                  <Search className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="top" className="w-full">
-                <div className="mx-auto mt-8 max-w-2xl">
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      type="search"
-                      placeholder="Search products..."
-                      className="flex-1"
-                    />
-                    <Button onClick={() => setIsSearchOpen(false)}>
-                      Search
-                    </Button>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+            <SearchButton
+              isSearchOpen={isSearchOpen}
+              setIsSearchOpen={setIsSearchOpen}
+              className="max-[420px]:hidden"
+            />
 
             {/* Wishlist */}
             <Link href="/wishlist" className="max-sm:hidden">
@@ -241,10 +219,18 @@ export function Navbar() {
             </Link>
 
             {/* Cart */}
-            <CartIcon
-              count={state.items.length}
-              className="max-[420px]:hidden"
-            />
+            <Link href="/cart">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hover:bg-gray-100"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
+                  {state.items.length}
+                </span>
+              </Button>
+            </Link>
 
             {/* Account */}
             <UserAccountNav />
@@ -295,14 +281,17 @@ export function Navbar() {
                         <Heart className="h-5 w-5" />
                         Wishlist
                       </Link>
-                      <Link
-                        href="/cart"
+                      <div
                         className="-mx-3 flex items-center gap-2 rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 min-[420px]:hidden"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <CartIcon count={state.items.length} isLink={false} />
-                        Cart
-                      </Link>
+                        <SearchButton
+                          isSearchOpen={isSearchOpen}
+                          setIsSearchOpen={setIsSearchOpen}
+                          className="w-5"
+                        />
+                        Search
+                      </div>
                     </div>
                     {!session?.user ? (
                       <div className="py-6">

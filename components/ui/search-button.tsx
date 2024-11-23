@@ -1,0 +1,45 @@
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Search } from "lucide-react";
+import { Button } from "./button";
+import { Input } from "./input";
+import { cn } from "@/lib/utils";
+
+type Props = {
+  isSearchOpen: boolean;
+  setIsSearchOpen: (open: boolean) => void;
+  className?: string;
+  onClick?: () => void;
+};
+
+export function SearchButton({
+  isSearchOpen,
+  setIsSearchOpen,
+  className,
+  onClick,
+}: Props) {
+  return (
+    <Sheet open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("hover:bg-gray-100", className)}
+        >
+          <Search className="h-5 w-5" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="top" className="w-full">
+        <div className="mx-auto mt-8 max-w-2xl">
+          <div className="flex items-center space-x-2">
+            <Input
+              type="search"
+              placeholder="Search products..."
+              className="flex-1"
+            />
+            <Button onClick={() => setIsSearchOpen(false)}>Search</Button>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}

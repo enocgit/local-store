@@ -1,27 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-// This would typically come from your cart context/store
-const mockOrderDetails = {
-  items: [
-    {
-      id: 1,
-      name: "Premium Frozen Pizza Pack",
-      quantity: 2,
-      price: 12.99,
-    },
-    {
-      id: 2,
-      name: "Organic Mixed Berries",
-      quantity: 1,
-      price: 8.99,
-    },
-  ],
-  subtotal: 34.97,
-  deliveryFee: 4.99,
-  total: 39.96,
-};
+import { useCart } from "@/lib/store/cart-context";
 
 export function OrderSummary() {
+  const { state } = useCart();
   return (
     <Card>
       <CardHeader>
@@ -30,7 +11,7 @@ export function OrderSummary() {
       <CardContent className="space-y-4">
         {/* Order Items */}
         <div className="space-y-2">
-          {mockOrderDetails.items.map((item) => (
+          {state.items.map((item) => (
             <div key={item.id} className="flex justify-between text-sm">
               <span>
                 {item.quantity}x {item.name}
@@ -44,23 +25,31 @@ export function OrderSummary() {
         <div className="space-y-2 border-t pt-4">
           <div className="flex justify-between">
             <span>Subtotal</span>
-            <span>£{mockOrderDetails.subtotal.toFixed(2)}</span>
+            <span>£{state.subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between">
             <span>Delivery</span>
-            <span>£{mockOrderDetails.deliveryFee.toFixed(2)}</span>
+            <span>£{state.deliveryFee.toFixed(2)}</span>
           </div>
           <div className="flex justify-between border-t pt-2 text-lg font-bold">
             <span>Total</span>
-            <span>£{mockOrderDetails.total.toFixed(2)}</span>
+            <span>£{state.total.toFixed(2)}</span>
           </div>
         </div>
 
         {/* Delivery Information */}
         <div className="space-y-2 rounded-lg bg-gray-50 p-4 text-sm">
           <h3 className="font-semibold">Delivery Information</h3>
-          <p>Delivery on Friday, 15 March 2024</p>
-          <p>Time slot: 14:00 - 16:00</p>
+          <p>
+            Delivery on{" "}
+            {state.deliveryDate?.toLocaleDateString("en-GB", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </p>
+          <p>Time slot: {state.deliveryTime}</p>
         </div>
 
         {/* Secure Payment Notice */}

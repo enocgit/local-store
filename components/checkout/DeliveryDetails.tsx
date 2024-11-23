@@ -1,6 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCart } from "@/lib/store/cart-context";
 
 export function DeliveryDetails() {
+  const { state } = useCart();
+
   return (
     <Card>
       <CardHeader>
@@ -10,8 +13,15 @@ export function DeliveryDetails() {
         <div className="space-y-4">
           <div className="rounded-lg bg-gray-50 p-4">
             <h3 className="mb-2 font-semibold">Selected Delivery Slot</h3>
-            <p>Friday, 15 March 2024</p>
-            <p>14:00 - 16:00</p>
+            <p>
+              {state.deliveryDate?.toLocaleDateString("en-GB", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
+            <p>{state.deliveryTime}</p>
           </div>
 
           <div className="text-sm text-gray-600">

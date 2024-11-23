@@ -25,10 +25,24 @@ import { Minus, Plus, Trash2, Truck } from "lucide-react";
 import { useCart } from "@/lib/store/cart-context";
 import { DELIVERY_TIME_SLOTS } from "@/lib/constants";
 import { formatPrice, isDeliveryDay } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { LoginDialog } from "@/components/auth/LoginDialog";
 
 export default function CartPage() {
   const { state, dispatch } = useCart();
-  const [postcode, setPostcode] = useState("");
+  const { data: session } = useSession();
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const router = useRouter();
+
+  const handleCheckoutClick = () => {
+    if (!session) {
+      setShowLoginDialog(true);
+    } else {
+      if (!canCheckout) return;
+      router.push("/checkout");
+    }
+  };
 
   const isValidPostcode = (postcode: string) => {
     const postcodeRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
@@ -41,25 +55,26 @@ export default function CartPage() {
 
     const newQuantity = Math.max(0, item.quantity + change);
     if (newQuantity === 0) {
-      dispatch({ type: "REMOVE_ITEM", payload: id });
+      dispatch({
+        type: "REMOVE_ITEM",
+        payload: { id, weight: item.weight! },
+      });
     } else {
       dispatch({
         type: "UPDATE_QUANTITY",
-        payload: { id, quantity: newQuantity },
+        payload: { id, quantity: newQuantity, weight: item.weight! },
       });
     }
   };
 
-  const removeItem = (id: string) => {
-    dispatch({ type: "REMOVE_ITEM", payload: id });
-  };
+  const deliveryFee = state.subtotal > 50 ? 0 : 4.99;
+  const total = state.subtotal + deliveryFee;
 
-  const subtotal = state.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-  const deliveryFee = subtotal > 50 ? 0 : 4.99;
-  const total = subtotal + deliveryFee;
+  const canCheckout =
+    state.deliveryDate &&
+    state.deliveryTime &&
+    isValidPostcode(state.postcode) &&
+    state.items.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -80,7 +95,7 @@ export default function CartPage() {
               </Card>
             ) : (
               state.items.map((item) => (
-                <Card key={item.id}>
+                <Card key={`${item.id}-${item.weight}`}>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-4">
                       <div className="relative h-24 w-24 overflow-hidden rounded-md">
@@ -98,9 +113,43 @@ export default function CartPage() {
                           {item.weight ? ` per kg` : ""}
                         </p>
                         {item.weight && (
-                          <p className="mb-2 text-sm text-gray-600">
-                            Weight: {item.weight}kg
-                          </p>
+                          <div className="mb-2 space-y-2">
+                            <Select
+                              value={item.weight?.toString()}
+                              onValueChange={(value) => {
+                                const newWeight = parseFloat(value);
+                                if (newWeight !== item.weight) {
+                                  dispatch({
+                                    type: "CHANGE_WEIGHT",
+                                    payload: {
+                                      id: item.id,
+                                      oldWeight: item.weight!,
+                                      newWeight: newWeight,
+                                      price: item.price,
+                                    },
+                                  });
+                                }
+                              }}
+                            >
+                              <SelectTrigger className="w-[140px]">
+                                <SelectValue placeholder="Select weight" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="1">
+                                  1 kg - {formatPrice(item.price)}
+                                </SelectItem>
+                                {item.weightOptions?.map((weight: number) => (
+                                  <SelectItem
+                                    key={weight}
+                                    value={weight.toString()}
+                                  >
+                                    {weight} kg -{" "}
+                                    {formatPrice(item.price * weight)}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
                         )}
                         <div className="flex items-center space-x-2">
                           <Button
@@ -122,9 +171,13 @@ export default function CartPage() {
                           </Button>
                           <Button
                             variant="ghost"
-                            size="icon"
-                            className="ml-4"
-                            onClick={() => removeItem(item.id)}
+                            size="sm"
+                            onClick={() =>
+                              dispatch({
+                                type: "REMOVE_ITEM",
+                                payload: { id: item.id, weight: item.weight! },
+                              })
+                            }
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -132,7 +185,9 @@ export default function CartPage() {
                       </div>
                       <div className="text-right">
                         <p className="font-semibold">
-                          {formatPrice(item.price * item.quantity)}
+                          {formatPrice(
+                            item.price * (item.weight || 1) * item.quantity,
+                          )}
                         </p>
                       </div>
                     </div>
@@ -153,11 +208,16 @@ export default function CartPage() {
                   <label className="text-sm font-medium">Postcode</label>
                   <Input
                     placeholder="Enter your postcode"
-                    value={postcode}
-                    onChange={(e) => setPostcode(e.target.value)}
+                    value={state.postcode}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "SET_POSTCODE",
+                        payload: e.target.value,
+                      })
+                    }
                     className="uppercase"
                   />
-                  {postcode && !isValidPostcode(postcode) && (
+                  {state.postcode && !isValidPostcode(state.postcode) && (
                     <p className="text-sm text-red-500">
                       Please enter a valid UK postcode
                     </p>
@@ -218,7 +278,7 @@ export default function CartPage() {
               <CardContent className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>{formatPrice(subtotal)}</span>
+                  <span>{formatPrice(state.subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery</span>
@@ -243,25 +303,30 @@ export default function CartPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Link href="/checkout" className="w-full">
-                  <Button
-                    className="w-full"
-                    disabled={
-                      !state.deliveryDate ||
-                      !state.deliveryTime ||
-                      !isValidPostcode(postcode) ||
-                      state.items.length === 0
-                    }
-                  >
-                    <Truck className="mr-2 h-4 w-4" />
-                    Proceed to Checkout
-                  </Button>
-                </Link>
+                <Button
+                  className="w-full"
+                  disabled={!canCheckout}
+                  onClick={handleCheckoutClick}
+                >
+                  {session ? (
+                    <>
+                      <Truck className="mr-2 h-4 w-4" />
+                      Proceed to Checkout
+                    </>
+                  ) : (
+                    <>Sign in to Checkout</>
+                  )}
+                </Button>
               </CardFooter>
             </Card>
           </div>
         </div>
       </div>
+      <LoginDialog
+        open={showLoginDialog}
+        onOpenChange={setShowLoginDialog}
+        session={session}
+      />
     </div>
   );
 }

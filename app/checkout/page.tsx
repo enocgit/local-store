@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -18,6 +17,11 @@ import {
 } from "@/components/ui/form";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
 import { DeliveryDetails } from "@/components/checkout/DeliveryDetails";
+import { useCart } from "@/lib/store/cart-context";
+import { useSession } from "next-auth/react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Address } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
@@ -37,16 +41,20 @@ const formSchema = z.object({
 });
 
 export default function CheckoutPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { state } = useCart();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
+  const [useNewAddress, setUseNewAddress] = useState(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
+      firstName: session?.user?.firstName || "",
+      lastName: session?.user?.lastName || "",
+      email: session?.user?.email || "",
+      phone: session?.user?.phone || "",
       address1: "",
       address2: "",
       city: "",
@@ -54,19 +62,66 @@ export default function CheckoutPage() {
     },
   });
 
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      const response = await fetch("/api/addresses");
+      const data = await response.json();
+      setSavedAddresses(data.addresses);
+    };
+
+    fetchAddresses();
+  }, []);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth?callbackUrl=/checkout");
+    }
+  }, [status, router]);
+
+  // Show loading state while checking authentication
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  // Only render checkout content if authenticated
+  if (!session) {
+    return null;
+  }
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
 
-      // 1. Create order in your backend
+      // First, create or update the address
+      const addressResponse = await fetch("/api/addresses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          address1: values.address1,
+          address2: values.address2,
+          city: values.city,
+          postcode: values.postcode,
+        }),
+      });
+
+      const { addressId } = await addressResponse.json();
+
+      // Then create the order with the new address ID
       const orderResponse = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...values,
-          items: [], // Add cart items here
-          deliveryDate: "", // Add selected delivery date
-          deliveryTime: "", // Add selected time slot
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          phone: values.phone,
+          items: state.items,
+          subtotal: state.subtotal,
+          deliveryFee: state.deliveryFee,
+          total: state.total,
+          deliveryDate: state.deliveryDate,
+          deliveryTime: state.deliveryTime,
+          addressId: addressId,
         }),
       });
 
@@ -158,43 +213,38 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm">
-                  <h2 className="mb-4 text-xl font-semibold">
-                    Delivery Address
-                  </h2>
-                  <FormField
-                    control={form.control}
-                    name="address1"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Address Line 1</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="address2"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Address Line 2 (Optional)</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="mb-4">
+                  <RadioGroup
+                    value={useNewAddress.toString()}
+                    onValueChange={(value) =>
+                      setUseNewAddress(value === "true")
+                    }
+                  >
+                    <RadioGroupItem value="true">
+                      Enter new address
+                    </RadioGroupItem>
+                    {savedAddresses?.map((address) => (
+                      <RadioGroupItem
+                        key={address.id}
+                        value={address.id.toString()}
+                      >
+                        {address.address1}, {address.city}, {address.postcode}
+                      </RadioGroupItem>
+                    ))}
+                  </RadioGroup>
+                </div>
+
+                {useNewAddress && (
+                  <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm">
+                    <h2 className="mb-4 text-xl font-semibold">
+                      Delivery Address
+                    </h2>
                     <FormField
                       control={form.control}
-                      name="city"
+                      name="address1"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>City</FormLabel>
+                          <FormLabel>Address Line 1</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -204,19 +254,47 @@ export default function CheckoutPage() {
                     />
                     <FormField
                       control={form.control}
-                      name="postcode"
+                      name="address2"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Postcode</FormLabel>
+                          <FormLabel>Address Line 2 (Optional)</FormLabel>
                           <FormControl>
-                            <Input {...field} className="uppercase" />
+                            <Input {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="city"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>City</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="postcode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Postcode</FormLabel>
+                            <FormControl>
+                              <Input {...field} className="uppercase" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <DeliveryDetails />
 

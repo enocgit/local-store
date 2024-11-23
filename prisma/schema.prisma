@@ -175,6 +175,7 @@ model OrderItem {
   productId String  @db.ObjectId
   quantity  Int
   price     Float
+  weight    Float?
 
   @@map("order_items")
 }

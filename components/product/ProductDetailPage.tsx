@@ -62,8 +62,9 @@ function ProductDetailPage({ product, session }: Props) {
         name: product.name,
         price: currentPrice,
         image: product.images[0].publicUrl,
-        quantity: 1,
         weight: selectedWeight,
+        weightOptions: product.weightOptions,
+        quantity: 1,
       },
     });
 
@@ -94,15 +95,16 @@ function ProductDetailPage({ product, session }: Props) {
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="space-y-2">
               <span className="text-3xl font-bold">
-                {formatPrice(product.price)}
-                {product.weightOptions ? "/kg" : ""}
+                {formatPrice(currentPrice)}
+                {product.weightOptions.length ? " per kg" : ""}
               </span>
-              <span className="text-xl text-gray-500 line-through">
-                {product.comparePrice && formatPrice(product.comparePrice)}
-                {product.weightOptions ? "/kg" : ""}
-              </span>
+              {selectedWeight && (
+                <div className="text-xl text-gray-600">
+                  Total: {formatPrice(currentPrice * selectedWeight)}
+                </div>
+              )}
             </div>
 
             {product.weightOptions?.length > 0 && (
@@ -121,9 +123,12 @@ function ProductDetailPage({ product, session }: Props) {
                     <SelectValue placeholder="Choose weight" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="1">
+                      1 kg - {formatPrice(currentPrice)}
+                    </SelectItem>
                     {product.weightOptions.map((weight: number) => (
                       <SelectItem key={weight} value={weight.toString()}>
-                        {weight} kg - £{(product.price * weight).toFixed(2)}
+                        {weight} kg - {formatPrice(currentPrice * weight)}
                       </SelectItem>
                     ))}
                   </SelectContent>
