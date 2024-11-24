@@ -330,6 +330,9 @@ export default function CartPage() {
                   {!state.deliveryTime && (
                     <li>Please select a delivery time</li>
                   )}
+                  {state.items.length === 0 && (
+                    <li>Your cart is empty</li>
+                  )}
                 </ul>
               </CardFooter>
             </Card>
