@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,7 +11,31 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function SuccessPage() {
+// Make this page server-side rendered
+export default async function SuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id: string }>;
+}) {
+  const { session_id } = await searchParams;
+  if (!session_id) {
+    redirect("/");
+  }
+
+  // Fetch order details using the Stripe session ID
+  const order = await prisma.order.findFirst({
+    where: {
+      stripeSessionId: session_id,
+    },
+    include: {
+      address: true,
+    },
+  });
+
+  if (!order) {
+    redirect("/");
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
@@ -25,8 +51,22 @@ export default function SuccessPage() {
         <CardContent className="space-y-6">
           <div className="space-y-2 rounded-lg bg-gray-50 p-4">
             <h3 className="font-semibold">Delivery Information</h3>
-            <p>Delivery on Friday, 15 March 2024</p>
-            <p>Time slot: 14:00 - 16:00</p>
+            <p>
+              Delivery on{" "}
+              {new Date(order.deliveryDate).toLocaleDateString("en-GB", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
+            <p>Time slot: {order.deliveryTime}</p>
+            <div className="mt-2 text-sm text-gray-600">
+              <p>{order.address.address1}</p>
+              {order.address.address2 && <p>{order.address.address2}</p>}
+              <p>{order.address.city}</p>
+              <p>{order.address.postcode}</p>
+            </div>
           </div>
 
           <div className="text-sm text-gray-600">
@@ -39,10 +79,10 @@ export default function SuccessPage() {
           </div>
 
           <div className="flex flex-col space-y-2">
-            <Link href="/">
+            <Link href="/products">
               <Button className="w-full">Continue Shopping</Button>
             </Link>
-            <Link href="/account/orders">
+            <Link href="/orders">
               <Button variant="outline" className="w-full">
                 View Order History
               </Button>

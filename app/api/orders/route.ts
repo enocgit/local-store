@@ -3,11 +3,15 @@ import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { OrderItem } from "@prisma/client";
+import { format } from "date-fns";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-10-28.acacia",
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");
+}
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2024-10-28.acacia", // Use the latest stable API version
 });
-
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -41,7 +45,7 @@ export async function POST(request: Request) {
             productId: item.id,
             quantity: item.quantity,
             price: item.price * (item.weight || 1),
-            weight: item.weight || 1,
+            weight: item.weight || null,
           })),
         },
       },
@@ -56,7 +60,8 @@ export async function POST(request: Request) {
             currency: "gbp",
             product_data: {
               name: "Your Order",
-              description: "Delivery on " + deliveryDate,
+              description:
+                "Delivery on " + format(new Date(deliveryDate), "yyyy/MM/dd"),
             },
             unit_amount: Math.round(total * 100), // Convert to pence
           },

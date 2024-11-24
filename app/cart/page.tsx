@@ -235,7 +235,7 @@ export default function CartPage() {
                     }
                     disabled={(date) =>
                       !isDeliveryDay(date) ||
-                      date < new Date(new Date().setHours(0, 0, 0, 0))
+                      date <= new Date(new Date().setHours(0, 0, 0, 0))
                     }
                     modifiers={{
                       thursday: (date) => isDeliveryDay(date),

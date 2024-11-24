@@ -46,7 +46,7 @@ export default function CheckoutPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
-  const [useNewAddress, setUseNewAddress] = useState(true);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("new");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,6 +77,21 @@ export default function CheckoutPage() {
       router.push("/auth?callbackUrl=/checkout");
     }
   }, [status, router]);
+
+  // Update form when selecting a saved address
+  useEffect(() => {
+    if (selectedAddressId !== "new" && savedAddresses.length > 0) {
+      const selectedAddress = savedAddresses.find(
+        (addr) => addr.id === selectedAddressId,
+      );
+      if (selectedAddress) {
+        form.setValue("address1", selectedAddress.address1);
+        form.setValue("address2", selectedAddress.address2 || "");
+        form.setValue("city", selectedAddress.city);
+        form.setValue("postcode", selectedAddress.postcode);
+      }
+    }
+  }, [selectedAddressId, savedAddresses, form]);
 
   // Show loading state while checking authentication
   if (status === "loading") {
@@ -214,33 +229,43 @@ export default function CheckoutPage() {
                 </div>
 
                 {savedAddresses.length > 0 && (
-                  <div className="mb-4">
+                  <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm">
+                    <h2 className="text-xl font-semibold">Delivery Address</h2>
                     <RadioGroup
-                      value={useNewAddress.toString()}
-                      onValueChange={(value) =>
-                        setUseNewAddress(value === "true")
-                      }
+                      value={selectedAddressId}
+                      onValueChange={setSelectedAddressId}
+                      className="space-y-2"
                     >
-                      <RadioGroupItem value="true">
-                        Enter new address
-                      </RadioGroupItem>
-                      {savedAddresses?.map((address) => (
-                        <RadioGroupItem
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="new" id="new-address" />
+                        <label htmlFor="new-address" className="cursor-pointer">
+                          Enter new address
+                        </label>
+                      </div>
+
+                      {savedAddresses.map((address) => (
+                        <div
                           key={address.id}
-                          value={address.id.toString()}
+                          className="flex items-center space-x-2"
                         >
-                          {address.address1}, {address.city}, {address.postcode}
-                        </RadioGroupItem>
+                          <RadioGroupItem value={address.id} id={address.id} />
+                          <label
+                            htmlFor={address.id}
+                            className="cursor-pointer"
+                          >
+                            {address.address1}
+                            {address.address2 && `, ${address.address2}`}
+                            {`, ${address.city}, ${address.postcode}`}
+                          </label>
+                        </div>
                       ))}
                     </RadioGroup>
                   </div>
                 )}
 
-                {useNewAddress && (
+                {selectedAddressId === "new" && (
                   <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm">
-                    <h2 className="mb-4 text-xl font-semibold">
-                      Delivery Address
-                    </h2>
+                    <h2 className="text-xl font-semibold">New Address</h2>
                     <FormField
                       control={form.control}
                       name="address1"
