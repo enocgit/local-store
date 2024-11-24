@@ -9,10 +9,21 @@ import { ProductCardProps } from "@/interfaces";
 import { useCart } from "@/lib/store/cart-context";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 export function ProductCard({ product }: ProductCardProps) {
   const { state, dispatch } = useCart();
   const { toast } = useToast();
+  const [showWeightDialog, setShowWeightDialog] = useState(false);
+  const [selectedWeight, setSelectedWeight] = useState<number>();
 
   const currentPrice = calculatePriceForDate(
     product?.price,
@@ -20,6 +31,11 @@ export function ProductCard({ product }: ProductCardProps) {
   );
 
   const handleAddToCart = () => {
+    if (product?.weightOptions?.length && !selectedWeight) {
+      setShowWeightDialog(true);
+      return;
+    }
+
     dispatch({
       type: "ADD_ITEM",
       payload: {
@@ -28,7 +44,8 @@ export function ProductCard({ product }: ProductCardProps) {
         price: currentPrice,
         image: product?.images[0].publicUrl,
         quantity: 1,
-        // weight: selectedWeight,
+        weight: selectedWeight,
+        weightOptions: product?.weightOptions,
       },
     });
 
@@ -36,6 +53,9 @@ export function ProductCard({ product }: ProductCardProps) {
       title: "Added to cart",
       description: "Your item has been added to the cart",
     });
+
+    setShowWeightDialog(false);
+    setSelectedWeight(undefined);
   };
 
   return (
@@ -64,6 +84,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
         <div className="mt-2 flex items-center justify-between">
+
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold">
               {formatPrice(product?.price)}
@@ -79,6 +100,40 @@ export function ProductCard({ product }: ProductCardProps) {
           </Button>
         </div>
       </CardContent>
+
+      <Dialog open={showWeightDialog} onOpenChange={setShowWeightDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Select Weight</DialogTitle>
+            <DialogDescription>
+              Please select the weight for {product?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Select
+              value={selectedWeight?.toString()}
+              onValueChange={(value) => setSelectedWeight(parseFloat(value))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Choose weight" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">
+                  1 kg - {formatPrice(currentPrice)}
+                </SelectItem>
+                {product?.weightOptions?.map((weight: number) => (
+                  <SelectItem key={weight} value={weight.toString()}>
+                    {weight} kg - {formatPrice(currentPrice * weight)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button className="w-full" onClick={handleAddToCart}>
+              Add to Cart
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
-  );
+  )
 }

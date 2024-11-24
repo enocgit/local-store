@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,20 +48,23 @@ export default function CartPage() {
     return postcodeRegex.test(postcode);
   };
 
-  const updateQuantity = (id: string, change: number) => {
-    const item = state.items.find((item) => item.id === id);
+  const updateQuantity = (id: string, change: number, weight?: number) => {
+    const item = state.items.find((item) => 
+      (item.weight ? `${item.id}-${item.weight}` : item.id) === 
+      (weight ? `${id}-${weight}` : id)
+    );
     if (!item) return;
-
+  
     const newQuantity = Math.max(0, item.quantity + change);
     if (newQuantity === 0) {
       dispatch({
         type: "REMOVE_ITEM",
-        payload: { id, weight: item.weight! },
+        payload: { id, weight: weight as number },
       });
     } else {
       dispatch({
         type: "UPDATE_QUANTITY",
-        payload: { id, quantity: newQuantity, weight: item.weight! },
+        payload: { id, quantity: newQuantity, weight: weight as number },
       });
     }
   };
@@ -155,7 +157,7 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => updateQuantity(item.id, -1)}
+                            onClick={() => updateQuantity(item.id, -1, item.weight)}
                           >
                             <Minus className="h-4 w-4" />
                           </Button>
@@ -165,7 +167,7 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => updateQuantity(item.id, 1)}
+                            onClick={() => updateQuantity(item.id, 1, item.weight)}
                           >
                             <Plus className="h-4 w-4" />
                           </Button>
@@ -324,6 +326,9 @@ export default function CartPage() {
                   {!state.postcode && <li>Please enter your postcode</li>}
                   {!state.deliveryDate && (
                     <li>Please select a delivery date</li>
+                  )}
+                  {!state.deliveryTime && (
+                    <li>Please select a delivery time</li>
                   )}
                 </ul>
               </CardFooter>

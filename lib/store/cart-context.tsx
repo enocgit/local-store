@@ -16,6 +16,7 @@ interface CartItem {
   quantity: number;
   weight?: number;
   weightOptions?: number[];
+  cartId?: string;
 }
 
 interface CartState {
@@ -69,51 +70,67 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
   switch (action.type) {
     case "ADD_ITEM": {
+      const cartId = action.payload.weight 
+        ? `${action.payload.id}-${action.payload.weight}`
+        : action.payload.id;
+        
       const existingItemIndex = state.items.findIndex(
-        (item) =>
-          item.id === action.payload.id &&
-          item.weight === action.payload.weight,
+        (item) => (item.weight ? `${item.id}-${item.weight}` : item.id) === cartId
       );
 
       if (existingItemIndex > -1) {
         const newItems = [...state.items];
-        newItems[existingItemIndex].quantity += action.payload.quantity || 1;
+        newItems[existingItemIndex] = {
+          ...newItems[existingItemIndex],
+          quantity: newItems[existingItemIndex].quantity + (action.payload.quantity || 1)
+        };
         newState = { ...state, items: newItems };
       } else {
         newState = {
           ...state,
           items: [
             ...state.items,
-            { ...action.payload, quantity: action.payload.quantity || 1 },
+            { 
+              ...action.payload,
+              cartId,
+              quantity: action.payload.quantity || 1,
+              weight: action.payload.weight
+            },
           ],
         };
       }
       break;
     }
 
-    case "REMOVE_ITEM":
+    case "REMOVE_ITEM": {
+      const cartId = action.payload.weight 
+        ? `${action.payload.id}-${action.payload.weight}`
+        : action.payload.id;
+        
       newState = {
         ...state,
         items: state.items.filter(
-          (item) =>
-            !(
-              item.id === action.payload.id &&
-              item.weight === action.payload.weight
-            ),
+          (item) => (item.weight ? `${item.id}-${item.weight}` : item.id) !== cartId
         ),
       };
       break;
+    }
 
-    case "UPDATE_QUANTITY":
+    case "UPDATE_QUANTITY": {
+      const cartId = action.payload.weight 
+        ? `${action.payload.id}-${action.payload.weight}`
+        : action.payload.id;
+        
       newState = {
         ...state,
         items: state.items.map((item) =>
-          item.id === action.payload.id && item.weight === action.payload.weight
+          (item.weight ? `${item.id}-${item.weight}` : item.id) === cartId
             ? { ...item, quantity: action.payload.quantity }
-            : item,
+            : item
         ),
       };
       break;
+    }
 
     case "CHANGE_WEIGHT": {
       const { id, oldWeight, newWeight, price } = action.payload;
@@ -131,11 +148,14 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       if (changingItemIndex === -1) return state;
 
       const changingItem = state.items[changingItemIndex];
+      const newItems = [...state.items];
 
       if (existingItemIndex > -1) {
-        // If an item with the new weight exists, merge quantities
-        const newItems = [...state.items];
-        newItems[existingItemIndex].quantity += changingItem.quantity;
+        // If an item with the new weight exists, add the changing item's quantity
+        newItems[existingItemIndex] = {
+          ...newItems[existingItemIndex],
+          quantity: newItems[existingItemIndex].quantity + changingItem.quantity
+        };
         // Remove the old item
         newState = {
           ...state,

@@ -12,6 +12,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2024-10-28.acacia", // Use the latest stable API version
 });
+
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -51,6 +52,36 @@ export async function POST(request: Request) {
       },
     });
 
+    // Get address details
+    const address = await prisma.address.findUnique({
+      where: { id: addressId },
+    });
+
+    if (!address) {
+      return NextResponse.json(
+        { error: "Delivery address not found" },
+        { status: 400 }
+      );
+    }
+
+    // Get user details
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+      },
+    });
+
+    if (!user?.email) {
+      return NextResponse.json(
+        { error: "User email not found" },
+        { status: 400 }
+      );
+    }
+
     // Create Stripe checkout session
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -71,9 +102,22 @@ export async function POST(request: Request) {
       mode: "payment",
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout?canceled=true`,
-      shipping_address_collection: {
-        allowed_countries: ["GB"],
-      },
+      customer_email: user.email,
+      // shipping_address_collection: {
+      //   allowed_countries: ["GB"],
+      // },
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: {
+              amount: Math.round(deliveryFee * 100),
+              currency: 'gbp',
+            },
+            display_name: 'Delivery Fee',
+          },
+        },
+      ],
       metadata: {
         orderId: order.id,
         deliveryDate,

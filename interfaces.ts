@@ -20,5 +20,6 @@ export interface ProductCardProps {
       publicUrl: string;
     }[];
     badge?: string | null;
+    weightOptions?: number[];
   };
 }

@@ -12,7 +12,22 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { address1, address2, city, postcode } = body;
 
-    // Create new address
+    // Check if address already exists for this user
+    const existingAddress = await prisma.address.findFirst({
+      where: {
+        userId: session.user.id,
+        address1: address1,
+        address2: address2 || null, // handle optional address2
+        city: city,
+        postcode: postcode,
+      },
+    });
+
+    if (existingAddress) {
+      return NextResponse.json({ addressId: existingAddress.id });
+    }
+
+    // If no existing address found, create new one
     const address = await prisma.address.create({
       data: {
         userId: session.user.id,
@@ -20,7 +35,6 @@ export async function POST(request: Request) {
         address2,
         city,
         postcode,
-        // You might want to set isDefault based on whether user has other addresses
         isDefault: false,
       },
     });

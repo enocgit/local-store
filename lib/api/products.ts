@@ -14,6 +14,7 @@ export async function getFeaturedProducts() {
         description: true,
         price: true,
         comparePrice: true,
+        weightOptions: true,
         rating: true,
         images: true,
         badge: true,
@@ -47,6 +48,7 @@ export async function getProductsByCategory(categoryId: string) {
           comparePrice: true,
           rating: true,
           images: true,
+          weightOptions: true,
           badge: true,
           category: {
             select: {
@@ -85,6 +87,7 @@ export async function getProductsByCategory(categoryId: string) {
             description: true,
             price: true,
             comparePrice: true,
+            weightOptions: true,
             rating: true,
             images: true,
             badge: true,
