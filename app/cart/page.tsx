@@ -90,7 +90,7 @@ export default function CartPage() {
               <Card>
                 <CardContent className="p-6 text-center">
                   <p className="mb-4 text-gray-600">Your cart is empty</p>
-                  <Link href="/">
+                  <Link href="/products">
                     <Button>Continue Shopping</Button>
                   </Link>
                 </CardContent>
