@@ -148,7 +148,7 @@ export const columns: ColumnDef<Product>[] = [
                 <Eye className="mr-2 h-4 w-4" />
                 View
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push(`/dashboard/products/${product.id}`)}>
+              <DropdownMenuItem onClick={() => router.push(`/bridge/products/${product.id}`)}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>

@@ -122,7 +122,7 @@ export const columns: ColumnDef<Category>[] = [
                 <Eye className="mr-2 h-4 w-4" />
                 View
               </DropdownMenuItem>
-              <Link href={`/dashboard/categories/${category.id}`}>
+              <Link href={`/bridge/categories/${category.id}`}>
                 <DropdownMenuItem>
                   <Pencil className="mr-2 h-4 w-4" />
                   Edit

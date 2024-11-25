@@ -64,7 +64,7 @@ export function CategoryForm({ initialData, categoryId }: CategoryFormProps) {
         throw new Error();
       }
 
-      router.push("/dashboard/categories");
+      router.push("/bridge/categories");
       router.refresh();
 
       toast({

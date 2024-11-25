@@ -89,7 +89,7 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
         throw new Error("Something went wrong");
       }
 
-      router.push("/dashboard/products");
+      router.push("/bridge/products");
       router.refresh();
 
       toast({

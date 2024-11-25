@@ -12,13 +12,13 @@ import {
 } from 'lucide-react';
 
 const navigation = [
-  { name: 'Overview', href: '/dashboard', icon: Home },
-  { name: 'Products', href: '/dashboard/products', icon: Package },
-  { name: 'Categories', href: '/dashboard/categories', icon: LayoutGrid },
-  { name: 'Orders', href: '/dashboard/orders', icon: ShoppingBag },
-  { name: 'Customers', href: '/dashboard/customers', icon: Users },
-  { name: 'Reviews', href: '/dashboard/reviews', icon: Star },
-  { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
+  { name: 'Overview', href: '/bridge', icon: Home },
+  { name: 'Products', href: '/bridge/products', icon: Package },
+  { name: 'Categories', href: '/bridge/categories', icon: LayoutGrid },
+  { name: 'Orders', href: '/bridge/orders', icon: ShoppingBag },
+  { name: 'Customers', href: '/bridge/customers', icon: Users },
+  { name: 'Reviews', href: '/bridge/reviews', icon: Star },
+  { name: 'Messages', href: '/bridge/messages', icon: MessageSquare },
 ];
 
 export default function Sidebar() {

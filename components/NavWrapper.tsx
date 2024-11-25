@@ -8,7 +8,7 @@ function NavWrapper() {
     const pathname = usePathname();
     return (
         <>
-            {pathname.startsWith("/dashboard") ? <DashNavbar /> : <Navbar />}
+            {pathname.startsWith("/bridge") ? <DashNavbar /> : <Navbar />}
         </>
     )
 }

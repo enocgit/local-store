@@ -17,7 +17,7 @@ export const getCallbackUrl = (
 ): string => {
   // If user is on auth page, redirect to products
   if (currentPath.startsWith("/auth")) {
-    return "/products";
+    return "/bridge";
   }
 
   // If user is admin, redirect to dashboard
