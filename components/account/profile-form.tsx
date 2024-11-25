@@ -79,7 +79,7 @@ export function ProfileForm({ user }: { user: User }) {
   }
 
   return (
-    <div className="rounded-lg border p-4">
+    <div className="rounded-lg">
       <div className="mb-6 flex items-center gap-4">
         <Avatar className="h-16 w-16">
           <AvatarImage src={user.image || undefined} />

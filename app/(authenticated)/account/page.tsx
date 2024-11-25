@@ -1,6 +1,8 @@
 import { auth } from "@/auth";
-import { ProfileForm } from "@/components/account/profile-form";
 import { redirect } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { OrdersTab } from "@/components/account/OrdersTab";
+import { ProfileTab } from "@/components/account/ProfileTab";
 
 export default async function AccountPage() {
   const session = await auth();
@@ -10,12 +12,20 @@ export default async function AccountPage() {
   }
 
   return (
-    <div className="container max-w-2xl px-5 py-8">
-      {/* Profile Section */}
-      <section className="mb-8">
-        <h2 className="mb-4 text-2xl font-bold">Profile Information</h2>
-        <ProfileForm user={session.user} />
-      </section>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="mb-8 text-3xl font-bold">My Account</h1>
+      <Tabs defaultValue="orders" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+        </TabsList>
+        <TabsContent value="orders">
+          <OrdersTab />
+        </TabsContent>
+        <TabsContent value="profile">
+          <ProfileTab user={session.user} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

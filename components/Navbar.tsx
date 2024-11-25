@@ -73,11 +73,6 @@ export function Navbar() {
       href: "/account",
     },
     {
-      label: "My Orders",
-      icon: Package,
-      href: "/account/orders",
-    },
-    {
       label: "Billing",
       icon: CreditCard,
       href: "/account/billing",
