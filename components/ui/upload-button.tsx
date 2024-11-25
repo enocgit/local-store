@@ -24,7 +24,7 @@ export function UploadButton({ onUploadComplete, onUploadError }: UploadButtonPr
         onUploadComplete(url);
       }
     },
-    [onUploadComplete]
+    [onUploadComplete, toast]
   );
 
   const handleUploadError = useCallback(
@@ -38,7 +38,7 @@ export function UploadButton({ onUploadComplete, onUploadError }: UploadButtonPr
         onUploadError(error);
       }
     },
-    [onUploadError]
+    [onUploadError, toast]
   );
 
   return (

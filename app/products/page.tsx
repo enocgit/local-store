@@ -22,8 +22,8 @@ export default async function ProductsPage() {
     <div className="min-h-screen bg-background">
       <div className="relative flex h-[300px] items-center">
         <Image
-          src="/images/products-banner.jpg"
-          alt="All Products"
+          src="https://utfs.io/f/5aK3NZMlDfcg03ZMPBuFdU6kMY9NLjOwprPiWl8htS3Bygs7"
+          alt="Vegatables"
           fill
           className="object-cover brightness-50"
           priority

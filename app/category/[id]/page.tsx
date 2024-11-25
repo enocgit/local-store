@@ -25,7 +25,7 @@ export default async function CategoryPage({
       <CategoryHeader
         title={category?.name || ""}
         description={category?.description}
-        image={category?.image}
+        image={id?.includes("new-arrivals") ? "https://utfs.io/f/5aK3NZMlDfcgdmPom2G3npASuUfVFDBPY58W6m4Ee7vGs2ZT" : category?.image}
       />
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-8 lg:flex-row">

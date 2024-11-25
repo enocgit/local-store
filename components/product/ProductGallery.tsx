@@ -5,13 +5,9 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
-interface ProductImage {
-  publicUrl: string;
-  alt?: string;
-}
 
 interface ProductGalleryProps {
-  images: ProductImage[];
+  images: string[];
   badge?: string | null;
 }
 
@@ -37,8 +33,8 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
             )}
           >
             <Image
-              src={image?.publicUrl || ""}
-              alt={image?.alt || `Product image ${index + 1}`}
+              src={image || "https://utfs.io/f/5aK3NZMlDfcgitELvDk7LYHbEWfe83jx2TrO9msKg4loynPa"}
+              alt={`Product image ${index + 1}`}
               fill
               className="object-cover"
             />
@@ -50,8 +46,8 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
       <div className="relative flex-1">
         <div className="relative overflow-hidden rounded-lg max-[500px]:aspect-video min-[500px]:h-[500px]">
           <Image
-            src={displayImages[selectedImage]?.publicUrl || ""}
-            alt={displayImages[selectedImage]?.alt || "Product image"}
+            src={displayImages[selectedImage] || "https://utfs.io/f/5aK3NZMlDfcgitELvDk7LYHbEWfe83jx2TrO9msKg4loynPa"}
+            alt={"Product image"}
             fill
             className="object-cover"
             priority

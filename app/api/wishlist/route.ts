@@ -18,7 +18,6 @@ export async function GET() {
     include: {
       product: {
         include: {
-          images: true,
           reviews: true,
         },
       },

@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import NavWrapper from "@/components/NavWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -44,7 +45,7 @@ export default async function RootLayout({
         <Providers>
           <SessionProvider session={session}>
             <div className="flex min-h-screen flex-col">
-              <Navbar />
+              <NavWrapper />
               <main className="flex-1">{children}</main>
               <Footer />
             </div>

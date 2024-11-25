@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
       {
         hostname: "www.facebook.com",
       },
+      {
+        hostname: "utfs.io",
+      }
     ],
   },
 };

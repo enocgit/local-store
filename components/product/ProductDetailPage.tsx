@@ -21,16 +21,10 @@ import { useState } from "react";
 import { useCart } from "@/lib/store/cart-context";
 import { Product, Review } from "@prisma/client";
 import { useToast } from "@/hooks/use-toast";
-import { addToWishlist } from "@/app/actions";
 import { Session } from "next-auth";
 import { WishlistButton } from "../ui/wishlist-button";
 
-interface ProductImage {
-  publicUrl: string;
-}
-
 interface ProductWithDetails extends Product {
-  images: ProductImage[];
   reviews: Review[];
 }
 
@@ -61,7 +55,7 @@ function ProductDetailPage({ product, session }: Props) {
         id: product.id,
         name: product.name,
         price: currentPrice,
-        image: product.images[0].publicUrl,
+        image: product.images[0],
         weight: selectedWeight,
         weightOptions: product.weightOptions,
         quantity: 1,
@@ -164,7 +158,7 @@ function ProductDetailPage({ product, session }: Props) {
                 <div>
                   <span className="font-semibold">Stock:</span>
                   <p className="text-gray-600">
-                    {product.stock} {product.weightOptions ? "kg" : "units"}{" "}
+                    {product.stock} units
                     available
                   </p>
                 </div>

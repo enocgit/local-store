@@ -42,7 +42,7 @@ export function ProductCard({ product }: ProductCardProps) {
         id: product?.id,
         name: product?.name,
         price: currentPrice,
-        image: product?.images[0].publicUrl,
+        image: product?.images[0],
         quantity: 1,
         weight: selectedWeight,
         weightOptions: product?.weightOptions,
@@ -63,7 +63,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link href={`/product/${product?.id}`}>
         <div className="relative h-64">
           <Image
-            src={product?.images?.[0]?.publicUrl}
+            src={product?.images?.[0]}
             alt={product?.name || ""}
             fill
             className="object-cover transition-transform group-hover:scale-105"

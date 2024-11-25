@@ -145,7 +145,7 @@ export async function getProductById(productId: string) {
   try {
     return await prisma.product.findUnique({
       where: { id: productId },
-      include: { reviews: true, images: true },
+      include: { reviews: true },
     });
   } catch (error) {
     console.error("Failed to fetch product:", error);

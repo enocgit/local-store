@@ -16,9 +16,7 @@ export interface ProductCardProps {
     reviews: Review[];
     price: number;
     comparePrice: number | null;
-    images: {
-      publicUrl: string;
-    }[];
+    images: string[];
     badge?: string | null;
     weightOptions?: number[];
   };
