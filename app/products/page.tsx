@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import React from "react";
 import Image from "next/image";
 import { ProductGrid } from "@/components/product/ProductGrid";
-import { FilterSidebar } from "@/components/category/FilterSidebar";
+import { FilterSidebar } from "@/components/product/FilterSidebar";
 import { ProductType } from "@/interfaces";
 
 export const metadata: Metadata = {

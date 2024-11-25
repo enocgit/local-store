@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { getUserById } from "@/lib/auth/data";
 import { UserRole } from "@prisma/client";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
+import { verifyPassword } from "@/lib/auth/auth";
+import { LoginSchema } from "@/lib/auth/schemas";
 
 export const {
   handlers: { GET, POST },
@@ -14,6 +17,40 @@ export const {
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   providers: [
+    Credentials({
+      async authorize(credentials) {
+        const validatedFields = LoginSchema.safeParse(credentials);
+
+        if (!validatedFields.success) {
+          return null;
+        }
+
+        const { email, password } = validatedFields.data;
+
+        const user = await prisma.user.findUnique({ 
+          where: { email } 
+        });
+
+        if (!user || !user.password) {
+          return null;
+        }
+
+        const isValid = await verifyPassword(password, user.password);
+
+        if (!isValid) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          phone: user.phone || null,
+        };
+      }
+    }),
     Google({
       profile(profile) {
         // Split the name into firstName and lastName
