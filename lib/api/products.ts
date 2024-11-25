@@ -32,10 +32,18 @@ export async function getFeaturedProducts() {
   }
 }
 
-export async function getProductsByCategory(categoryId: string) {
+export async function getProductsByCategory(categoryId: string, minPrice?: number, maxPrice?: number) {
   try {
     if (categoryId === "new-arrivals") {
       const newArrivals = await prisma.product.findMany({
+        where: {
+          ...(minPrice !== undefined && maxPrice !== undefined && {
+            price: {
+              gte: minPrice,
+              lte: maxPrice,
+            },
+          }),
+        },
         orderBy: {
           createdAt: "desc",
         },
@@ -81,6 +89,14 @@ export async function getProductsByCategory(categoryId: string) {
         description: true,
         image: true,
         products: {
+          where: {
+            ...(minPrice !== undefined && maxPrice !== undefined && {
+              price: {
+                gte: minPrice,
+                lte: maxPrice,
+              },
+            }),
+          },
           select: {
             id: true,
             name: true,
@@ -111,9 +127,17 @@ export async function getProductsByCategory(categoryId: string) {
   }
 }
 
-export async function getAllProducts() {
+export async function getAllProducts(minPrice?: number, maxPrice?: number) {
   try {
     return await prisma.product.findMany({
+      where: {
+        ...(minPrice !== undefined && maxPrice !== undefined && {
+          price: {
+            gte: minPrice,
+            lte: maxPrice,
+          },
+        }),
+      },
       select: {
         id: true,
         name: true,

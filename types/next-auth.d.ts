@@ -1,3 +1,4 @@
+import { Address } from "@prisma/client";
 import "next-auth";
 
 declare module "next-auth" {
@@ -9,6 +10,7 @@ declare module "next-auth" {
     phone: string | null;
     image?: string | null;
     role: string;
+    addresses?: Address[];
   }
 
   interface Session {

@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-// import authConfig from "@/auth.config";
 import { getUserById } from "@/lib/auth/data";
 import { UserRole } from "@prisma/client";
 import Google from "next-auth/providers/google";
@@ -45,6 +44,7 @@ export const {
           session.user.lastName = user.lastName;
           session.user.phone = user.phone;
           session.user.role = user.role;
+          session.user.addresses = user.addresses;
         }
       }
       return session;

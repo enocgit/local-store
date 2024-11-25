@@ -11,8 +11,13 @@ export const metadata: Metadata = {
   description: "Browse all our amazing products",
 };
 
-export default async function ProductsPage() {
-  const products = await getAllProducts();
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
+  const { minPrice, maxPrice } = await searchParams;
+  const products = await getAllProducts(minPrice ? Number(minPrice) : undefined, maxPrice ? Number(maxPrice) : undefined);
 
   if (products.length === 0) {
     return <p className="p-10">No products found. Please check back later.</p>;

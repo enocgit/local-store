@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -43,11 +42,6 @@ export default function CartPage() {
     }
   };
 
-  const isValidPostcode = (postcode: string) => {
-    const postcodeRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
-    return postcodeRegex.test(postcode);
-  };
-
   const updateQuantity = (id: string, change: number, weight?: number) => {
     const item = state.items.find((item) => 
       (item.weight ? `${item.id}-${item.weight}` : item.id) === 
@@ -75,7 +69,6 @@ export default function CartPage() {
   const canCheckout =
     state.deliveryDate &&
     state.deliveryTime &&
-    isValidPostcode(state.postcode) &&
     state.items.length > 0;
 
   return (
@@ -207,26 +200,6 @@ export default function CartPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Postcode</label>
-                  <Input
-                    placeholder="Enter your postcode"
-                    value={state.postcode}
-                    onChange={(e) =>
-                      dispatch({
-                        type: "SET_POSTCODE",
-                        payload: e.target.value,
-                      })
-                    }
-                    className="uppercase"
-                  />
-                  {state.postcode && !isValidPostcode(state.postcode) && (
-                    <p className="text-sm text-red-500">
-                      Please enter a valid UK postcode
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
                   <label className="text-sm font-medium">Delivery Date</label>
                   <Calendar
                     mode="single"
@@ -323,7 +296,6 @@ export default function CartPage() {
                   )}
                 </Button>
                 <ul className="list-inside list-disc text-sm text-red-500">
-                  {!state.postcode && <li>Please enter your postcode</li>}
                   {!state.deliveryDate && (
                     <li>Please select a delivery date</li>
                   )}

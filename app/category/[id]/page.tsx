@@ -6,11 +6,14 @@ import { ProductType } from "@/interfaces";
 
 export default async function CategoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const { id } = await params;
-  const category = await getProductsByCategory(id);
+  const { minPrice, maxPrice } = await searchParams;
+  const category = await getProductsByCategory(id, minPrice ? Number(minPrice) : undefined, maxPrice ? Number(maxPrice) : undefined);
 
   if (!category || Array.isArray(category)) {
     return <p className="p-10">No products found under this category</p>;
