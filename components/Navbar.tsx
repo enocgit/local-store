@@ -8,7 +8,6 @@ import {
   CakeIcon,
   LogOut,
   CreditCard,
-  Package,
   ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

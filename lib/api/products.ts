@@ -191,3 +191,43 @@ export async function getRelatedProducts(product: Product) {
     console.error("Failed to fetch related products:", error);
   }
 }
+
+export async function searchProducts(query: string, minPrice?: number, maxPrice?: number) {
+  try {
+    return await prisma.product.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: 'insensitive' } },
+          { description: { contains: query, mode: 'insensitive' } },
+          { category: { name: { contains: query, mode: 'insensitive' } } }
+        ],
+        ...(minPrice !== undefined && maxPrice !== undefined && {
+          price: {
+            gte: minPrice,
+            lte: maxPrice,
+          },
+        }),
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        comparePrice: true,
+        weightOptions: true,
+        rating: true,
+        images: true,
+        badge: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        reviews: true,
+      },
+    });
+  } catch (error) {
+    console.error("Failed to search products:", error);
+    return [];
+  }
+}

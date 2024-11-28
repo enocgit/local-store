@@ -3,6 +3,8 @@ import { Search } from "lucide-react";
 import { Button } from "./button";
 import { Input } from "./input";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type Props = {
   isSearchOpen: boolean;
@@ -17,6 +19,22 @@ export function SearchButton({
   className,
   onClick,
 }: Props) {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <Sheet open={isSearchOpen} onOpenChange={setIsSearchOpen}>
       <SheetTrigger asChild>
@@ -35,8 +53,11 @@ export function SearchButton({
               type="search"
               placeholder="Search products..."
               className="flex-1"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
-            <Button onClick={() => setIsSearchOpen(false)}>Search</Button>
+            <Button onClick={handleSearch}>Search</Button>
           </div>
         </div>
       </SheetContent>
