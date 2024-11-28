@@ -4,9 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { getUserById } from "@/lib/auth/data";
 import { UserRole } from "@prisma/client";
 import Google from "next-auth/providers/google";
+import Facebook from "next-auth/providers/facebook";
 import Credentials from "next-auth/providers/credentials";
 import { verifyPassword } from "@/lib/auth/auth";
 import { LoginSchema } from "@/lib/auth/schemas";
+import { sendWelcomeEmail } from "@/utils/email";
 
 export const {
   handlers: { GET, POST },
@@ -16,6 +18,21 @@ export const {
 } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  events: {
+    async createUser({ user }) {
+      // Send welcome email when a new user is created (both OAuth and credentials)
+      if (user.email) {
+        try {
+          await sendWelcomeEmail(
+            user.email,
+            user.firstName || user.name?.split(' ')[0] || 'Valued Customer'
+          );
+        } catch (error) {
+          console.error('Failed to send welcome email:', error);
+        }
+      }
+    },
+  },
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -49,11 +66,12 @@ export const {
           role: user.role,
           phone: user.phone || null,
         };
-      }
+      },
     }),
     Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       profile(profile) {
-        // Split the name into firstName and lastName
         const nameParts = profile.name?.split(" ") || ["", ""];
         const firstName = nameParts[0];
         const lastName = nameParts.slice(1).join(" ");
@@ -67,6 +85,20 @@ export const {
           image: profile.picture,
           phone: null,
           role: "USER" as UserRole,
+        };
+      },
+    }),
+    Facebook({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      profile(profile) {
+        return {
+          id: profile.id,
+          email: profile.email,
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          role: "USER" as UserRole,
+          phone: null,
         };
       },
     }),
