@@ -17,18 +17,37 @@ interface EmailData {
 type EmailType = 'WELCOME' | 'ORDER_CONFIRMATION' | 'SUPPORT' | 'ADMIN';
 
 const getFromEmail = (emailType: EmailType): string => {
-  switch (emailType) {
-    case 'WELCOME':
-      return process.env.EMAIL_FROM_HELLO || 'hello@tropikalfoodsbradford.com';
-    case 'ORDER_CONFIRMATION':
-      return process.env.EMAIL_FROM_ORDERS || 'orders@tropikalfoodsbradford.com';
-    case 'SUPPORT':
-      return process.env.EMAIL_FROM_SUPPORT || 'support@tropikalfoodsbradford.com';
-    case 'ADMIN':
-      return process.env.EMAIL_FROM_ADMIN || 'admin@tropikalfoodsbradford.com';
-    default:
-      return process.env.EMAIL_FROM_HELLO || 'hello@tropikalfoodsbradford.com';
-  }
+  const address = (() => {
+    switch (emailType) {
+      case 'WELCOME':
+        return process.env.EMAIL_FROM_HELLO || 'hello@tropikalfoodsbradford.com';
+      case 'ORDER_CONFIRMATION':
+        return process.env.EMAIL_FROM_ORDERS || 'orders@tropikalfoodsbradford.com';
+      case 'SUPPORT':
+        return process.env.EMAIL_FROM_SUPPORT || 'support@tropikalfoodsbradford.com';
+      case 'ADMIN':
+        return process.env.EMAIL_FROM_ADMIN || 'admin@tropikalfoodsbradford.com';
+      default:
+        return process.env.EMAIL_FROM_HELLO || 'hello@tropikalfoodsbradford.com';
+    }
+  })();
+
+  const name = (() => {
+    switch (emailType) {
+      case 'WELCOME':
+        return 'Tropikal Foods';
+      case 'ORDER_CONFIRMATION':
+        return 'Tropikal Foods Orders';
+      case 'SUPPORT':
+        return 'Tropikal Foods Support';
+      case 'ADMIN':
+        return 'Tropikal Foods Admin';
+      default:
+        return 'Tropikal Foods';
+    }
+  })();
+
+  return `${name} <${address}>`;
 };
 
 // Validate required environment variables
