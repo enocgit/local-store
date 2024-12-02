@@ -4,7 +4,7 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 const footerLinks = {
   company: [
     { name: "About Us", href: "/about" },
-    { name: "Our Blog", href: "#" },
+    { name: "Terms of Service", href: "/terms-of-service" },
   ],
   support: [{ name: "Track Order", href: "#" }],
   connect: [
