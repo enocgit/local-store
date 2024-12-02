@@ -108,10 +108,10 @@ export default function ContactPage() {
                 <div>
                   <h3 className="mb-1 font-semibold">Email Us</h3>
                   <a
-                    href="mailto:hello@tropikalfoods.com"
+                    href={`mailto:${process.env.EMAIL_FROM_HELLO}`}
                     className="text-primary hover:underline"
                   >
-                    hello@tropikalfoods.com
+                    {process.env.EMAIL_FROM_HELLO}
                   </a>
                 </div>
               </div>

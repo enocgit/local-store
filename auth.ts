@@ -90,7 +90,6 @@ export const {
           email: profile.email,
           firstName,
           lastName,
-          name: profile.name,
           image: profile.picture,
           emailVerified: profile.email_verified,
           role: "USER" as UserRole,

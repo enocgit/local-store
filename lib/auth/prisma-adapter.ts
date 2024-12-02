@@ -8,17 +8,31 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
   return {
     ...adapter,
     createUser: async (data) => {
-      const { id, emailVerified, ...rest } = data;
+      // Extract only the fields we want from the OAuth data
+      const {
+        email,
+        firstName,
+        lastName,
+        image,
+        emailVerified,
+        phone,
+      } = data;
+
       const user = await prisma.user.create({
         data: {
-          ...rest,
-          emailVerified: !!emailVerified, // Convert to boolean
+          email,
+          firstName,
+          lastName,
+          image,
+          phone,
+          emailVerified: !!emailVerified,
           role: "USER",
           addresses: {
             create: [],
           },
         },
       });
+
       return {
         ...user,
         id: user.id.toString(),
