@@ -1,0 +1,34 @@
+[
+  {
+    "_id": { "$oid": "605c72ef153207001f7dcb1a" },
+    "name": "Frozen Foods",
+    "description": "A wide variety of frozen meals, vegetables, snacks, and desserts.",
+    "image": "https://images.unsplash.com/photo-1610348725531-843dff563e2c?auto=format&fit=crop&w=800&q=80",
+    "createdAt": "2024-11-18T10:00:00Z",
+    "updatedAt": "2024-11-18T10:00:00Z"
+  },
+  {
+    "_id": { "$oid": "605c72ef153207001f7dcb2b" },
+    "name": "Dairy & Eggs",
+    "description": "All dairy products including milk, cheese, butter, and eggs.",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+    "createdAt": "2024-11-18T10:00:00Z",
+    "updatedAt": "2024-11-18T10:00:00Z"
+  },
+  {
+    "_id": { "$oid": "605c72ef153207001f7dcb3c" },
+    "name": "Snacks",
+    "description": "A variety of quick and convenient snack options including chips, nuts, and granola bars.",
+    "image": "https://images.unsplash.com/photo-1561948952-0b4b15b2227b",
+    "createdAt": "2024-11-18T10:00:00Z",
+    "updatedAt": "2024-11-18T10:00:00Z"
+  },
+  {
+    "_id": { "$oid": "605c72ef153207001f7dcb4d" },
+    "name": "Beverages",
+    "description": "Refresh yourself with our selection of juices, sodas, coffee, and teas.",
+    "image": "https://images.unsplash.com/photo-1603791444847-dab9cb9be083",
+    "createdAt": "2024-11-18T10:00:00Z",
+    "updatedAt": "2024-11-18T10:00:00Z"
+  }
+]
