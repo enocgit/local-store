@@ -1,19 +1,10 @@
-import sgMail, { MailDataRequired } from '@sendgrid/mail';
+import { Resend } from 'resend';
 
-if (!process.env.SENDGRID_API_KEY) {
-  throw new Error('SENDGRID_API_KEY environment variable is not set');
+if (!process.env.RESEND_API_KEY) {
+  throw new Error('RESEND_API_KEY environment variable is not set');
 }
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-const EMAIL_ADDRESSES = {
-  HELLO: 'hello@tropikalfoodsbradford.com',
-  ORDERS: 'orders@tropikalfoodsbradford.com',
-  SUPPORT: 'support@tropikalfoodsbradford.com',
-  ADMIN: 'admin@tropikalfoodsbradford.com',
-} as const;
-
-type EmailType = 'WELCOME' | 'ORDER_CONFIRMATION' | 'SUPPORT' | 'ADMIN';
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface EmailData {
   to: string;
@@ -23,33 +14,46 @@ interface EmailData {
   emailType: EmailType;
 }
 
+type EmailType = 'WELCOME' | 'ORDER_CONFIRMATION' | 'SUPPORT' | 'ADMIN';
+
 const getFromEmail = (emailType: EmailType): string => {
   switch (emailType) {
     case 'WELCOME':
-      return EMAIL_ADDRESSES.HELLO;
+      return process.env.EMAIL_FROM_HELLO || 'hello@tropikalfoodsbradford.com';
     case 'ORDER_CONFIRMATION':
-      return EMAIL_ADDRESSES.ORDERS;
+      return process.env.EMAIL_FROM_ORDERS || 'orders@tropikalfoodsbradford.com';
     case 'SUPPORT':
-      return EMAIL_ADDRESSES.SUPPORT;
+      return process.env.EMAIL_FROM_SUPPORT || 'support@tropikalfoodsbradford.com';
     case 'ADMIN':
-      return EMAIL_ADDRESSES.ADMIN;
+      return process.env.EMAIL_FROM_ADMIN || 'admin@tropikalfoodsbradford.com';
     default:
-      return EMAIL_ADDRESSES.HELLO;
+      return process.env.EMAIL_FROM_HELLO || 'hello@tropikalfoodsbradford.com';
   }
 };
 
-export const sendEmail = async ({ to, subject, text, html, emailType }: EmailData) => {
-  const msg: MailDataRequired = {
-    to,
-    from: getFromEmail(emailType),
-    subject,
-    text: text || '',
-    html: html || '',
-  };
+// Validate required environment variables
+['EMAIL_FROM_HELLO', 'EMAIL_FROM_ORDERS', 'EMAIL_FROM_SUPPORT', 'EMAIL_FROM_ADMIN'].forEach((envVar) => {
+  if (!process.env[envVar]) {
+    console.warn(`Warning: ${envVar} environment variable is not set, using default value`);
+  }
+});
 
+export const sendEmail = async ({ to, subject, text, html, emailType }: EmailData) => {
   try {
-    await sgMail.send(msg);
-    return { success: true };
+    const { data, error } = await resend.emails.send({
+      from: getFromEmail(emailType),
+      to,
+      subject,
+      text: text || '',
+      html: html || '',
+    });
+
+    if (error) {
+      console.error('Error sending email:', error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
   } catch (error) {
     console.error('Error sending email:', error);
     return { success: false, error };

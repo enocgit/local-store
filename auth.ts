@@ -25,10 +25,10 @@ export const {
         try {
           await sendWelcomeEmail(
             user.email,
-            user.firstName || user.name?.split(' ')[0] || 'Valued Customer'
+            user.firstName || user.name?.split(" ")[0] || "Valued Customer",
           );
         } catch (error) {
-          console.error('Failed to send welcome email:', error);
+          console.error("Failed to send welcome email:", error);
         }
       }
     },
@@ -44,8 +44,8 @@ export const {
 
         const { email, password } = validatedFields.data;
 
-        const user = await prisma.user.findUnique({ 
-          where: { email } 
+        const user = await prisma.user.findUnique({
+          where: { email },
         });
 
         if (!user || !user.password) {
@@ -69,8 +69,6 @@ export const {
       },
     }),
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       profile(profile) {
         const nameParts = profile.name?.split(" ") || ["", ""];
         const firstName = nameParts[0];
