@@ -1,10 +1,51 @@
 import { Star, StarHalf } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-function RatingStars({ rating }: { rating?: number }) {
+interface RatingStarsProps {
+  rating?: number;
+  onChange?: (value: number) => void;
+  editable?: boolean;
+}
+
+export default function RatingStars({
+  rating = 0,
+  onChange,
+  editable = false,
+}: RatingStarsProps) {
+  const handleStarClick = (index: number) => {
+    if (editable && onChange) {
+      onChange(index + 1);
+    }
+  };
+
+  const handleStarHover = (event: React.MouseEvent, index: number) => {
+    if (!editable) return;
+
+    const stars = event.currentTarget.parentElement?.children;
+    if (!stars) return;
+
+    for (let i = 0; i < stars.length; i++) {
+      const star = stars[i] as HTMLElement;
+      star.style.opacity = i <= index ? "1" : "0.5";
+    }
+  };
+
+  const handleStarLeave = (event: React.MouseEvent) => {
+    if (!editable) return;
+
+    const stars = event.currentTarget.parentElement?.children;
+    if (!stars) return;
+
+    for (let i = 0; i < stars.length; i++) {
+      const star = stars[i] as HTMLElement;
+      star.style.opacity = "1";
+    }
+  };
+
   if (!rating) {
     return (
       <div className="flex items-center">
-        {[...Array(0)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <Star key={i} className="h-4 w-4 text-gray-300" />
         ))}
       </div>
@@ -15,18 +56,20 @@ function RatingStars({ rating }: { rating?: number }) {
   const hasHalfStar = rating % 1 !== 0;
 
   return (
-    <div className="flex items-center">
-      {[...Array(fullStars)].map((_, i) => (
-        <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-      ))}
-      {hasHalfStar && (
-        <StarHalf className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-      )}
-      {[...Array(5 - Math.ceil(rating))].map((_, i) => (
-        <Star key={`empty-${i}`} className="h-4 w-4 text-gray-300" />
+    <div className={cn("flex items-center", editable && "cursor-pointer")}>
+      {[...Array(5)].map((_, i) => (
+        <Star
+          key={i}
+          className={cn(
+            "h-4 w-4",
+            i < fullStars ? "fill-yellow-400 text-yellow-400" : "text-gray-300",
+            editable && "transition-opacity duration-200",
+          )}
+          onClick={() => handleStarClick(i)}
+          onMouseEnter={(e) => handleStarHover(e, i)}
+          onMouseLeave={handleStarLeave}
+        />
       ))}
     </div>
   );
 }
-
-export default RatingStars;
