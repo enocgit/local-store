@@ -44,7 +44,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
       acc[review.rating] = (acc[review.rating] || 0) + 1;
       return acc;
     },
-    { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } as Record<number, number>,
+    { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } as { [key: number]: number },
   );
 
   const helpfulMutation = useHelpfulReview();
@@ -126,11 +126,11 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                   <div key={stars} className="flex items-center space-x-2">
                     <span className="w-12 text-sm">{stars} stars</span>
                     <Progress
-                      value={(count / totalReviews) * 100}
+                      value={((count as any) / totalReviews) * 100}
                       className="h-2"
                     />
                     <span className="w-12 text-sm text-gray-600">
-                      {Math.round((count / totalReviews) * 100)}%
+                      {Math.round(((count as any) / totalReviews) * 100)}%
                     </span>
                   </div>
                 ))}
