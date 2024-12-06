@@ -1,7 +1,7 @@
-import { Resend } from 'resend';
+import { Resend } from "resend";
 
 if (!process.env.RESEND_API_KEY) {
-  throw new Error('RESEND_API_KEY environment variable is not set');
+  throw new Error("RESEND_API_KEY environment variable is not set");
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -14,36 +14,46 @@ interface EmailData {
   emailType: EmailType;
 }
 
-type EmailType = 'WELCOME' | 'ORDER_CONFIRMATION' | 'SUPPORT' | 'ADMIN';
+type EmailType = "WELCOME" | "ORDER_CONFIRMATION" | "SUPPORT" | "ADMIN";
 
 const getFromEmail = (emailType: EmailType): string => {
   const address = (() => {
     switch (emailType) {
-      case 'WELCOME':
-        return process.env.EMAIL_FROM_HELLO || 'hello@tropikalfoodsbradford.com';
-      case 'ORDER_CONFIRMATION':
-        return process.env.EMAIL_FROM_ORDERS || 'orders@tropikalfoodsbradford.com';
-      case 'SUPPORT':
-        return process.env.EMAIL_FROM_SUPPORT || 'support@tropikalfoodsbradford.com';
-      case 'ADMIN':
-        return process.env.EMAIL_FROM_ADMIN || 'admin@tropikalfoodsbradford.com';
+      case "WELCOME":
+        return (
+          process.env.EMAIL_FROM_HELLO || "hello@tropikalfoodsbradford.com"
+        );
+      case "ORDER_CONFIRMATION":
+        return (
+          process.env.EMAIL_FROM_ORDERS || "orders@tropikalfoodsbradford.com"
+        );
+      case "SUPPORT":
+        return (
+          process.env.EMAIL_FROM_SUPPORT || "support@tropikalfoodsbradford.com"
+        );
+      case "ADMIN":
+        return (
+          process.env.EMAIL_FROM_ADMIN || "admin@tropikalfoodsbradford.com"
+        );
       default:
-        return process.env.EMAIL_FROM_HELLO || 'hello@tropikalfoodsbradford.com';
+        return (
+          process.env.EMAIL_FROM_HELLO || "hello@tropikalfoodsbradford.com"
+        );
     }
   })();
 
   const name = (() => {
     switch (emailType) {
-      case 'WELCOME':
-        return 'Tropikal Foods';
-      case 'ORDER_CONFIRMATION':
-        return 'Tropikal Foods Orders';
-      case 'SUPPORT':
-        return 'Tropikal Foods Support';
-      case 'ADMIN':
-        return 'Tropikal Foods Admin';
+      case "WELCOME":
+        return "Tropikal Foods";
+      case "ORDER_CONFIRMATION":
+        return "Tropikal Foods Orders";
+      case "SUPPORT":
+        return "Tropikal Foods Support";
+      case "ADMIN":
+        return "Tropikal Foods Admin";
       default:
-        return 'Tropikal Foods';
+        return "Tropikal Foods";
     }
   })();
 
@@ -51,40 +61,51 @@ const getFromEmail = (emailType: EmailType): string => {
 };
 
 // Validate required environment variables
-['EMAIL_FROM_HELLO', 'EMAIL_FROM_ORDERS', 'EMAIL_FROM_SUPPORT', 'EMAIL_FROM_ADMIN'].forEach((envVar) => {
+[
+  "EMAIL_FROM_HELLO",
+  "EMAIL_FROM_ORDERS",
+  "EMAIL_FROM_SUPPORT",
+  "EMAIL_FROM_ADMIN",
+].forEach((envVar) => {
   if (!process.env[envVar]) {
-    console.warn(`Warning: ${envVar} environment variable is not set, using default value`);
+    console.warn(
+      `Warning: ${envVar} environment variable is not set, using default value`,
+    );
   }
 });
 
-export const sendEmail = async ({ to, subject, text, html, emailType }: EmailData) => {
+export const sendEmail = async ({
+  to,
+  subject,
+  text,
+  html,
+  emailType,
+}: EmailData) => {
   try {
     const { data, error } = await resend.emails.send({
       from: getFromEmail(emailType),
       to,
       subject,
-      text: text || '',
-      html: html || '',
+      text: text || "",
+      html: html || "",
     });
 
     if (error) {
-      console.error('Error sending email:', error);
+      console.error("Error sending email:", error);
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error("Error sending email:", error);
     return { success: false, error };
   }
 };
 
 // Example welcome email function
 export const sendWelcomeEmail = async (userEmail: string, userName: string) => {
-  const subject = 'Welcome to Tropikal Foods Bradford!';
-  const text = `
-    Welcome to Tropikal Foods Bradford!
-    
+  const subject = "Welcome to Tropikal Foods Bradford!";
+  const text = `    
     Hello ${userName},
     
     Thank you for signing up! We're excited to have you as part of our community.
@@ -99,10 +120,9 @@ export const sendWelcomeEmail = async (userEmail: string, userName: string) => {
     Best regards,
     The Tropikal Foods Bradford Team
   `;
-  
+
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h1>Welcome to Tropikal Foods Bradford!</h1>
       <p>Hello ${userName},</p>
       <p>Thank you for signing up! We're excited to have you as part of our community.</p>
       <p>At Tropikal Foods Bradford, you'll find:</p>
@@ -116,7 +136,13 @@ export const sendWelcomeEmail = async (userEmail: string, userName: string) => {
     </div>
   `;
 
-  return sendEmail({ to: userEmail, subject, text, html, emailType: 'WELCOME' });
+  return sendEmail({
+    to: userEmail,
+    subject,
+    text,
+    html,
+    emailType: "WELCOME",
+  });
 };
 
 // Example order confirmation email
@@ -124,11 +150,14 @@ export const sendOrderConfirmationEmail = async (
   userEmail: string,
   userName: string,
   orderNumber: string,
-  orderDetails: { name: string; quantity: number; price: number }[]
+  orderDetails: { name: string; quantity: number; price: number }[],
 ) => {
   const subject = `Order Confirmation #${orderNumber}`;
-  const total = orderDetails.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  
+  const total = orderDetails.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+
   const text = `
     Order Confirmation #${orderNumber}
     
@@ -137,12 +166,16 @@ export const sendOrderConfirmationEmail = async (
     Thank you for your order at Tropikal Foods Bradford! We're preparing your items for collection.
     
     Order Details:
-    ${orderDetails.map(item => `
+    ${orderDetails
+      .map(
+        (item) => `
     - ${item.name}
       Quantity: ${item.quantity}
       Price: £${item.price.toFixed(2)}
       Subtotal: £${(item.price * item.quantity).toFixed(2)}
-    `).join('\n')}
+    `,
+      )
+      .join("\n")}
     
     Total: £${total.toFixed(2)}
     
@@ -153,7 +186,7 @@ export const sendOrderConfirmationEmail = async (
     Best regards,
     The Tropikal Foods Bradford Team
   `;
-  
+
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h1>Order Confirmation #${orderNumber}</h1>
@@ -168,14 +201,18 @@ export const sendOrderConfirmationEmail = async (
           <th style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">Price</th>
           <th style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">Subtotal</th>
         </tr>
-        ${orderDetails.map(item => `
+        ${orderDetails
+          .map(
+            (item) => `
           <tr>
             <td style="padding: 10px; border: 1px solid #dee2e6;">${item.name}</td>
             <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">${item.quantity}</td>
             <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">£${item.price.toFixed(2)}</td>
             <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">£${(item.price * item.quantity).toFixed(2)}</td>
           </tr>
-        `).join('')}
+        `,
+          )
+          .join("")}
         <tr style="background-color: #f8f9fa; font-weight: bold;">
           <td colspan="3" style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">Total:</td>
           <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">£${total.toFixed(2)}</td>
@@ -188,5 +225,11 @@ export const sendOrderConfirmationEmail = async (
     </div>
   `;
 
-  return sendEmail({ to: userEmail, subject, text, html, emailType: 'ORDER_CONFIRMATION' });
+  return sendEmail({
+    to: userEmail,
+    subject,
+    text,
+    html,
+    emailType: "ORDER_CONFIRMATION",
+  });
 };

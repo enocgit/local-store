@@ -8,9 +8,21 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
   return {
     ...adapter,
     createUser: async (data) => {
-      // Extract only the fields we want from the OAuth data
-      const { email, firstName, lastName, image, emailVerified, phone } = data;
+      // First check if user exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: data.email },
+      });
 
+      if (existingUser) {
+        return {
+          ...existingUser,
+          id: existingUser.id.toString(),
+          emailVerified: existingUser.emailVerified,
+        } as AdapterUser;
+      }
+
+      // If no existing user, create new one
+      const { email, firstName, lastName, image, emailVerified, phone } = data;
       const user = await prisma.user.create({
         data: {
           email,
@@ -31,6 +43,32 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         id: user.id.toString(),
         emailVerified: user.emailVerified,
       } as AdapterUser;
+    },
+    linkAccount: async (data) => {
+      // First check if account exists
+      const existingAccount = await prisma.account.findFirst({
+        where: {
+          userId: data.userId,
+          provider: data.provider,
+        },
+      });
+
+      if (existingAccount) {
+        await prisma.account.update({
+          where: { id: existingAccount.id },
+          data: {
+            access_token: data.access_token,
+            expires_at: data.expires_at,
+            id_token: data.id_token,
+            scope: data.scope,
+            token_type: data.token_type,
+          },
+        });
+        return;
+      }
+
+      await prisma.account.create({ data });
+      return;
     },
   };
 }

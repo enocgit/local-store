@@ -21,28 +21,19 @@ export const {
   events: {
     async createUser({ user }) {
       try {
-        // Send welcome email when a new user is created (both OAuth and credentials)
-        if (user.email && typeof user.email === "string") {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email as string | undefined },
+          select: { emailVerified: true },
+        });
+
+        if (!existingUser && user.email && typeof user.email === "string") {
           await sendWelcomeEmail(
             user.email,
             user.firstName || user.name?.split(" ")[0] || "Valued Customer",
           );
-
-          // Ensure user is properly created in the database
-          const dbUser = await prisma.user.findUnique({
-            where: { email: user.email },
-            include: { accounts: true },
-          });
-
-          if (!dbUser) {
-            console.error(
-              "User not found in database after creation:",
-              user.email,
-            );
-          }
         }
       } catch (error) {
-        console.error("Error in createUser event:", error);
+        console.error("Error sending welcome email:", error);
       }
     },
   },
