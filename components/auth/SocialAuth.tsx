@@ -21,8 +21,8 @@ export function SocialAuth({ isLoading, userRole }: SocialAuthProps) {
 
   const handleSignIn = async (provider: "google" | "facebook") => {
     setLoadingProvider(provider);
-    const callbackUrl = getCallbackUrl(pathname, userRole);
-    await signIn(provider, { callbackUrl });
+    const redirectTo = getCallbackUrl(pathname, userRole);
+    await signIn(provider, { redirectTo });
     setLoadingProvider(null);
   };
 

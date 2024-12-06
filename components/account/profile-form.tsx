@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import Loader from "../ui/loader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 import { useToast } from "@/hooks/use-toast";
 const profileSchema = z.object({
@@ -45,6 +46,7 @@ async function updateProfile(data: ProfileFormValues) {
 export function ProfileForm({ user }: { user: User }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { update: updateSession } = useSession();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -60,6 +62,9 @@ export function ProfileForm({ user }: { user: User }) {
     onSuccess: (data) => {
       // Update the user data in the cache
       queryClient.setQueryData(["user"], data);
+      updateSession({
+        user: data,
+      });
       toast({
         title: "Profile updated",
         description: "Your profile has been updated",
