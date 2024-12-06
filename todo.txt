@@ -1,0 +1,3 @@
+- [ ] Whitelist specific IP ranges:
+    - Vercel's deployment IPs
+    - Development IPs
