@@ -1,5 +1,8 @@
+"use client";
 import Link from "next/link";
 import { Facebook, Instagram, Twitter } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 const footerLinks = {
   company: [
@@ -21,8 +24,13 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
   return (
-    <footer className="border-t bg-white">
+    <footer
+      className={cn("border-t bg-white", {
+        hidden: pathname.startsWith("/bridge"),
+      })}
+    >
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
