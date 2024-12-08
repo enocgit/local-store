@@ -41,7 +41,7 @@ const formSchema = z.object({
   badge: z.string().nullable(),
   featured: z.boolean().default(false),
   categoryId: z.string().min(1, "Category is required"),
-  weightOptions: z.array(z.number()),
+  weightOptions: z.array(z.number()).default([]),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -53,7 +53,9 @@ interface ProductFormProps {
 
 export function ProductForm({ initialData, categories }: ProductFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [weightOption, setWeightOption] = useState<number | undefined>(undefined);
+  const [weightOption, setWeightOption] = useState<number | undefined>(
+    undefined,
+  );
   const router = useRouter();
   const { toast } = useToast();
   const isEditing = !!initialData?.id;
@@ -77,13 +79,16 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
   const onSubmit = async (data: ProductFormValues) => {
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/products${isEditing ? `/${initialData.id}` : ""}`, {
-        method: isEditing ? "PATCH" : "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `/api/products${isEditing ? `/${initialData.id}` : ""}`,
+        {
+          method: isEditing ? "PATCH" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Something went wrong");
@@ -109,14 +114,20 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
 
   const addWeightOption = () => {
     if (weightOption) {
-      form.setValue("weightOptions", [...form.getValues("weightOptions"), weightOption]);
+      form.setValue("weightOptions", [
+        ...form.getValues("weightOptions"),
+        weightOption,
+      ]);
       setWeightOption(undefined);
     }
   };
 
   const removeWeightOption = (index: number) => {
     const currentOptions = form.getValues("weightOptions");
-    form.setValue("weightOptions", currentOptions.filter((_, i) => i !== index));
+    form.setValue(
+      "weightOptions",
+      currentOptions.filter((_, i) => i !== index),
+    );
   };
 
   return (
@@ -130,7 +141,11 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input disabled={isLoading} placeholder="Product name" {...field} />
+                  <Input
+                    disabled={isLoading}
+                    placeholder="Product name"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -188,7 +203,11 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
                       placeholder="12.99"
                       {...field}
                       value={field.value || ""}
-                      onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value ? Number(e.target.value) : null,
+                        )
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -231,14 +250,15 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
                       onUploadError={(error: Error) => {
                         toast({
                           title: "Error",
-                          description: "Failed to upload image. Please try again.",
+                          description:
+                            "Failed to upload image. Please try again.",
                           variant: "destructive",
                         });
                       }}
                     />
                     <div className="grid grid-cols-3 gap-4">
                       {field.value.map((image, index) => (
-                        <div key={image} className="relative group">
+                        <div key={image} className="group relative">
                           <div className="relative h-40 w-full">
                             <Image
                               src={image}
@@ -251,8 +271,12 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
                             type="button"
                             variant="destructive"
                             size="icon"
-                            className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={() => field.onChange(field.value.filter((_, i) => i !== index))}
+                            className="absolute -right-2 -top-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                            onClick={() =>
+                              field.onChange(
+                                field.value.filter((_, i) => i !== index),
+                              )
+                            }
                           >
                             <X className="h-4 w-4" />
                           </Button>
@@ -351,7 +375,9 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
                     <div className="flex gap-2">
                       <Input
                         value={weightOption}
-                        onChange={(e) => setWeightOption(Number(e.target.value))}
+                        onChange={(e) =>
+                          setWeightOption(Number(e.target.value))
+                        }
                         placeholder="e.g., 5"
                       />
                       <Button type="button" onClick={addWeightOption}>
@@ -362,7 +388,7 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
                       {field.value.map((option, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-1 bg-secondary text-secondary-foreground px-2 py-1 rounded-md"
+                          className="flex items-center gap-1 rounded-md bg-secondary px-2 py-1 text-secondary-foreground"
                         >
                           {option}kg
                           <Button
@@ -379,9 +405,7 @@ export function ProductForm({ initialData, categories }: ProductFormProps) {
                     </div>
                   </div>
                 </FormControl>
-                <FormDescription>
-                  Optional weight options in kg
-                </FormDescription>
+                <FormDescription>Optional weight options in kg</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
