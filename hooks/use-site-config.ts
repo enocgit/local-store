@@ -18,7 +18,11 @@ export function useSiteConfig() {
   return useQuery({
     queryKey: ["site-config"],
     queryFn: async () => {
-      const res = await fetch("/api/config");
+      const res = await fetch("/api/config", {
+        next: {
+          revalidate: 60 * 60 * 24,
+        },
+      });
       const configs: SiteConfig[] = await res.json();
       return transformConfigs(configs);
     },

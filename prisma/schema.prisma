@@ -231,3 +231,23 @@ model SiteConfig {
   label     String
   group     String
 }
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  UNSUBSCRIBED
+}
+
+model Subscription {
+  id         String             @id @default(auto()) @map("_id") @db.ObjectId
+  email      String
+  categories String[] // ["newsletter", "weekly_specials", etc.]
+  status     SubscriptionStatus @default(PENDING)
+  token      String             @unique // for verification/unsubscribe
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  @@unique([email, categories])
+  @@index([email])
+  @@map("subscriptions")
+}
