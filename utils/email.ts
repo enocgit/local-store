@@ -238,6 +238,7 @@ export const sendSubscriptionVerificationEmail = async (
 ) => {
   const subject = "Verify your Tropikal Foods subscription";
   const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-subscription?token=${token}`;
+  const unsubscribeUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(userEmail)}`;
 
   const text = `
     Thank you for subscribing to Tropikal Foods!
@@ -267,6 +268,15 @@ export const sendSubscriptionVerificationEmail = async (
         If you didn't request this subscription, you can safely ignore this email.
       </p>
       <p>Best regards,<br>The Tropikal Foods Bradford Team</p>
+      
+      <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
+        <p>
+          Don't want to receive these emails? 
+          <a href="${unsubscribeUrl}" style="color: #666; text-decoration: underline;">
+            Unsubscribe here
+          </a>
+        </p>
+      </div>
     </div>
   `;
 
@@ -274,6 +284,36 @@ export const sendSubscriptionVerificationEmail = async (
     to: userEmail,
     subject,
     text,
+    html,
+    emailType: "SUBSCRIPTION",
+  });
+};
+
+export const sendMarketingEmail = async (
+  userEmail: string,
+  subject: string,
+  content: string,
+) => {
+  const unsubscribeUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(userEmail)}`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      ${content}
+      
+      <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
+        <p>
+          Don't want to receive these emails? 
+          <a href="${unsubscribeUrl}" style="color: #666; text-decoration: underline;">
+            Unsubscribe here
+          </a>
+        </p>
+      </div>
+    </div>
+  `;
+
+  return sendEmail({
+    to: userEmail,
+    subject,
     html,
     emailType: "SUBSCRIPTION",
   });
