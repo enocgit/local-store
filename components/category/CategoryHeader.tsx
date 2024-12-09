@@ -22,8 +22,12 @@ export function CategoryHeader({
       />
       <div className="container relative z-10 mx-auto px-4">
         <div className="max-w-2xl">
-          <h1 className="mb-4 text-4xl font-bold text-white">{title}</h1>
-          <p className="text-xl text-gray-200">{description}</p>
+          <h1 className="mb-4 animate-fade-in text-4xl font-bold text-white">
+            {title}
+          </h1>
+          <p className="animate-slide-up-delay text-xl text-gray-200">
+            {description}
+          </p>
         </div>
       </div>
     </div>

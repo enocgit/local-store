@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { RelatedProducts } from "@/components/product/RelatedProducts";
+import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { calculatePriceForDate, formatPrice } from "@/lib/utils";
 import RatingStars from "@/components/RatingStars";
 import { ProductReviews } from "@/components/product/ProductReviews";
@@ -251,7 +251,7 @@ function ProductDetailPage({ product: initialProduct, session }: Props) {
         </Tabs>
 
         {/* Related Products */}
-        {/* <RelatedProducts product={product} /> */}
+        <RelatedProducts product={product} />
       </div>
     </div>
   );

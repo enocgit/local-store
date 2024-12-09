@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -25,9 +26,24 @@ const formSchema = z.object({
   message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
+interface Location {
+  address: string;
+  city: string;
+  postcode: string;
+  country: string;
+}
+
+interface OpeningHours {
+  opened: string;
+  closed: string;
+}
+
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { data: siteConfigs } = useSiteConfig();
+  const location = (siteConfigs?.location as Location) || null;
+  const openingHours = (siteConfigs?.opening_hours as OpeningHours) || null;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -94,11 +110,11 @@ export default function ContactPage() {
                 <div>
                   <h3 className="mb-1 font-semibold">Our Location</h3>
                   <p className="text-muted-foreground">
-                    123 Store Street
+                    {location?.address || ""}
                     <br />
-                    London, EC1A 1BB
+                    {location?.city || ""}, {location?.postcode || ""}
                     <br />
-                    United Kingdom
+                    {location?.country || ""}
                   </p>
                 </div>
               </div>
@@ -108,10 +124,10 @@ export default function ContactPage() {
                 <div>
                   <h3 className="mb-1 font-semibold">Email Us</h3>
                   <a
-                    href={`mailto:${process.env.EMAIL_FROM_HELLO}`}
+                    href={`mailto:${siteConfigs?.contact_email}`}
                     className="text-primary hover:underline"
                   >
-                    {process.env.EMAIL_FROM_HELLO}
+                    {siteConfigs?.contact_email?.toString() || ""}
                   </a>
                 </div>
               </div>
@@ -121,10 +137,10 @@ export default function ContactPage() {
                 <div>
                   <h3 className="mb-1 font-semibold">Call Us</h3>
                   <a
-                    href="tel:+442012345678"
+                    href={`tel:${siteConfigs?.support_phone}`}
                     className="text-primary hover:underline"
                   >
-                    +44 (0) 20 1234 5678
+                    {siteConfigs?.support_phone?.toString() || ""}
                   </a>
                 </div>
               </div>
@@ -134,11 +150,9 @@ export default function ContactPage() {
                 <div>
                   <h3 className="mb-1 font-semibold">Opening Hours</h3>
                   <p className="text-muted-foreground">
-                    Monday - Friday: 9:00 AM - 6:00 PM
+                    {openingHours?.opened || ""}
                     <br />
-                    Saturday: 10:00 AM - 4:00 PM
-                    <br />
-                    Sunday: Closed
+                    {openingHours?.closed || ""}: Closed
                   </p>
                 </div>
               </div>
@@ -147,14 +161,14 @@ export default function ContactPage() {
             {/* Map */}
             <div className="relative aspect-video overflow-hidden rounded-lg border">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2482.7397444128594!2d-0.12802772275901915!3d51.51744997169591!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761b323093d307%3A0x2fb199016d5642a7!2sThe%20British%20Museum!5e0!3m2!1sen!2suk!4v1709865435695!5m2!1sen!2suk"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2356.625719698069!2d-1.7595977227697837!3d53.79614877242321!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487be14c5b98f0bb%3A0x7af7a4dea8d83b50!2sTropical%20Food%20Superstore!5e0!3m2!1sen!2sgh!4v1733673972891!5m2!1sen!2sgh"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-              />
+              ></iframe>
             </div>
           </div>
 
