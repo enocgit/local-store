@@ -26,8 +26,13 @@ import { useSession, signOut } from "next-auth/react";
 import Loader from "./ui/loader";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { SearchButton } from "./ui/search-button";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
+
+interface NewArrivals {
+  title: string;
+}
 
 interface Category {
   id: string;
@@ -49,6 +54,8 @@ export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { state } = useCart();
   const [loggingOut, setLoggingOut] = useState(false);
+  const { data: siteConfig } = useSiteConfig();
+  const newArrivals = (siteConfig?.new_arrivals as NewArrivals) || null;
 
   const { data: categories = [], isLoading } = useQuery<Category[]>({
     queryKey: ["categories"],
@@ -58,7 +65,7 @@ export function Navbar() {
   const { data: session } = useSession();
 
   const navigation = [
-    { name: "New Arrivals", href: `/category/${NEW_ARRIVALS_SLUG}` },
+    { name: newArrivals?.title, href: `/category/${NEW_ARRIVALS_SLUG}` },
     ...categories.slice(0, 4).map((category: Category) => ({
       name: category.name,
       href: `/category/${category.id}`,

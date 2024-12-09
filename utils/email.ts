@@ -14,7 +14,7 @@ interface EmailData {
   emailType: EmailType;
 }
 
-type EmailType = "WELCOME" | "ORDER_CONFIRMATION" | "SUPPORT";
+type EmailType = "WELCOME" | "ORDER_CONFIRMATION" | "SUPPORT" | "SUBSCRIPTION";
 
 const getFromEmail = (emailType: EmailType): string => {
   const address = (() => {
@@ -31,6 +31,10 @@ const getFromEmail = (emailType: EmailType): string => {
         return (
           process.env.EMAIL_FROM_SUPPORT || "support@tropikalfoodsbradford.com"
         );
+      case "SUBSCRIPTION":
+        return (
+          process.env.EMAIL_FROM_HELLO || "hello@tropikalfoodsbradford.com"
+        );
       default:
         return (
           process.env.EMAIL_FROM_HELLO || "hello@tropikalfoodsbradford.com"
@@ -46,6 +50,8 @@ const getFromEmail = (emailType: EmailType): string => {
         return "Tropikal Foods Orders";
       case "SUPPORT":
         return "Tropikal Foods Support";
+      case "SUBSCRIPTION":
+        return "Tropikal Foods Subscriptions";
       default:
         return "Tropikal Foods";
     }
@@ -222,5 +228,53 @@ export const sendOrderConfirmationEmail = async (
     text,
     html,
     emailType: "ORDER_CONFIRMATION",
+  });
+};
+
+// Add subscription verification email function
+export const sendSubscriptionVerificationEmail = async (
+  userEmail: string,
+  token: string,
+) => {
+  const subject = "Verify your Tropikal Foods subscription";
+  const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-subscription?token=${token}`;
+
+  const text = `
+    Thank you for subscribing to Tropikal Foods!
+    
+    Please verify your subscription by clicking the link below:
+    ${verificationUrl}
+    
+    If you didn't request this subscription, you can safely ignore this email.
+    
+    Best regards,
+    The Tropikal Foods Team
+  `;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1 style="color: #333;">Verify Your Subscription</h1>
+      <p>Thank you for subscribing to Tropikal Foods Bradford!</p>
+      <p>Please verify your subscription by clicking the button below:</p>
+      <p style="text-align: center; margin: 30px 0;">
+        <a href="${verificationUrl}" 
+           style="background-color: #e11d48; color: white; padding: 12px 24px; 
+                  text-decoration: none; border-radius: 6px; display: inline-block;">
+          Verify Subscription
+        </a>
+      </p>
+      <p style="color: #666; font-size: 0.9em;">
+        If you didn't request this subscription, you can safely ignore this email.
+      </p>
+      <p>Best regards,<br>The Tropikal Foods Bradford Team</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: userEmail,
+    subject,
+    text,
+    html,
+    emailType: "SUBSCRIPTION",
   });
 };

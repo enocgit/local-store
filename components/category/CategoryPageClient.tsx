@@ -29,7 +29,11 @@ export default function CategoryPage({ id }: { id: string }) {
         if (minPrice) url.searchParams.set("minPrice", minPrice);
         if (maxPrice) url.searchParams.set("maxPrice", maxPrice);
 
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          next: {
+            revalidate: 60 * 60 * 24,
+          },
+        });
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }

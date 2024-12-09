@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const footerLinks = {
   company: [
@@ -12,7 +14,6 @@ const footerLinks = {
   support: [{ name: "Track Order", href: "#" }],
   connect: [
     { name: "Contact Us", href: "/contact" },
-    { name: "Store Locator", href: "#" },
     { name: "Feedback", href: "/feedback" },
   ],
 };
@@ -25,6 +26,44 @@ const socialLinks = [
 
 export function Footer() {
   const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  async function handleSubscribe(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const form = e.currentTarget;
+    const email = form.email.value;
+
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          categories: ["newsletter"],
+        }),
+      });
+
+      if (!response.ok) throw new Error();
+
+      toast({
+        title: "Subscription successful",
+        description: "Please check your email to confirm your subscription",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Failed to subscribe",
+        description: "Failed to subscribe. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <footer
       className={cn("border-t bg-white", {
@@ -98,17 +137,20 @@ export function Footer() {
             <p className="mb-4 text-sm text-gray-600">
               Subscribe to our newsletter for exclusive offers and updates.
             </p>
-            <form className="flex gap-2">
+            <form onSubmit={handleSubscribe} className="flex gap-2">
               <input
+                name="email"
                 type="email"
                 placeholder="Enter your email"
                 className="min-w-0 flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary"
+                required
               />
               <button
                 type="submit"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary"
+                disabled={isLoading}
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
               >
-                Subscribe
+                {isLoading ? "Subscribing..." : "Subscribe"}
               </button>
             </form>
           </div>

@@ -1,4 +1,4 @@
-import Newsletter from "@/components/Newsletter";
+import WeeklySpecials from "@/components/WeeklySpecials";
 import ShopByCategory from "@/components/home/ShopByCategory";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import Hero from "@/components/home/Hero";
@@ -12,7 +12,7 @@ export default function Home() {
 
       <ShopByCategory />
 
-      <Newsletter />
+      <WeeklySpecials />
     </div>
   );
 }
