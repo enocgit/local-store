@@ -134,42 +134,74 @@ export async function getProductsByCategory(
   }
 }
 
-export async function getAllProducts(minPrice?: number, maxPrice?: number) {
+export async function getAllProducts(
+  minPrice?: number,
+  maxPrice?: number,
+  page: number = 1,
+  limit: number = 9,
+) {
   try {
-    return await prisma.product.findMany({
-      where: {
-        ...(minPrice !== undefined &&
-          maxPrice !== undefined && {
-            price: {
-              gte: minPrice,
-              lte: maxPrice,
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where: {
+          ...(minPrice !== undefined &&
+            maxPrice !== undefined && {
+              price: {
+                gte: minPrice,
+                lte: maxPrice,
+              },
+            }),
+        },
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          comparePrice: true,
+          rating: true,
+          images: true,
+          badge: true,
+          category: {
+            select: {
+              name: true,
             },
-          }),
-      },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        price: true,
-        comparePrice: true,
-        rating: true,
-        images: true,
-        badge: true,
-        category: {
-          select: {
-            name: true,
+          },
+          reviews: {
+            select: {
+              rating: true,
+            },
           },
         },
-        reviews: {
-          select: {
-            rating: true,
-          },
+      }),
+      prisma.product.count({
+        where: {
+          ...(minPrice !== undefined &&
+            maxPrice !== undefined && {
+              price: {
+                gte: minPrice,
+                lte: maxPrice,
+              },
+            }),
         },
-      },
-    });
+      }),
+    ]);
+
+    return {
+      products,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    };
   } catch (error) {
     console.error("Failed to fetch products:", error);
-    return [];
+    return {
+      products: [],
+      totalPages: 0,
+      currentPage: 1,
+    };
   }
 }
 

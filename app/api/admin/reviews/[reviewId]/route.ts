@@ -4,9 +4,11 @@ import { auth } from "@/auth";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { reviewId: string } },
+  { params }: { params: Promise<{ reviewId: string }> },
 ) {
   try {
+    const { reviewId } = await params;
+
     const session = await auth();
 
     if (!session?.user || session.user.role !== "ADMIN") {
@@ -15,7 +17,7 @@ export async function DELETE(
 
     const review = await prisma.review.delete({
       where: {
-        id: params.reviewId,
+        id: reviewId,
       },
     });
 
