@@ -6,7 +6,7 @@ export default function CmsPage() {
     <div className="p-6">
       <Heading
         title="Content Management"
-        description="Manage your website content and settings"
+        description="Manage website content and settings"
       />
       <CmsContent />
     </div>

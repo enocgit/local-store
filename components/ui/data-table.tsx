@@ -68,6 +68,11 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
     },
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
+    },
   });
 
   // Filter data based on date range

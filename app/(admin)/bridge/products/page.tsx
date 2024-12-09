@@ -5,18 +5,19 @@ import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { Heading } from "@/components/ui/heading";
 
 export default async function ProductsPage() {
   const products = await prisma.product.findMany({
     orderBy: {
-      createdAt: 'desc'
+      createdAt: "desc",
     },
     include: {
       category: true,
-    }
+    },
   });
 
-  const formattedProducts = products.map(product => ({
+  const formattedProducts = products.map((product) => ({
     id: product.id,
     name: product.name,
     description: product.description,
@@ -33,12 +34,7 @@ export default async function ProductsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Products</h2>
-          <p className="text-muted-foreground">
-            Manage your product catalog
-          </p>
-        </div>
+        <Heading title="Products" description="Manage your products" />
         <Link href="/bridge/products/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
@@ -47,11 +43,7 @@ export default async function ProductsPage() {
         </Link>
       </div>
 
-      <DataTable 
-        columns={columns} 
-        data={formattedProducts}
-        searchKey="name"
-      />
+      <DataTable columns={columns} data={formattedProducts} searchKey="name" />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   Star,
   Home,
   FileText,
+  CreditCard,
 } from "lucide-react";
 
 const navigation = [
@@ -20,6 +21,7 @@ const navigation = [
   { name: "Customers", href: "/bridge/customers", icon: Users },
   { name: "Reviews", href: "/bridge/reviews", icon: Star },
   { name: "Messages", href: "/bridge/messages", icon: MessageSquare },
+  { name: "Subscriptions", href: "/bridge/subscriptions", icon: CreditCard },
   { name: "CMS", href: "/bridge/cms", icon: FileText },
 ];
 
