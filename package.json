@@ -11,7 +11,11 @@
     "docker:down": "docker compose down",
     "prisma:generate": "npx prisma generate",
     "prisma:push": "npx prisma db push",
-    "prisma:format": "npx prisma format"
+    "prisma:format": "npx prisma format",
+    "prisma:seed": "ts-node --esm prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "ts-node --esm prisma/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.3",
@@ -30,6 +34,7 @@
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-radio-group": "^1.2.1",
     "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slider": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
@@ -53,6 +58,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
     "react-hook-form": "^7.53.1",
+    "react-intersection-observer": "^9.13.1",
     "recharts": "^2.13.3",
     "resend": "^4.0.1",
     "sonner": "^1.7.0",
@@ -64,7 +70,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20",
+    "@types/node": "^20.17.9",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
@@ -74,7 +80,8 @@
     "prettier-plugin-tailwindcss": "^0.6.8",
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   },
   "overrides": {
     "oidc-token-hash": "5.0.1"

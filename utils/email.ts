@@ -14,7 +14,7 @@ interface EmailData {
   emailType: EmailType;
 }
 
-type EmailType = "WELCOME" | "ORDER_CONFIRMATION" | "SUPPORT" | "ADMIN";
+type EmailType = "WELCOME" | "ORDER_CONFIRMATION" | "SUPPORT";
 
 const getFromEmail = (emailType: EmailType): string => {
   const address = (() => {
@@ -31,10 +31,6 @@ const getFromEmail = (emailType: EmailType): string => {
         return (
           process.env.EMAIL_FROM_SUPPORT || "support@tropikalfoodsbradford.com"
         );
-      case "ADMIN":
-        return (
-          process.env.EMAIL_FROM_ADMIN || "admin@tropikalfoodsbradford.com"
-        );
       default:
         return (
           process.env.EMAIL_FROM_HELLO || "hello@tropikalfoodsbradford.com"
@@ -50,8 +46,6 @@ const getFromEmail = (emailType: EmailType): string => {
         return "Tropikal Foods Orders";
       case "SUPPORT":
         return "Tropikal Foods Support";
-      case "ADMIN":
-        return "Tropikal Foods Admin";
       default:
         return "Tropikal Foods";
     }
@@ -61,18 +55,15 @@ const getFromEmail = (emailType: EmailType): string => {
 };
 
 // Validate required environment variables
-[
-  "EMAIL_FROM_HELLO",
-  "EMAIL_FROM_ORDERS",
-  "EMAIL_FROM_SUPPORT",
-  "EMAIL_FROM_ADMIN",
-].forEach((envVar) => {
-  if (!process.env[envVar]) {
-    console.warn(
-      `Warning: ${envVar} environment variable is not set, using default value`,
-    );
-  }
-});
+["EMAIL_FROM_HELLO", "EMAIL_FROM_ORDERS", "EMAIL_FROM_SUPPORT"].forEach(
+  (envVar) => {
+    if (!process.env[envVar]) {
+      console.warn(
+        `Warning: ${envVar} environment variable is not set, using default value`,
+      );
+    }
+  },
+);
 
 export const sendEmail = async ({
   to,

@@ -30,7 +30,7 @@ interface ProductReviewsResponse {
 
 export function useProductReviews({
   productId,
-  limit = 5,
+  limit = 3,
 }: {
   productId: string;
   limit?: number;

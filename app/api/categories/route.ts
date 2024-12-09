@@ -13,13 +13,13 @@ export async function GET() {
   try {
     const categories = await prisma.category.findMany({
       orderBy: {
-        createdAt: 'desc'
+        createdAt: "desc",
       },
       include: {
         _count: {
-          select: { products: true }
-        }
-      }
+          select: { products: true },
+        },
+      },
     });
     return NextResponse.json(categories);
   } catch (error) {
@@ -42,10 +42,7 @@ export async function POST(req: Request) {
     const validatedFields = categorySchema.safeParse(body);
 
     if (!validatedFields.success) {
-      return NextResponse.json(
-        { error: "Invalid fields" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Invalid fields" }, { status: 400 });
     }
 
     const category = await prisma.category.create({
