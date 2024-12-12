@@ -3,12 +3,13 @@ import { prisma } from "@/lib/prisma";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { subscriptionId: string } }
+  { params }: { params: Promise<{ subscriptionId: string }> },
 ) {
+  const { subscriptionId } = await params;
   try {
     const subscription = await prisma.subscription.delete({
       where: {
-        id: params.subscriptionId,
+        id: subscriptionId,
       },
     });
 
