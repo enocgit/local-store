@@ -17,7 +17,14 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { BLUR_DATA_URL } from "@/enum/image";
 
 export function ProductCard({ product }: ProductCardProps) {
   const { state, dispatch } = useCart();
@@ -66,6 +73,8 @@ export function ProductCard({ product }: ProductCardProps) {
             src={product?.images?.[0]}
             alt={product?.name || ""}
             fill
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             className="object-cover transition-transform group-hover:scale-105"
           />
           {product?.badge && (
@@ -84,7 +93,6 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
         <div className="mt-2 flex items-center justify-between">
-
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold">
               {formatPrice(product?.price)}
@@ -135,5 +143,5 @@ export function ProductCard({ product }: ProductCardProps) {
         </DialogContent>
       </Dialog>
     </Card>
-  )
+  );
 }

@@ -22,6 +22,7 @@ import { useSession } from "next-auth/react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Address } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/ui/loader";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
@@ -47,6 +48,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>("new");
+  const [isAddressesLoading, setIsAddressesLoading] = useState<boolean>(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,9 +66,11 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     const fetchAddresses = async () => {
+      setIsAddressesLoading(true);
       const response = await fetch("/api/addresses");
       const data = await response.json();
       setSavedAddresses(data.addresses);
+      setIsAddressesLoading(false);
     };
 
     fetchAddresses();
@@ -121,7 +125,12 @@ export default function CheckoutPage() {
 
       const { addressId } = await addressResponse.json();
 
-      // Then create the order with the new address ID
+      // Check if the delivery should be free based on postcode
+      const isBD1Area = values.postcode.toUpperCase().startsWith("BD1");
+      const adjustedDeliveryFee = isBD1Area ? 0 : state.deliveryFee;
+      const adjustedTotal = state.subtotal + adjustedDeliveryFee;
+
+      // Then create the order with the adjusted delivery fee
       const orderResponse = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,8 +141,8 @@ export default function CheckoutPage() {
           phone: values.phone,
           items: state.items,
           subtotal: state.subtotal,
-          deliveryFee: state.deliveryFee,
-          total: state.total,
+          deliveryFee: adjustedDeliveryFee,
+          total: adjustedTotal,
           deliveryDate: state.deliveryDate,
           deliveryTime: state.deliveryTime,
           addressId: addressId,
@@ -228,39 +237,51 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                {savedAddresses.length > 0 && (
-                  <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm">
-                    <h2 className="text-xl font-semibold">Delivery Address</h2>
-                    <RadioGroup
-                      value={selectedAddressId}
-                      onValueChange={setSelectedAddressId}
-                      className="space-y-2"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="new" id="new-address" />
-                        <label htmlFor="new-address" className="cursor-pointer">
-                          Enter new address
-                        </label>
-                      </div>
-
-                      {savedAddresses.map((address) => (
-                        <div
-                          key={address.id}
-                          className="flex items-center space-x-2"
-                        >
-                          <RadioGroupItem value={address.id} id={address.id} />
+                {isAddressesLoading ? (
+                  <Loader className="border-t-black" />
+                ) : (
+                  savedAddresses.length > 0 && (
+                    <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm">
+                      <h2 className="text-xl font-semibold">
+                        Delivery Address
+                      </h2>
+                      <RadioGroup
+                        value={selectedAddressId}
+                        onValueChange={setSelectedAddressId}
+                        className="space-y-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="new" id="new-address" />
                           <label
-                            htmlFor={address.id}
+                            htmlFor="new-address"
                             className="cursor-pointer"
                           >
-                            {address.address1}
-                            {address.address2 && `, ${address.address2}`}
-                            {`, ${address.city}, ${address.postcode}`}
+                            Enter new address
                           </label>
                         </div>
-                      ))}
-                    </RadioGroup>
-                  </div>
+
+                        {savedAddresses.map((address) => (
+                          <div
+                            key={address.id}
+                            className="flex items-center space-x-2"
+                          >
+                            <RadioGroupItem
+                              value={address.id}
+                              id={address.id}
+                            />
+                            <label
+                              htmlFor={address.id}
+                              className="cursor-pointer"
+                            >
+                              {address.address1}
+                              {address.address2 && `, ${address.address2}`}
+                              {`, ${address.city}, ${address.postcode}`}
+                            </label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  )
                 )}
 
                 {selectedAddressId === "new" && (

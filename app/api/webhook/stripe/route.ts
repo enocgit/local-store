@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { headers } from "next/headers";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
@@ -11,7 +10,8 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const sig = headers().get("stripe-signature");
+  const headersList = await headers();
+  const sig = headersList.get("stripe-signature");
 
   let event: Stripe.Event;
 

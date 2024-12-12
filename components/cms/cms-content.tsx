@@ -16,7 +16,7 @@ export function CmsContent() {
   });
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader className="border-t-black" />;
   }
 
   // Group configs by their group field

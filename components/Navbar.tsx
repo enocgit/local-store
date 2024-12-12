@@ -187,7 +187,10 @@ export function Navbar() {
             {isLoading ? (
               <>
                 {Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton key={index} className="h-3 w-10 rounded-md" />
+                  <Skeleton
+                    key={`desktop-skeleton-${index}`}
+                    className="h-3 w-10 rounded-md"
+                  />
                 ))}
               </>
             ) : (
@@ -255,7 +258,7 @@ export function Navbar() {
                         <>
                           {Array.from({ length: 5 }).map((_, index) => (
                             <Skeleton
-                              key={index}
+                              key={`mobile-skeleton-${index}`}
                               className="-mx-3 mb-6 block h-3 w-full rounded-md"
                             />
                           ))}

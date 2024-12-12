@@ -30,6 +30,7 @@ import { LoginDialog } from "@/components/auth/LoginDialog";
 export default function CartPage() {
   const { state, dispatch } = useCart();
   const { data: session } = useSession();
+  const user = session?.user;
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const router = useRouter();
 
@@ -43,12 +44,13 @@ export default function CartPage() {
   };
 
   const updateQuantity = (id: string, change: number, weight?: number) => {
-    const item = state.items.find((item) => 
-      (item.weight ? `${item.id}-${item.weight}` : item.id) === 
-      (weight ? `${id}-${weight}` : id)
+    const item = state.items.find(
+      (item) =>
+        (item.weight ? `${item.id}-${item.weight}` : item.id) ===
+        (weight ? `${id}-${weight}` : id),
     );
     if (!item) return;
-  
+
     const newQuantity = Math.max(0, item.quantity + change);
     if (newQuantity === 0) {
       dispatch({
@@ -67,9 +69,7 @@ export default function CartPage() {
   const total = state.subtotal + deliveryFee;
 
   const canCheckout =
-    state.deliveryDate &&
-    state.deliveryTime &&
-    state.items.length > 0;
+    state.deliveryDate && state.deliveryTime && state.items.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -150,7 +150,9 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => updateQuantity(item.id, -1, item.weight)}
+                            onClick={() =>
+                              updateQuantity(item.id, -1, item.weight)
+                            }
                           >
                             <Minus className="h-4 w-4" />
                           </Button>
@@ -160,7 +162,9 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => updateQuantity(item.id, 1, item.weight)}
+                            onClick={() =>
+                              updateQuantity(item.id, 1, item.weight)
+                            }
                           >
                             <Plus className="h-4 w-4" />
                           </Button>
@@ -260,19 +264,22 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery</span>
-                  <span>
-                    {deliveryFee === 0 ? (
-                      <span className="text-green-600">Free</span>
-                    ) : (
-                      formatPrice(deliveryFee)
-                    )}
-                  </span>
+                  <span>{formatPrice(deliveryFee)}</span>
                 </div>
-                {deliveryFee > 0 && (
+                {/* {user?.addresses?.some((address) =>
+                  address.postcode?.toUpperCase().startsWith("BD1"),
+                ) ? (
+                  <p className="text-sm text-gray-600">
+                    Free delivery for BD1 area
+                  </p>
+                ) : (
                   <p className="text-sm text-gray-600">
                     Free delivery on orders over £50
                   </p>
-                )}
+                )} */}
+                <p className="text-sm text-gray-600">
+                  Free delivery for BD1 area
+                </p>
                 <div className="mt-2 border-t pt-2">
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
@@ -302,9 +309,7 @@ export default function CartPage() {
                   {!state.deliveryTime && (
                     <li>Please select a delivery time</li>
                   )}
-                  {state.items.length === 0 && (
-                    <li>Your cart is empty</li>
-                  )}
+                  {state.items.length === 0 && <li>Your cart is empty</li>}
                 </ul>
               </CardFooter>
             </Card>

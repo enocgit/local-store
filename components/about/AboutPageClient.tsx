@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSiteConfig } from "@/hooks/use-site-config";
 import { Package } from "lucide-react";
+import { BLUR_DATA_URL } from "@/enum/image";
 
 interface AboutMission {
   title: string;
@@ -64,6 +65,8 @@ export default function AboutPageClient() {
               }
               alt={aboutMission?.title || ""}
               fill
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
               className="rounded-lg object-cover"
             />
           </div>
