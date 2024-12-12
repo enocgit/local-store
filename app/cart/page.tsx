@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "@/components/ui/calendar";
@@ -28,6 +28,7 @@ import { useSession } from "next-auth/react";
 import { LoginDialog } from "@/components/auth/LoginDialog";
 import { useSiteConfig } from "@/hooks/use-site-config";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CartPage() {
   const { state, dispatch } = useCart();
@@ -35,6 +36,36 @@ export default function CartPage() {
   const { data: siteConfigs, isLoading } = useSiteConfig();
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
+  const [productStocks, setProductStocks] = useState<Record<string, number>>(
+    {},
+  );
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      const stockPromises = state.items.map(async (item) => {
+        const response = await fetch(`/api/products/${item.id}/stock`);
+        if (!response.ok) return null;
+        const { stock } = await response.json();
+        return { id: item.id, stock };
+      });
+
+      const stocks = await Promise.all(stockPromises);
+      const stockMap = stocks.reduce(
+        (acc, item) => {
+          if (item) {
+            acc[item.id] = item.stock;
+          }
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
+
+      setProductStocks(stockMap);
+    };
+
+    fetchStocks();
+  }, []);
 
   const handleCheckoutClick = () => {
     if (!session) {
@@ -54,6 +85,21 @@ export default function CartPage() {
     if (!item) return;
 
     const newQuantity = Math.max(0, item.quantity + change);
+    const availableStock = productStocks[id];
+
+    if (
+      change > 0 &&
+      availableStock !== undefined &&
+      newQuantity > availableStock
+    ) {
+      toast({
+        title: "Not enough stock",
+        description: `Only ${availableStock} items available`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (newQuantity === 0) {
       dispatch({
         type: "REMOVE_ITEM",
