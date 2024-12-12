@@ -19,18 +19,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Minus, Plus, Trash2, Truck } from "lucide-react";
+import { Loader2, Minus, Plus, Trash2, Truck } from "lucide-react";
 import { useCart } from "@/lib/store/cart-context";
 import { DELIVERY_TIME_SLOTS } from "@/lib/constants";
 import { formatPrice, isDeliveryDay } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LoginDialog } from "@/components/auth/LoginDialog";
+import { useSiteConfig } from "@/hooks/use-site-config";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CartPage() {
   const { state, dispatch } = useCart();
   const { data: session } = useSession();
-  const user = session?.user;
+  const { data: siteConfigs, isLoading } = useSiteConfig();
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const router = useRouter();
 
@@ -65,7 +67,16 @@ export default function CartPage() {
     }
   };
 
-  const deliveryFee = state.subtotal > 50 ? 0 : 4.99;
+  if (isLoading)
+    return (
+      <div className="flex h-[200px] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+
+  const deliveryFee = parseFloat(
+    (siteConfigs?.delivery_fee as string) ?? "4.70",
+  );
   const total = state.subtotal + deliveryFee;
 
   const canCheckout =
@@ -264,7 +275,11 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery</span>
-                  <span>{formatPrice(deliveryFee)}</span>
+                  {isLoading ? (
+                    <Skeleton className="h-4 w-16" />
+                  ) : (
+                    <span>{formatPrice(deliveryFee)}</span>
+                  )}
                 </div>
                 {/* {user?.addresses?.some((address) =>
                   address.postcode?.toUpperCase().startsWith("BD1"),

@@ -23,6 +23,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Address } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/ui/loader";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
@@ -49,6 +50,7 @@ export default function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>("new");
   const [isAddressesLoading, setIsAddressesLoading] = useState<boolean>(true);
+  const { data: siteConfigs } = useSiteConfig();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -127,7 +129,10 @@ export default function CheckoutPage() {
 
       // Check if the delivery should be free based on postcode
       const isBD1Area = values.postcode.toUpperCase().startsWith("BD1");
-      const adjustedDeliveryFee = isBD1Area ? 0 : state.deliveryFee;
+      const defaultDeliveryFee = parseFloat(
+        (siteConfigs?.delivery_fee as string) ?? "4.70",
+      );
+      const adjustedDeliveryFee = isBD1Area ? 0 : defaultDeliveryFee;
       const adjustedTotal = state.subtotal + adjustedDeliveryFee;
 
       // Then create the order with the adjusted delivery fee

@@ -99,7 +99,6 @@ export const sendEmail = async ({
   }
 };
 
-// Example welcome email function
 export const sendWelcomeEmail = async (userEmail: string, userName: string) => {
   const subject = "Welcome to Tropikal Foods Bradford!";
   const text = `    
@@ -142,28 +141,40 @@ export const sendWelcomeEmail = async (userEmail: string, userName: string) => {
   });
 };
 
-// Example order confirmation email
-export const sendOrderConfirmationEmail = async (
-  userEmail: string,
-  userName: string,
-  orderNumber: string,
-  orderDetails: { name: string; quantity: number; price: number }[],
-) => {
-  const subject = `Order Confirmation #${orderNumber}`;
-  const total = orderDetails.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+export const sendOrderConfirmationEmail = async ({
+  email,
+  orderId,
+  items,
+  total,
+  deliveryFee,
+  firstName,
+  lastName,
+  address,
+  deliveryDate,
+  deliveryTime,
+}: {
+  email: string;
+  orderId: string;
+  items: any[]; // Consider creating a proper type for this
+  total: number;
+  deliveryFee: number;
+  firstName: string;
+  lastName: string;
+  address: any; // Consider creating a proper type for this
+  deliveryDate: Date;
+  deliveryTime: string;
+}) => {
+  const subject = `Order Confirmation #${orderId}`;
 
   const text = `
-    Order Confirmation #${orderNumber}
+    Order Confirmation #${orderId}
     
-    Hello ${userName},
+    Hello ${firstName} ${lastName},
     
-    Thank you for your order at Tropikal Foods Bradford! We're preparing your items for collection.
+    Thank you for your order at Tropikal Foods Bradford! We're preparing your delivery.
     
     Order Details:
-    ${orderDetails
+    ${items
       .map(
         (item) => `
     - ${item.name}
@@ -174,9 +185,17 @@ export const sendOrderConfirmationEmail = async (
       )
       .join("\n")}
     
+    Subtotal: £${(total - deliveryFee).toFixed(2)}
+    Delivery Fee: £${deliveryFee.toFixed(2)}
     Total: £${total.toFixed(2)}
     
-    We'll notify you when your order is ready for collection.
+    Delivery Address:
+    ${address.address1}
+    ${address.address2 ? address.address2 + "\n" : ""}${address.city}
+    ${address.postcode}
+    
+    Delivery Date: ${deliveryDate.toLocaleDateString()}
+    Delivery Time: ${deliveryTime}
     
     If you have any questions about your order, please reply to this email.
     
@@ -186,9 +205,9 @@ export const sendOrderConfirmationEmail = async (
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h1>Order Confirmation #${orderNumber}</h1>
-      <p>Hello ${userName},</p>
-      <p>Thank you for your order at Tropikal Foods Bradford! We're preparing your items for collection.</p>
+      <h1>Order Confirmation #${orderId}</h1>
+      <p>Hello ${firstName} ${lastName},</p>
+      <p>Thank you for your order at Tropikal Foods Bradford! We're preparing your delivery.</p>
       
       <h2>Order Details:</h2>
       <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
@@ -198,7 +217,7 @@ export const sendOrderConfirmationEmail = async (
           <th style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">Price</th>
           <th style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">Subtotal</th>
         </tr>
-        ${orderDetails
+        ${items
           .map(
             (item) => `
           <tr>
@@ -210,20 +229,40 @@ export const sendOrderConfirmationEmail = async (
         `,
           )
           .join("")}
+        <tr>
+          <td colspan="3" style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">Subtotal:</td>
+          <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">£${(total - deliveryFee).toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td colspan="3" style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">Delivery Fee:</td>
+          <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">£${deliveryFee.toFixed(2)}</td>
+        </tr>
         <tr style="background-color: #f8f9fa; font-weight: bold;">
           <td colspan="3" style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">Total:</td>
           <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">£${total.toFixed(2)}</td>
         </tr>
       </table>
       
-      <p>We'll notify you when your order is ready for collection.</p>
+      <h2>Delivery Details:</h2>
+      <p>
+        ${address.address1}<br>
+        ${address.address2 ? address.address2 + "<br>" : ""}
+        ${address.city}<br>
+        ${address.postcode}
+      </p>
+      
+      <p>
+        <strong>Delivery Date:</strong> ${deliveryDate.toLocaleDateString()}<br>
+        <strong>Delivery Time:</strong> ${deliveryTime}
+      </p>
+      
       <p>If you have any questions about your order, please reply to this email.</p>
       <p>Best regards,<br>The Tropikal Foods Bradford Team</p>
     </div>
   `;
 
   return sendEmail({
-    to: userEmail,
+    to: email,
     subject,
     text,
     html,
@@ -318,3 +357,47 @@ export const sendMarketingEmail = async (
     emailType: "SUBSCRIPTION",
   });
 };
+
+export async function sendAdminOrderNotificationEmail({
+  email,
+  orderId,
+  items,
+  total,
+  customerName,
+  deliveryDate,
+  deliveryTime,
+}: {
+  email: string;
+  orderId: string;
+  items: any[];
+  total: number;
+  customerName: string;
+  deliveryDate: Date;
+  deliveryTime: string;
+}) {
+  const formattedItems = items
+    .map((item) => `${item.quantity}x ${item.name}`)
+    .join("\n");
+
+  const emailContent = `
+    New Order Received!
+    
+    Order ID: ${orderId}
+    Customer: ${customerName}
+    Total: £${(total / 100).toFixed(2)}
+    Delivery Date: ${deliveryDate.toLocaleDateString()}
+    Delivery Time: ${deliveryTime}
+    
+    Items:
+    ${formattedItems}
+  `;
+
+  // Use your email sending implementation here
+  // Example with Resend:
+  await sendEmail({
+    to: email,
+    subject: `New Order #${orderId}`,
+    text: emailContent,
+    emailType: "ORDER_CONFIRMATION",
+  });
+}

@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
           price: true,
           comparePrice: true,
           rating: true,
+          weightOptions: true,
           images: true,
           badge: true,
           category: {
