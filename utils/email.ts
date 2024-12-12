@@ -177,7 +177,7 @@ export const sendOrderConfirmationEmail = async ({
     ${items
       .map(
         (item) => `
-    - ${item.name}
+    - ${item.product.name}
       Quantity: ${item.quantity}
       Price: £${item.price.toFixed(2)}
       Subtotal: £${(item.price * item.quantity).toFixed(2)}
@@ -221,7 +221,7 @@ export const sendOrderConfirmationEmail = async ({
           .map(
             (item) => `
           <tr>
-            <td style="padding: 10px; border: 1px solid #dee2e6;">${item.name}</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6;">${item.product.name}</td>
             <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">${item.quantity}</td>
             <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">£${item.price.toFixed(2)}</td>
             <td style="padding: 10px; text-align: right; border: 1px solid #dee2e6;">£${(item.price * item.quantity).toFixed(2)}</td>

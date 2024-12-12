@@ -214,7 +214,6 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     (sum, item) => sum + item.price * (item.weight || 1) * item.quantity,
     0,
   );
-  // const deliveryFee = 4.7;
   const total = subtotal;
 
   // Return final state with calculated values

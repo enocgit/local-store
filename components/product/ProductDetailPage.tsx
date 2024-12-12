@@ -46,6 +46,13 @@ function ProductDetailPage({ product: initialProduct, session }: Props) {
   );
 
   const handleAddToCart = () => {
+    if (product?.stock === 0) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently out of stock.",
+      });
+      return;
+    }
     if (product?.weightOptions?.length && !selectedWeight) {
       toast({
         title: "Please select a weight",
@@ -148,8 +155,18 @@ function ProductDetailPage({ product: initialProduct, session }: Props) {
 
             <div className="space-y-4">
               <div className="flex space-x-4">
-                <Button className="flex-1" onClick={handleAddToCart}>
-                  <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+                <Button
+                  className="flex-1"
+                  disabled={product?.stock === 0}
+                  onClick={handleAddToCart}
+                >
+                  {product?.stock === 0 ? (
+                    "Out of Stock"
+                  ) : (
+                    <>
+                      <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+                    </>
+                  )}
                 </Button>
                 <WishlistButton productId={product?.id} />
                 <Button

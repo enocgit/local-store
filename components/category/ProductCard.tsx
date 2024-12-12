@@ -38,6 +38,13 @@ export function ProductCard({ product }: ProductCardProps) {
   );
 
   const handleAddToCart = () => {
+    if (product?.stock === 0) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently out of stock.",
+      });
+      return;
+    }
     if (product?.weightOptions?.length && !selectedWeight) {
       setShowWeightDialog(true);
       return;
@@ -103,8 +110,13 @@ export function ProductCard({ product }: ProductCardProps) {
               </span>
             ) : null}
           </div>
-          <Button variant="ghost" size="sm" onClick={handleAddToCart}>
-            Add to Cart
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleAddToCart}
+            disabled={product?.stock === 0}
+          >
+            {product?.stock === 0 ? "Out of Stock" : "Add to Cart"}
           </Button>
         </div>
       </CardContent>

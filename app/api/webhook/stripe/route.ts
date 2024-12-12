@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
 
-      // Update order status
+      // Update order status and decrease stock
       const order = await prisma.order.update({
         where: {
           stripeSessionId: session.id,
@@ -41,11 +41,34 @@ export async function POST(req: Request) {
           paidAt: new Date(),
         },
         include: {
-          items: true,
+          items: {
+            include: {
+              product: {
+                select: {
+                  name: true,
+                  id: true,
+                },
+              },
+            },
+          },
           address: true,
           user: true,
         },
       });
+
+      // Decrease stock for each item
+      await Promise.all(
+        order.items.map((item) =>
+          prisma.product.update({
+            where: { id: item.product.id },
+            data: {
+              stock: {
+                decrement: item.quantity,
+              },
+            },
+          }),
+        ),
+      );
 
       // Send customer confirmation email
       try {

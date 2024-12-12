@@ -77,7 +77,11 @@ export default function CartPage() {
   const deliveryFee = parseFloat(
     (siteConfigs?.delivery_fee as string) ?? "4.70",
   );
-  const total = state.subtotal + deliveryFee;
+  // Calculate total by adding delivery fee to items total
+  const itemsTotal = state.items.reduce((acc, item) => {
+    return acc + item.price * (item.weight || 1) * item.quantity;
+  }, 0);
+  const total = itemsTotal + deliveryFee;
 
   const canCheckout =
     state.deliveryDate && state.deliveryTime && state.items.length > 0;
@@ -271,7 +275,7 @@ export default function CartPage() {
               <CardContent className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>{formatPrice(state.subtotal)}</span>
+                  <span>{formatPrice(itemsTotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery</span>
@@ -281,19 +285,11 @@ export default function CartPage() {
                     <span>{formatPrice(deliveryFee)}</span>
                   )}
                 </div>
-                {/* {user?.addresses?.some((address) =>
-                  address.postcode?.toUpperCase().startsWith("BD1"),
-                ) ? (
-                  <p className="text-sm text-gray-600">
-                    Free delivery for BD1 area
-                  </p>
-                ) : (
-                  <p className="text-sm text-gray-600">
-                    Free delivery on orders over £50
-                  </p>
-                )} */}
                 <p className="text-sm text-gray-600">
-                  Free delivery for BD1 area
+                  Free delivery for BD1 area{" "}
+                  <span className="text-[0.65rem]">
+                    (calculated at checkout)
+                  </span>
                 </p>
                 <div className="mt-2 border-t pt-2">
                   <div className="flex justify-between font-bold">

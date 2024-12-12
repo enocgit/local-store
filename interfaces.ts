@@ -19,5 +19,6 @@ export interface ProductCardProps {
     images: string[];
     badge?: string | null;
     weightOptions?: number[];
+    stock: number;
   };
 }

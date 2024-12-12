@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
           weightOptions: true,
           images: true,
           badge: true,
+          stock: true,
           category: {
             select: {
               name: true,

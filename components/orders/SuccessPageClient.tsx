@@ -67,7 +67,7 @@ export default function SuccessPageClient({ order }: Props) {
             <Link href="/products">
               <Button className="w-full">Continue Shopping</Button>
             </Link>
-            <Link href="/accounts">
+            <Link href="/account">
               <Button variant="outline" className="w-full">
                 View Order History
               </Button>

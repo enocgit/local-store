@@ -19,6 +19,7 @@ export async function getFeaturedProducts() {
         rating: true,
         images: true,
         badge: true,
+        stock: true,
         category: {
           select: {
             name: true,
@@ -291,6 +292,7 @@ export async function searchProducts(
         weightOptions: true,
         rating: true,
         images: true,
+        stock: true,
         badge: true,
         category: {
           select: {
