@@ -3,8 +3,9 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSiteConfig } from "@/hooks/use-site-config";
-import { Package } from "lucide-react";
+import { Package, Heart, Globe, ArrowRight } from "lucide-react";
 import { BLUR_DATA_URL } from "@/enum/image";
+import { motion } from "framer-motion";
 
 interface AboutMission {
   title: string;
@@ -25,39 +26,45 @@ export default function AboutPageClient() {
   const aboutValuesC = (siteConfigs?.values_c as AboutValue) || null;
 
   const values = [aboutValuesA, aboutValuesB, aboutValuesC];
-  console.log(values);
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      {/* Hero Section */}
-      <section className="mb-20">
-        <h1 className="mb-6 text-4xl font-bold md:text-5xl">About Us</h1>
-        <p className="max-w-3xl text-xl text-muted-foreground">
-          {siteConfigs?.about_description?.toString() || ""}
-        </p>
+    <div className="min-h-screen bg-gradient-to-b from-background to-primary/5">
+      {/* Hero Section with Gradient */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-primary to-primary-foreground py-24 text-white">
+        <div className="container mx-auto px-4">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 text-4xl font-bold md:text-5xl"
+          >
+            About Us
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="max-w-3xl text-xl text-white/90"
+          >
+            {siteConfigs?.about_description?.toString() || ""}
+          </motion.p>
+        </div>
+
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 overflow-hidden opacity-10">
+          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white" />
+          <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-white" />
+        </div>
       </section>
 
-      {/* Stats Section */}
-      {/* <section className="mb-20 grid grid-cols-1 gap-8 md:grid-cols-3">
-        {[
-          { number: "1M+", label: "Happy Customers" },
-          { number: "50K+", label: "Products Delivered" },
-          { number: "99%", label: "Customer Satisfaction" },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-lg bg-secondary p-6 text-center"
-          >
-            <div className="mb-2 text-4xl font-bold">{stat.number}</div>
-            <div className="text-muted-foreground">{stat.label}</div>
-          </div>
-        ))}
-      </section> */}
-
-      {/* Mission Section */}
-      <section className="mb-20">
+      {/* Mission Section with Animation */}
+      <section className="container mx-auto px-4 py-24">
         <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-          <div className="relative h-[400px]">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="relative h-[400px] overflow-hidden rounded-2xl shadow-2xl"
+          >
             <Image
               src={
                 aboutMission?.image ||
@@ -67,47 +74,78 @@ export default function AboutPageClient() {
               fill
               placeholder="blur"
               blurDataURL={BLUR_DATA_URL}
-              className="rounded-lg object-cover"
+              className="object-cover transition-transform duration-700 hover:scale-110"
             />
-          </div>
-          <div>
-            <h2 className="mb-6 text-3xl font-bold">
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="mb-6 text-3xl font-bold text-primary">
               {aboutMission?.title || ""}
             </h2>
             <p className="mb-6 text-muted-foreground">
               {aboutMission?.description || ""}
             </p>
-            <Button size="lg">Learn More</Button>
-          </div>
+            <Button size="lg" className="group">
+              Learn More
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </motion.div>
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="mb-20">
-        <h2 className="mb-12 text-center text-3xl font-bold">Our Values</h2>
+      {/* Values Section with Hover Effects */}
+      <section className="container mx-auto px-4 py-24">
+        <h2 className="mb-12 text-center text-3xl font-bold text-primary">
+          Our Values
+        </h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {values.map((value) => (
-            <div key={value?.title} className="rounded-lg border p-6">
-              <div className="mb-4 text-4xl">
-                <Package className="text-primary" />
+          {values.map((value, index) => (
+            <motion.div
+              key={value?.title}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.2 }}
+              className="group rounded-xl bg-white p-8 shadow-lg transition-all hover:-translate-y-2 hover:shadow-2xl"
+            >
+              <div className="mb-4 rounded-full bg-primary/10 p-4 text-4xl text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+                <Package className="h-8 w-8" />
               </div>
               <h3 className="mb-2 text-xl font-semibold">{value?.title}</h3>
               <p className="text-muted-foreground">{value?.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="rounded-lg bg-secondary p-12 text-center">
-        <h2 className="mb-6 text-3xl font-bold">Join Our Journey</h2>
-        <p className="mx-auto mb-8 max-w-2xl text-muted-foreground">
-          Be part of our story as we continue to grow and innovate in the world
-          of online retail.
-        </p>
-        <Link href="/contact">
-          <Button size="lg">Contact Us</Button>
-        </Link>
+      {/* CTA Section with Gradient */}
+      <section className="bg-gradient-to-r from-primary/90 to-primary-foreground/90 py-24 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="mb-6 text-3xl font-bold">Join Our Journey</h2>
+            <p className="mx-auto mb-8 max-w-2xl text-white/90">
+              Be part of our story as we continue to grow and innovate in the
+              world of online retail.
+            </p>
+            <Link href="/contact">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="group font-semibold"
+              >
+                Contact Us
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
       </section>
     </div>
   );

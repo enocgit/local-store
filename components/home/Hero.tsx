@@ -19,7 +19,7 @@ function Hero() {
   if (!homepage) return null;
 
   return (
-    <section className="relative flex h-[600px] items-center">
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-foreground to-primary/80">
       <Image
         src={
           homepage?.image ||
@@ -30,22 +30,28 @@ function Hero() {
         className="object-cover brightness-50"
         priority
       />
-      <div className="container relative z-10 mx-auto px-4">
-        <div className="max-w-2xl animate-fade-in">
-          <h1 className="mb-6 animate-slide-up text-5xl font-bold text-white">
-            {homepage?.title}
+      <div className="container mx-auto px-4 py-24">
+        <div className="relative z-10 text-center text-white">
+          <h1 className="animate-fade-up mb-6 text-5xl font-bold">
+            Fresh Caribbean Food
+            <span className="block text-yellow-300">
+              Delivered to Your Door
+            </span>
           </h1>
-          <p className="mb-8 animate-slide-up-delay text-xl text-gray-200">
-            {homepage?.description}
+          <p className="animate-fade-up animation-delay-100 mb-8 text-xl text-white/90">
+            Authentic flavors from the Caribbean, now in Bradford
           </p>
-          <Link href="/products">
-            <Button
-              size="lg"
-              className="animate-fade-in-delay bg-white text-black transition-all duration-300 hover:translate-y-[-2px] hover:bg-gray-100 hover:shadow-lg"
-            >
-              All products <ShoppingBag className="ml-2 h-5 w-5" />
-            </Button>
+          <Link
+            href="/products"
+            className="inline-block rounded-full bg-white px-8 py-3 text-lg font-semibold text-green-500 transition-transform hover:scale-105"
+          >
+            Shop Now
           </Link>
+        </div>
+
+        <div className="absolute inset-0 opacity-10">
+          <div className="animate-float absolute left-10 top-10 h-20 w-20 rounded-full bg-yellow-300" />
+          <div className="animate-float animation-delay-200 absolute bottom-10 right-10 h-16 w-16 rounded-full bg-green-300" />
         </div>
       </div>
     </section>

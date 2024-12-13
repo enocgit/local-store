@@ -73,7 +73,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="group overflow-hidden">
+    <Card className="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       <Link href={`/product/${product?.id}`}>
         <div className="relative h-64">
           <Image
@@ -82,11 +82,16 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             placeholder="blur"
             blurDataURL={BLUR_DATA_URL}
-            className="object-cover transition-transform group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
           {product?.badge && (
-            <span className="absolute right-2 top-2 rounded-md bg-primary px-2 py-1 text-sm text-white">
+            <span className="absolute right-2 top-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 px-3 py-1 text-sm font-medium text-white shadow-lg">
               {product.badge}
+            </span>
+          )}
+          {product?.stock < 5 && product?.stock > 0 && (
+            <span className="absolute left-2 top-2 rounded-full bg-yellow-500 px-3 py-1 text-sm font-medium text-white shadow-lg">
+              Only {product.stock} left!
             </span>
           )}
         </div>
