@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Address, Order } from "@prisma/client";
 // import { useOrderUpdates } from "@/hooks/use-order-updates";
+import { useEffect } from "react";
 
 type Props = {
   order: Order & {
@@ -19,6 +20,10 @@ type Props = {
 };
 
 export default function SuccessPageClient({ order }: Props) {
+  useEffect(() => {
+    localStorage.removeItem("cart");
+  }, []);
+
   //   useOrderUpdates();
 
   return (

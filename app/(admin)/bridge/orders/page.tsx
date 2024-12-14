@@ -28,7 +28,7 @@ export default async function OrdersPage() {
     email: order.user.email,
     status: order.status,
     items: order.items.length,
-    total: order.total + order.deliveryFee,
+    total: order.subtotal + order.deliveryFee,
     deliveryDate: order.deliveryDate,
     deliveryTime: order.deliveryTime,
     createdAt: order.createdAt,
@@ -72,16 +72,6 @@ export default async function OrdersPage() {
               { label: "Processing", value: "PROCESSING" },
               { label: "Delivered", value: "DELIVERED" },
               { label: "Cancelled", value: "CANCELLED" },
-            ],
-          },
-          {
-            columnId: "createdAt",
-            title: "Date",
-            options: [
-              { label: "Last 24 hours", value: "24h" },
-              { label: "Last 7 days", value: "7d" },
-              { label: "Last 30 days", value: "30d" },
-              { label: "All time", value: "all" },
             ],
           },
         ]}

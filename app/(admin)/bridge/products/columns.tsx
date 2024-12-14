@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Pencil, Trash, Eye } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import {
   AlertDialog,
@@ -57,7 +56,10 @@ export const columns: ColumnDef<Product>[] = [
       return (
         <div className="relative h-12 w-12">
           <Image
-            src={images[0] || "https://utfs.io/f/5aK3NZMlDfcgitELvDk7LYHbEWfe83jx2TrO9msKg4loynPa"}
+            src={
+              images[0] ||
+              "https://utfs.io/f/5aK3NZMlDfcgitELvDk7LYHbEWfe83jx2TrO9msKg4loynPa"
+            }
             alt="Product image"
             fill
             className="rounded-md object-cover"
@@ -144,15 +146,22 @@ export const columns: ColumnDef<Product>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => router.push(`/product/${product.id}`)}>
+              <DropdownMenuItem
+                onClick={() => router.push(`/product/${product.id}`)}
+              >
                 <Eye className="mr-2 h-4 w-4" />
                 View
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push(`/bridge/products/${product.id}`)}>
+              <DropdownMenuItem
+                onClick={() => router.push(`/bridge/products/${product.id}`)}
+              >
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setOpen(true)}>
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => setOpen(true)}
+              >
                 <Trash className="mr-2 h-4 w-4" />
                 Delete
               </DropdownMenuItem>

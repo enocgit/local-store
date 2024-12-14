@@ -113,19 +113,28 @@ export default function CheckoutPage() {
     try {
       setIsLoading(true);
 
-      // First, create or update the address
-      const addressResponse = await fetch("/api/addresses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          address1: values.address1,
-          address2: values.address2,
-          city: values.city,
-          postcode: values.postcode,
-        }),
-      });
+      let addressId;
 
-      const { addressId } = await addressResponse.json();
+      // Only create a new address if "new" is selected
+      if (selectedAddressId === "new") {
+        // Create new address
+        const addressResponse = await fetch("/api/addresses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            address1: values.address1,
+            address2: values.address2,
+            city: values.city,
+            postcode: values.postcode,
+          }),
+        });
+
+        const addressData = await addressResponse.json();
+        addressId = addressData.addressId;
+      } else {
+        // Use existing address ID
+        addressId = selectedAddressId;
+      }
 
       // Check if the delivery should be free based on postcode
       const isBD1Area = values.postcode.toUpperCase().startsWith("BD1");

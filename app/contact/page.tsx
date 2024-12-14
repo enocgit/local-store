@@ -173,7 +173,7 @@ export default function ContactPage() {
           </div>
 
           {/* Contact Form */}
-          <div className="rounded-lg border bg-card p-8">
+          <div className="rounded-lg border bg-card p-8 max-sm:px-4">
             <h2 className="mb-6 text-2xl font-bold">Send Us a Message</h2>
             <Form {...form}>
               <form

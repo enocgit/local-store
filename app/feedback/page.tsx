@@ -49,7 +49,7 @@ export default function FeedbackPage() {
   };
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-7xl py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-2xl">
         <div className="rounded-lg bg-white p-8 shadow-sm">
           <h1 className="mb-8 text-center text-2xl font-bold text-gray-900">

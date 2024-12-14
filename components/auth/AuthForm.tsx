@@ -94,9 +94,11 @@ export function AuthForm({ session }: { session: Session | null }) {
         body: JSON.stringify(data),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message);
+        setError(responseData.error);
+        return;
       }
 
       // Auto login after successful registration
