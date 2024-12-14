@@ -311,7 +311,7 @@ export default function CheckoutPage() {
                         <FormItem>
                           <FormLabel>Address Line 1</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} disabled={isAddressesLoading} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -324,7 +324,7 @@ export default function CheckoutPage() {
                         <FormItem>
                           <FormLabel>Address Line 2 (Optional)</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} disabled={isAddressesLoading} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -338,7 +338,7 @@ export default function CheckoutPage() {
                           <FormItem>
                             <FormLabel>City</FormLabel>
                             <FormControl>
-                              <Input {...field} />
+                              <Input {...field} disabled={isAddressesLoading} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -351,7 +351,11 @@ export default function CheckoutPage() {
                           <FormItem>
                             <FormLabel>Postcode</FormLabel>
                             <FormControl>
-                              <Input {...field} className="uppercase" />
+                              <Input
+                                {...field}
+                                disabled={isAddressesLoading}
+                                className="uppercase"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
