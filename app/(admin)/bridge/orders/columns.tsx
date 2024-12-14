@@ -10,10 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Package } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import { OrderDialog } from "./order-dialog";
+import { DeleteOrderAlert } from "./delete-order-alert";
 
 export type Order = {
   id: string;
@@ -86,11 +88,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") as Order["status"];
-      return (
-        <Badge variant={getOrderStatusColor(status)}>
-          {status}
-        </Badge>
-      );
+      return <Badge variant={getOrderStatusColor(status)}>{status}</Badge>;
     },
   },
   {
@@ -140,6 +138,7 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => {
       const order = row.original;
       const [showDialog, setShowDialog] = useState(false);
+      const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
       return (
         <>
@@ -155,9 +154,12 @@ export const columns: ColumnDef<Order>[] = [
               <DropdownMenuItem onClick={() => setShowDialog(true)}>
                 View details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(order.id)}>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(order.id)}
+              >
                 Copy order ID
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
             </DropdownMenuContent>
           </DropdownMenu>
 

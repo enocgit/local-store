@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { getCategories } from "@/lib/api/categories";
 import Link from "next/link";
+import { BLUR_DATA_URL } from "@/enum/image";
 
 async function ShopByCategory() {
   const categories = await getCategories();
@@ -20,6 +21,8 @@ async function ShopByCategory() {
                 <Image
                   src={category.image}
                   alt={category.name}
+                  placeholder="blur"
+                  blurDataURL={BLUR_DATA_URL}
                   fill
                   className="object-cover transition-transform group-hover:scale-105"
                 />

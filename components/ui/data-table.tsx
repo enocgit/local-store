@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -52,8 +52,26 @@ export function DataTable<TData, TValue>({
   filters,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
   const [dateFilter, setDateFilter] = React.useState("all");
+
+  const handleFilterChange = (columnId: string, value: string) => {
+    setColumnFilters((prev) => {
+      if (value === "ALL") {
+        return prev.filter((filter) => filter.id !== columnId);
+      }
+
+      const existing = prev.findIndex((filter) => filter.id === columnId);
+      if (existing !== -1) {
+        const newFilters = [...prev];
+        newFilters[existing] = { id: columnId, value };
+        return newFilters;
+      }
+      return [...prev, { id: columnId, value }];
+    });
+  };
 
   const table = useReactTable({
     data,
@@ -67,6 +85,11 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnFilters,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
     },
   });
 
@@ -102,26 +125,24 @@ export function DataTable<TData, TValue>({
         />
         {filters?.map((filter) => (
           <div key={filter.columnId} className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">{filter.title}:</span>
+            <span className="text-sm text-muted-foreground">
+              {filter.title}:
+            </span>
             <Select
-              value={
-                filter.columnId === "createdAt"
-                  ? dateFilter
-                  : (table.getColumn(filter.columnId)?.getFilterValue() as string) ?? ""
+              key={filter.columnId}
+              onValueChange={(value) =>
+                handleFilterChange(filter.columnId, value)
               }
-              onValueChange={(value) => {
-                if (filter.columnId === "createdAt") {
-                  setDateFilter(value);
-                } else {
-                  table.getColumn(filter.columnId)?.setFilterValue(value);
-                }
-              }}
+              value={
+                (columnFilters.find((f) => f.id === filter.columnId)
+                  ?.value as string) || "ALL"
+              }
             >
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="All" />
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder={filter.title} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="ALL">All</SelectItem>
                 {filter.options.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -144,7 +165,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -163,7 +184,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

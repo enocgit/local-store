@@ -1,8 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSiteConfig } from "@/hooks/use-site-config";
 import { useCart } from "@/lib/store/cart-context";
+import { Loader2 } from "lucide-react";
 
 export function OrderSummary() {
   const { state } = useCart();
+  const { data: siteConfigs, isLoading } = useSiteConfig();
+  const deliveryFee = parseFloat(
+    (siteConfigs?.delivery_fee as string) ?? "4.70",
+  );
+
+  if (isLoading)
+    return (
+      <div className="flex h-[200px] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+
   return (
     <Card>
       <CardHeader>
@@ -29,11 +43,15 @@ export function OrderSummary() {
           </div>
           <div className="flex justify-between">
             <span>Delivery</span>
-            <span>£{state.deliveryFee.toFixed(2)}</span>
+            <span>£{deliveryFee.toFixed(2)}</span>
           </div>
+          <p className="text-sm text-gray-600">
+            Free delivery for BD1 area{" "}
+            <span className="text-[0.65rem]">(calculated at checkout)</span>
+          </p>
           <div className="flex justify-between border-t pt-2 text-lg font-bold">
             <span>Total</span>
-            <span>£{state.total.toFixed(2)}</span>
+            <span>£{(state.total + deliveryFee).toFixed(2)}</span>
           </div>
         </div>
 

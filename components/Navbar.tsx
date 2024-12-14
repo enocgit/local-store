@@ -26,8 +26,13 @@ import { useSession, signOut } from "next-auth/react";
 import Loader from "./ui/loader";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { SearchButton } from "./ui/search-button";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
+
+interface NewArrivals {
+  title: string;
+}
 
 interface Category {
   id: string;
@@ -49,6 +54,8 @@ export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { state } = useCart();
   const [loggingOut, setLoggingOut] = useState(false);
+  const { data: siteConfig } = useSiteConfig();
+  const newArrivals = (siteConfig?.new_arrivals as NewArrivals) || null;
 
   const { data: categories = [], isLoading } = useQuery<Category[]>({
     queryKey: ["categories"],
@@ -58,7 +65,7 @@ export function Navbar() {
   const { data: session } = useSession();
 
   const navigation = [
-    { name: "New Arrivals", href: `/category/${NEW_ARRIVALS_SLUG}` },
+    { name: newArrivals?.title, href: `/category/${NEW_ARRIVALS_SLUG}` },
     ...categories.slice(0, 4).map((category: Category) => ({
       name: category.name,
       href: `/category/${category.id}`,
@@ -91,7 +98,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="hidden hover:bg-gray-100 sm:flex"
+            className="hidden text-gray-700 hover:bg-gray-100 sm:flex"
           >
             <User className="h-5 w-5" />
           </Button>
@@ -162,13 +169,12 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-white">
+    <header className="sticky top-0 z-50 bg-gradient-to-r from-yellow-400/95 to-primary-foreground/95 text-white backdrop-blur-sm">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <CakeIcon className="h-8 w-8" />
               <span className="text-xl font-bold max-[330px]:hidden">
                 TropikalFoods
               </span>
@@ -180,7 +186,10 @@ export function Navbar() {
             {isLoading ? (
               <>
                 {Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton key={index} className="h-3 w-10 rounded-md" />
+                  <Skeleton
+                    key={`desktop-skeleton-${index}`}
+                    className="h-3 w-10 rounded-md"
+                  />
                 ))}
               </>
             ) : (
@@ -188,7 +197,7 @@ export function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
+                  className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-500"
                 >
                   {item.name}
                 </Link>
@@ -207,7 +216,11 @@ export function Navbar() {
 
             {/* Wishlist */}
             <Link href="/wishlist" className="max-sm:hidden">
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-700 hover:bg-gray-100"
+              >
                 <Heart className="h-5 w-5" />
               </Button>
             </Link>
@@ -217,7 +230,7 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative hover:bg-gray-100"
+                className="relative text-gray-700 hover:bg-gray-100"
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
@@ -235,7 +248,7 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="hover:bg-gray-100 lg:hidden"
+                  className="text-gray-700 hover:bg-gray-100 lg:hidden"
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
@@ -248,7 +261,7 @@ export function Navbar() {
                         <>
                           {Array.from({ length: 5 }).map((_, index) => (
                             <Skeleton
-                              key={index}
+                              key={`mobile-skeleton-${index}`}
                               className="-mx-3 mb-6 block h-3 w-full rounded-md"
                             />
                           ))}

@@ -17,7 +17,14 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { BLUR_DATA_URL } from "@/enum/image";
 
 export function ProductCard({ product }: ProductCardProps) {
   const { state, dispatch } = useCart();
@@ -31,6 +38,13 @@ export function ProductCard({ product }: ProductCardProps) {
   );
 
   const handleAddToCart = () => {
+    if (product?.stock === 0) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently out of stock.",
+      });
+      return;
+    }
     if (product?.weightOptions?.length && !selectedWeight) {
       setShowWeightDialog(true);
       return;
@@ -59,18 +73,25 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="group overflow-hidden">
+    <Card className="group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       <Link href={`/product/${product?.id}`}>
         <div className="relative h-64">
           <Image
             src={product?.images?.[0]}
             alt={product?.name || ""}
             fill
-            className="object-cover transition-transform group-hover:scale-105"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
           {product?.badge && (
-            <span className="absolute right-2 top-2 rounded-md bg-primary px-2 py-1 text-sm text-white">
+            <span className="absolute right-2 top-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 px-3 py-1 text-sm font-medium text-white shadow-lg">
               {product.badge}
+            </span>
+          )}
+          {product?.stock < 5 && product?.stock > 0 && (
+            <span className="absolute left-2 top-2 rounded-full bg-yellow-500 px-3 py-1 text-sm font-medium text-white shadow-lg">
+              Only {product.stock} left!
             </span>
           )}
         </div>
@@ -84,7 +105,6 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
         <div className="mt-2 flex items-center justify-between">
-
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold">
               {formatPrice(product?.price)}
@@ -95,8 +115,13 @@ export function ProductCard({ product }: ProductCardProps) {
               </span>
             ) : null}
           </div>
-          <Button variant="ghost" size="sm" onClick={handleAddToCart}>
-            Add to Cart
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleAddToCart}
+            disabled={product?.stock === 0}
+          >
+            {product?.stock === 0 ? "Out of Stock" : "Add to Cart"}
           </Button>
         </div>
       </CardContent>
@@ -135,5 +160,5 @@ export function ProductCard({ product }: ProductCardProps) {
         </DialogContent>
       </Dialog>
     </Card>
-  )
+  );
 }

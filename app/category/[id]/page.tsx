@@ -1,41 +1,11 @@
-import { CategoryHeader } from "@/components/category/CategoryHeader";
-import { ProductGrid } from "@/components/product/ProductGrid";
-import { FilterSidebar } from "@/components/product/FilterSidebar";
-import { getProductsByCategory } from "@/lib/api/products";
-import { ProductType } from "@/interfaces";
+import CategoryPageClient from "@/components/category/CategoryPageClient";
 
 export default async function CategoryPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const { id } = await params;
-  const { minPrice, maxPrice } = await searchParams;
-  const category = await getProductsByCategory(id, minPrice ? Number(minPrice) : undefined, maxPrice ? Number(maxPrice) : undefined);
 
-  if (!category || Array.isArray(category)) {
-    return <p className="p-10">No products found under this category</p>;
-  }
-
-  if (category?.products.length === 0) {
-    return <p className="p-10">No products found under {category?.name} </p>;
-  }
-
-  return (
-    <div className="min-h-screen bg-background">
-      <CategoryHeader
-        title={category?.name || ""}
-        description={category?.description}
-        image={id?.includes("new-arrivals") ? "https://utfs.io/f/5aK3NZMlDfcgdmPom2G3npASuUfVFDBPY58W6m4Ee7vGs2ZT" : category?.image}
-      />
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col gap-8 lg:flex-row">
-          <FilterSidebar />
-          <ProductGrid products={category?.products as ProductType[]} />
-        </div>
-      </div>
-    </div>
-  );
+  return <CategoryPageClient id={id} />;
 }

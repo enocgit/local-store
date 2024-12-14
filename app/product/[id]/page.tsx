@@ -16,5 +16,5 @@ export default async function ProductPage({
     notFound();
   }
 
-  return <ProductDetailPage product={product} session={session} />;
+  return <ProductDetailPage product={product as any} session={session} />;
 }

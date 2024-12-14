@@ -29,60 +29,10 @@ export async function POST(request: Request) {
       deliveryDate,
       deliveryTime,
       addressId,
+      email,
     } = body;
 
-    // Create Order in database first
-    const order = await prisma.order.create({
-      data: {
-        userId: session.user.id,
-        subtotal,
-        deliveryFee,
-        total,
-        deliveryDate: new Date(deliveryDate),
-        deliveryTime,
-        addressId,
-        items: {
-          create: items.map((item: OrderItem) => ({
-            productId: item.id,
-            quantity: item.quantity,
-            price: item.price * (item.weight || 1),
-            weight: item.weight || null,
-          })),
-        },
-      },
-    });
-
-    // Get address details
-    const address = await prisma.address.findUnique({
-      where: { id: addressId },
-    });
-
-    if (!address) {
-      return NextResponse.json(
-        { error: "Delivery address not found" },
-        { status: 400 }
-      );
-    }
-
-    // Get user details
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-      },
-    });
-
-    if (!user?.email) {
-      return NextResponse.json(
-        { error: "User email not found" },
-        { status: 400 }
-      );
-    }
-
-    // Create Stripe checkout session
+    // Create Stripe checkout session first
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -94,7 +44,7 @@ export async function POST(request: Request) {
               description:
                 "Delivery on " + format(new Date(deliveryDate), "yyyy/MM/dd"),
             },
-            unit_amount: Math.round(total * 100), // Convert to pence
+            unit_amount: Math.round(subtotal * 100),
           },
           quantity: 1,
         },
@@ -102,36 +52,52 @@ export async function POST(request: Request) {
       mode: "payment",
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout?canceled=true`,
-      customer_email: user.email,
-      // shipping_address_collection: {
-      //   allowed_countries: ["GB"],
-      // },
+      customer_email: email,
       shipping_options: [
         {
           shipping_rate_data: {
-            type: 'fixed_amount',
+            type: "fixed_amount",
             fixed_amount: {
               amount: Math.round(deliveryFee * 100),
-              currency: 'gbp',
+              currency: "gbp",
             },
-            display_name: 'Delivery Fee',
+            display_name: "Delivery Fee",
           },
         },
       ],
-      metadata: {
-        orderId: order.id,
-        deliveryDate,
-        deliveryTime,
-      },
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60, // Session expires in 30 minutes
     });
 
-    // Update order with Stripe session ID
-    await prisma.order.update({
-      where: { id: order.id },
-      data: { stripeSessionId: stripeSession.id },
-    });
+    try {
+      // Create Order in database with the new session ID
+      const order = await prisma.order.create({
+        data: {
+          userId: session.user.id,
+          subtotal,
+          deliveryFee,
+          total,
+          deliveryDate: new Date(deliveryDate),
+          deliveryTime,
+          addressId,
+          status: "PENDING",
+          stripeSessionId: stripeSession.id,
+          items: {
+            create: items.map((item: OrderItem) => ({
+              productId: item.id,
+              quantity: item.quantity,
+              price: item.price * (item.weight || 1),
+              weight: item.weight || null,
+            })),
+          },
+        },
+      });
 
-    return NextResponse.json({ sessionId: stripeSession.id });
+      return NextResponse.json({ sessionId: stripeSession.id });
+    } catch (error) {
+      // If order creation fails, cancel the Stripe session
+      await stripe.checkout.sessions.expire(stripeSession.id);
+      throw error;
+    }
   } catch (error) {
     console.error("Order creation failed:", error);
     return NextResponse.json(

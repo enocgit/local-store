@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-
+import { BLUR_DATA_URL } from "@/enum/image";
 
 interface ProductGalleryProps {
   images: string[];
@@ -33,9 +33,14 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
             )}
           >
             <Image
-              src={image || "https://utfs.io/f/5aK3NZMlDfcgitELvDk7LYHbEWfe83jx2TrO9msKg4loynPa"}
+              src={
+                image ||
+                "https://utfs.io/f/5aK3NZMlDfcgitELvDk7LYHbEWfe83jx2TrO9msKg4loynPa"
+              }
               alt={`Product image ${index + 1}`}
               fill
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
               className="object-cover"
             />
           </button>
@@ -46,10 +51,15 @@ export function ProductGallery({ images, badge }: ProductGalleryProps) {
       <div className="relative flex-1">
         <div className="relative overflow-hidden rounded-lg max-[500px]:aspect-video min-[500px]:h-[500px]">
           <Image
-            src={displayImages[selectedImage] || "https://utfs.io/f/5aK3NZMlDfcgitELvDk7LYHbEWfe83jx2TrO9msKg4loynPa"}
+            src={
+              displayImages[selectedImage] ||
+              "https://utfs.io/f/5aK3NZMlDfcgitELvDk7LYHbEWfe83jx2TrO9msKg4loynPa"
+            }
             alt={"Product image"}
             fill
             className="object-cover"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             priority
           />
           {badge && <Badge className="absolute right-4 top-4">{badge}</Badge>}

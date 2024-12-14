@@ -21,28 +21,19 @@ export const {
   events: {
     async createUser({ user }) {
       try {
-        // Send welcome email when a new user is created (both OAuth and credentials)
-        if (user.email && typeof user.email === "string") {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email as string | undefined },
+          select: { emailVerified: true },
+        });
+
+        if (!existingUser && user.email && typeof user.email === "string") {
           await sendWelcomeEmail(
             user.email,
             user.firstName || user.name?.split(" ")[0] || "Valued Customer",
           );
-
-          // Ensure user is properly created in the database
-          const dbUser = await prisma.user.findUnique({
-            where: { email: user.email },
-            include: { accounts: true },
-          });
-
-          if (!dbUser) {
-            console.error(
-              "User not found in database after creation:",
-              user.email,
-            );
-          }
         }
       } catch (error) {
-        console.error("Error in createUser event:", error);
+        console.error("Error sending welcome email:", error);
       }
     },
   },
@@ -59,6 +50,17 @@ export const {
 
         const user = await prisma.user.findUnique({
           where: { email },
+          select: {
+            id: true,
+            email: true,
+            password: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            phone: true,
+            image: true,
+            emailVerified: true,
+          },
         });
 
         if (!user || !user.password) {
@@ -72,11 +74,14 @@ export const {
         }
 
         return {
+          id: user.id,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
-          phone: user.phone || null,
+          phone: user.phone,
+          image: user.image,
+          emailVerified: user.emailVerified,
         };
       },
     }),
@@ -96,6 +101,7 @@ export const {
           phone: null,
         };
       },
+      allowDangerousEmailAccountLinking: true,
     }),
     Facebook({
       clientId: process.env.FACEBOOK_CLIENT_ID,
@@ -128,15 +134,20 @@ export const {
       }
       return session;
     },
-    async jwt({ token }) {
-      if (!token.sub) return token;
-
-      const existingUser = await getUserById(token.sub);
-
-      if (!existingUser) return token;
-
-      token.role = existingUser.role;
-
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update" && session.user) {
+        token.firstName = session.user.firstName;
+        token.lastName = session.user.lastName;
+        token.phone = session.user.phone;
+        return token;
+      }
+      if (user) {
+        token.id = user.id;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.role = user.role;
+        token.phone = user.phone;
+      }
       return token;
     },
   },

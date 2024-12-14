@@ -1,7 +1,11 @@
-//@ts-nocheck
 import { headers } from "next/headers";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
+import {
+  sendOrderConfirmationEmail,
+  sendAdminOrderNotificationEmail,
+} from "@/utils/email";
+// import { sendEventToClient } from "@/app/api/order-updates/route";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-10-28.acacia",
@@ -11,7 +15,8 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const sig = headers().get("stripe-signature");
+  const headersList = await headers();
+  const sig = headersList.get("stripe-signature");
 
   let event: Stripe.Event;
 
@@ -26,8 +31,8 @@ export async function POST(req: Request) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
 
-      // Update order status
-      await prisma.order.update({
+      // Update order status and decrease stock
+      const order = await prisma.order.update({
         where: {
           stripeSessionId: session.id,
         },
@@ -35,10 +40,70 @@ export async function POST(req: Request) {
           status: "PAID",
           paidAt: new Date(),
         },
+        include: {
+          items: {
+            include: {
+              product: {
+                select: {
+                  name: true,
+                  id: true,
+                },
+              },
+            },
+          },
+          address: true,
+          user: true,
+        },
       });
 
-      // You could emit an event here that the client can listen to
-      // to clear the cart, or rely on the success page to do it
+      // Decrease stock for each item
+      await Promise.all(
+        order.items.map((item) =>
+          prisma.product.update({
+            where: { id: item.product.id },
+            data: {
+              stock: {
+                decrement: item.quantity,
+              },
+            },
+          }),
+        ),
+      );
+
+      // Send customer confirmation email
+      try {
+        await sendOrderConfirmationEmail({
+          email: order.user.email,
+          orderId: order.id,
+          items: order.items,
+          total: order.total,
+          deliveryFee: order.deliveryFee,
+          firstName: order.user.firstName as string,
+          lastName: order.user.lastName as string,
+          address: order.address,
+          deliveryDate: order.deliveryDate,
+          deliveryTime: order.deliveryTime,
+        });
+
+        // Send admin notification
+        // await sendAdminOrderNotificationEmail({
+        //   email: "admin@tropikalfoodsbradford.com",
+        //   orderId: order.id,
+        //   items: order.items,
+        //   total: order.total,
+        //   customerName: `${order.user.firstName} ${order.user.lastName}`,
+        //   deliveryDate: order.deliveryDate,
+        //   deliveryTime: order.deliveryTime,
+        // });
+      } catch (error) {
+        console.error("Failed to send emails:", error);
+      }
+
+      // // Emit event to clear cart
+      // await sendEventToClient(order.userId, "order_completed", {
+      //   orderId: order.id,
+      // });
+
       break;
     }
     // ... handle other events

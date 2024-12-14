@@ -13,18 +13,18 @@ const productSchema = z.object({
   badge: z.string().nullable(),
   featured: z.boolean(),
   categoryId: z.string().min(1),
-  weightOptions: z.array(z.number()).min(1),
+  weightOptions: z.array(z.number()).default([]),
 });
 
 export async function GET() {
   try {
     const products = await prisma.product.findMany({
       orderBy: {
-        createdAt: 'desc'
+        createdAt: "desc",
       },
       include: {
         category: true,
-      }
+      },
     });
     return NextResponse.json(products);
   } catch (error) {
@@ -48,10 +48,7 @@ export async function POST(req: Request) {
     const validatedFields = productSchema.safeParse(body);
 
     if (!validatedFields.success) {
-      return NextResponse.json(
-        { error: "Invalid fields" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Invalid fields" }, { status: 400 });
     }
 
     const product = await prisma.product.create({
@@ -71,6 +68,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(product);
   } catch (error) {
+    console.log(error);
     console.error("[PRODUCT_POST]", error);
     return NextResponse.json(
       { error: "Failed to create product" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "@/components/ui/calendar";
@@ -19,19 +19,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Minus, Plus, Trash2, Truck } from "lucide-react";
+import { Loader2, Minus, Plus, Trash2, Truck } from "lucide-react";
 import { useCart } from "@/lib/store/cart-context";
 import { DELIVERY_TIME_SLOTS } from "@/lib/constants";
 import { formatPrice, isDeliveryDay } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LoginDialog } from "@/components/auth/LoginDialog";
+import { useSiteConfig } from "@/hooks/use-site-config";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CartPage() {
   const { state, dispatch } = useCart();
   const { data: session } = useSession();
+  const { data: siteConfigs, isLoading } = useSiteConfig();
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
+  const [productStocks, setProductStocks] = useState<Record<string, number>>(
+    {},
+  );
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      const stockPromises = state.items.map(async (item) => {
+        const response = await fetch(`/api/products/${item.id}/stock`);
+        if (!response.ok) return null;
+        const { stock } = await response.json();
+        return { id: item.id, stock };
+      });
+
+      const stocks = await Promise.all(stockPromises);
+      const stockMap = stocks.reduce(
+        (acc, item) => {
+          if (item) {
+            acc[item.id] = item.stock;
+          }
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
+
+      setProductStocks(stockMap);
+    };
+
+    fetchStocks();
+  }, []);
 
   const handleCheckoutClick = () => {
     if (!session) {
@@ -43,13 +77,29 @@ export default function CartPage() {
   };
 
   const updateQuantity = (id: string, change: number, weight?: number) => {
-    const item = state.items.find((item) => 
-      (item.weight ? `${item.id}-${item.weight}` : item.id) === 
-      (weight ? `${id}-${weight}` : id)
+    const item = state.items.find(
+      (item) =>
+        (item.weight ? `${item.id}-${item.weight}` : item.id) ===
+        (weight ? `${id}-${weight}` : id),
     );
     if (!item) return;
-  
+
     const newQuantity = Math.max(0, item.quantity + change);
+    const availableStock = productStocks[id];
+
+    if (
+      change > 0 &&
+      availableStock !== undefined &&
+      newQuantity > availableStock
+    ) {
+      toast({
+        title: "Not enough stock",
+        description: `Only ${availableStock} items available`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (newQuantity === 0) {
       dispatch({
         type: "REMOVE_ITEM",
@@ -63,13 +113,24 @@ export default function CartPage() {
     }
   };
 
-  const deliveryFee = state.subtotal > 50 ? 0 : 4.99;
-  const total = state.subtotal + deliveryFee;
+  if (isLoading)
+    return (
+      <div className="flex h-[200px] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+
+  const deliveryFee = parseFloat(
+    (siteConfigs?.delivery_fee as string) ?? "4.70",
+  );
+  // Calculate total by adding delivery fee to items total
+  const itemsTotal = state.items.reduce((acc, item) => {
+    return acc + item.price * (item.weight || 1) * item.quantity;
+  }, 0);
+  const total = itemsTotal + deliveryFee;
 
   const canCheckout =
-    state.deliveryDate &&
-    state.deliveryTime &&
-    state.items.length > 0;
+    state.deliveryDate && state.deliveryTime && state.items.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -150,7 +211,9 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => updateQuantity(item.id, -1, item.weight)}
+                            onClick={() =>
+                              updateQuantity(item.id, -1, item.weight)
+                            }
                           >
                             <Minus className="h-4 w-4" />
                           </Button>
@@ -160,7 +223,9 @@ export default function CartPage() {
                           <Button
                             variant="outline"
                             size="icon"
-                            onClick={() => updateQuantity(item.id, 1, item.weight)}
+                            onClick={() =>
+                              updateQuantity(item.id, 1, item.weight)
+                            }
                           >
                             <Plus className="h-4 w-4" />
                           </Button>
@@ -256,23 +321,22 @@ export default function CartPage() {
               <CardContent className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>{formatPrice(state.subtotal)}</span>
+                  <span>{formatPrice(itemsTotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery</span>
-                  <span>
-                    {deliveryFee === 0 ? (
-                      <span className="text-green-600">Free</span>
-                    ) : (
-                      formatPrice(deliveryFee)
-                    )}
-                  </span>
+                  {isLoading ? (
+                    <Skeleton className="h-4 w-16" />
+                  ) : (
+                    <span>{formatPrice(deliveryFee)}</span>
+                  )}
                 </div>
-                {deliveryFee > 0 && (
-                  <p className="text-sm text-gray-600">
-                    Free delivery on orders over £50
-                  </p>
-                )}
+                <p className="text-sm text-gray-600">
+                  Free delivery for BD1 area{" "}
+                  <span className="text-[0.65rem]">
+                    (calculated at checkout)
+                  </span>
+                </p>
                 <div className="mt-2 border-t pt-2">
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
@@ -302,9 +366,7 @@ export default function CartPage() {
                   {!state.deliveryTime && (
                     <li>Please select a delivery time</li>
                   )}
-                  {state.items.length === 0 && (
-                    <li>Your cart is empty</li>
-                  )}
+                  {state.items.length === 0 && <li>Your cart is empty</li>}
                 </ul>
               </CardFooter>
             </Card>

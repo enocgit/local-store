@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ShoppingCart, Heart, Share2, Shield, Scale } from "lucide-react";
+import { ShoppingCart, Share2, Shield, Scale, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { RelatedProducts } from "@/components/product/RelatedProducts";
+import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { calculatePriceForDate, formatPrice } from "@/lib/utils";
 import RatingStars from "@/components/RatingStars";
 import { ProductReviews } from "@/components/product/ProductReviews";
@@ -23,6 +23,7 @@ import { Product, Review } from "@prisma/client";
 import { useToast } from "@/hooks/use-toast";
 import { Session } from "next-auth";
 import { WishlistButton } from "../ui/wishlist-button";
+import { useProduct } from "@/lib/api/products";
 
 interface ProductWithDetails extends Product {
   reviews: Review[];
@@ -33,14 +34,25 @@ type Props = {
   session: Session | null;
 };
 
-function ProductDetailPage({ product, session }: Props) {
+function ProductDetailPage({ product: initialProduct, session }: Props) {
+  const { data: product } = useProduct(initialProduct.id);
   const [selectedWeight, setSelectedWeight] = useState<number>();
   const { state, dispatch } = useCart();
   const { toast } = useToast();
 
-  const currentPrice = calculatePriceForDate(product.price, state.deliveryDate);
+  const currentPrice = calculatePriceForDate(
+    product?.price,
+    state.deliveryDate,
+  );
 
   const handleAddToCart = () => {
+    if (product?.stock === 0) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently out of stock.",
+      });
+      return;
+    }
     if (product?.weightOptions?.length && !selectedWeight) {
       toast({
         title: "Please select a weight",
@@ -68,23 +80,34 @@ function ProductDetailPage({ product, session }: Props) {
     });
   };
 
+  if (!product) {
+    return (
+      <div className="mt-10 flex justify-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4">
         {/* Product Overview */}
         <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2">
           {/* Product Gallery */}
-          <ProductGallery images={product.images} badge={product.badge} />
+          <ProductGallery images={product?.images} badge={product?.badge} />
 
           {/* Product Info */}
           <div className="space-y-6">
             <div>
-              <h1 className="mb-2 text-3xl font-bold">{product.name}</h1>
-              <p className="mb-4 text-gray-600">{product.description}</p>
+              <h1 className="mb-2 text-3xl font-bold">{product?.name}</h1>
+              <p className="mb-4 text-gray-600">{product?.description}</p>
               <div className="flex items-center space-x-4">
-                <RatingStars rating={product.rating} />
+                <RatingStars
+                  rating={product?.rating ?? initialProduct.rating}
+                />
                 <span className="text-sm text-gray-600">
-                  ({product.reviews.length} reviews)
+                  ({product?.reviews?.length ?? initialProduct.reviews?.length}{" "}
+                  reviews)
                 </span>
               </div>
             </div>
@@ -92,7 +115,7 @@ function ProductDetailPage({ product, session }: Props) {
             <div className="space-y-2">
               <span className="text-3xl font-bold">
                 {formatPrice(currentPrice)}
-                {product.weightOptions.length ? " per kg" : ""}
+                {product?.weightOptions.length ? " per kg" : ""}
               </span>
               {selectedWeight && (
                 <div className="text-xl text-gray-600">
@@ -101,7 +124,7 @@ function ProductDetailPage({ product, session }: Props) {
               )}
             </div>
 
-            {product.weightOptions?.length > 0 && (
+            {product?.weightOptions?.length > 0 && (
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-medium">
                   <Scale className="mr-2 h-4 w-4" />
@@ -132,10 +155,20 @@ function ProductDetailPage({ product, session }: Props) {
 
             <div className="space-y-4">
               <div className="flex space-x-4">
-                <Button className="flex-1" onClick={handleAddToCart}>
-                  <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+                <Button
+                  className="flex-1"
+                  disabled={product?.stock === 0}
+                  onClick={handleAddToCart}
+                >
+                  {product?.stock === 0 ? (
+                    "Out of Stock"
+                  ) : (
+                    <>
+                      <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+                    </>
+                  )}
                 </Button>
-                <WishlistButton productId={product.id} />
+                <WishlistButton productId={product?.id} />
                 <Button
                   variant="outline"
                   size="icon"
@@ -158,8 +191,7 @@ function ProductDetailPage({ product, session }: Props) {
                 <div>
                   <span className="font-semibold">Stock:</span>
                   <p className="text-gray-600">
-                    {product.stock} units
-                    available
+                    {product?.stock} units available
                   </p>
                 </div>
               </div>
@@ -167,7 +199,7 @@ function ProductDetailPage({ product, session }: Props) {
 
             {/* Certifications & Dietary Info */}
             <div className="flex flex-wrap gap-2">
-              {product.certifications.map((cert: string) => (
+              {product?.certifications.map((cert: string) => (
                 <Badge key={cert} variant="secondary">
                   {cert}
                 </Badge>
@@ -190,16 +222,16 @@ function ProductDetailPage({ product, session }: Props) {
                   <h3 className="mb-2 text-lg font-semibold">
                     Product Information
                   </h3>
-                  <p className="text-gray-600">{product.description}</p>
+                  <p className="text-gray-600">{product?.description}</p>
                 </div>
 
-                {product.storageInstructions ? (
+                {product?.storageInstructions ? (
                   <div>
                     <h3 className="mb-2 text-lg font-semibold">
                       Storage Instructions
                     </h3>
                     <p className="text-gray-600">
-                      {product.storageInstructions}
+                      {product?.storageInstructions}
                     </p>
                   </div>
                 ) : null}
@@ -231,16 +263,12 @@ function ProductDetailPage({ product, session }: Props) {
           </TabsContent>
 
           <TabsContent value="reviews">
-            <ProductReviews
-              productId={product.id}
-              rating={product.rating}
-              totalReviews={product.reviews.length}
-            />
+            <ProductReviews productId={product.id} />
           </TabsContent>
         </Tabs>
 
         {/* Related Products */}
-        {/* <RelatedProducts product={product} /> */}
+        <RelatedProducts product={product} />
       </div>
     </div>
   );

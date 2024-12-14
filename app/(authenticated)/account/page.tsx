@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrdersTab } from "@/components/account/OrdersTab";
 import { ProfileTab } from "@/components/account/ProfileTab";
+import { AddressTab } from "@/components/account/AddressTab";
 
 export default async function AccountPage() {
   const session = await auth();
@@ -18,12 +19,16 @@ export default async function AccountPage() {
         <TabsList>
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="addresses">Addresses</TabsTrigger>
         </TabsList>
         <TabsContent value="orders">
           <OrdersTab />
         </TabsContent>
         <TabsContent value="profile">
           <ProfileTab user={session.user} />
+        </TabsContent>
+        <TabsContent value="addresses">
+          <AddressTab />
         </TabsContent>
       </Tabs>
     </div>

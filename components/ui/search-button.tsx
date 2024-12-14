@@ -41,7 +41,10 @@ export function SearchButton({
         <Button
           variant="ghost"
           size="icon"
-          className={cn("hover:bg-gray-100", className)}
+          className={cn(
+            "hover:bg-gray-100 min-[420px]:text-gray-700",
+            className,
+          )}
         >
           <Search className="h-5 w-5" />
         </Button>

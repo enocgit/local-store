@@ -7,6 +7,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 interface CartItem {
   id: string;
@@ -25,7 +26,6 @@ interface CartState {
   deliveryDate?: Date;
   deliveryTime?: string;
   subtotal: number;
-  deliveryFee: number;
   total: number;
 }
 
@@ -61,7 +61,6 @@ const initialState: CartState = {
   deliveryTime: undefined,
   postcode: "",
   subtotal: 0,
-  deliveryFee: 4.99,
   total: 0,
 };
 
@@ -70,19 +69,22 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
   switch (action.type) {
     case "ADD_ITEM": {
-      const cartId = action.payload.weight 
+      const cartId = action.payload.weight
         ? `${action.payload.id}-${action.payload.weight}`
         : action.payload.id;
-        
+
       const existingItemIndex = state.items.findIndex(
-        (item) => (item.weight ? `${item.id}-${item.weight}` : item.id) === cartId
+        (item) =>
+          (item.weight ? `${item.id}-${item.weight}` : item.id) === cartId,
       );
 
       if (existingItemIndex > -1) {
         const newItems = [...state.items];
         newItems[existingItemIndex] = {
           ...newItems[existingItemIndex],
-          quantity: newItems[existingItemIndex].quantity + (action.payload.quantity || 1)
+          quantity:
+            newItems[existingItemIndex].quantity +
+            (action.payload.quantity || 1),
         };
         newState = { ...state, items: newItems };
       } else {
@@ -90,11 +92,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           ...state,
           items: [
             ...state.items,
-            { 
+            {
               ...action.payload,
               cartId,
               quantity: action.payload.quantity || 1,
-              weight: action.payload.weight
+              weight: action.payload.weight,
             },
           ],
         };
@@ -103,30 +105,31 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
 
     case "REMOVE_ITEM": {
-      const cartId = action.payload.weight 
+      const cartId = action.payload.weight
         ? `${action.payload.id}-${action.payload.weight}`
         : action.payload.id;
-        
+
       newState = {
         ...state,
         items: state.items.filter(
-          (item) => (item.weight ? `${item.id}-${item.weight}` : item.id) !== cartId
+          (item) =>
+            (item.weight ? `${item.id}-${item.weight}` : item.id) !== cartId,
         ),
       };
       break;
     }
 
     case "UPDATE_QUANTITY": {
-      const cartId = action.payload.weight 
+      const cartId = action.payload.weight
         ? `${action.payload.id}-${action.payload.weight}`
         : action.payload.id;
-        
+
       newState = {
         ...state,
         items: state.items.map((item) =>
           (item.weight ? `${item.id}-${item.weight}` : item.id) === cartId
             ? { ...item, quantity: action.payload.quantity }
-            : item
+            : item,
         ),
       };
       break;
@@ -154,7 +157,8 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         // If an item with the new weight exists, add the changing item's quantity
         newItems[existingItemIndex] = {
           ...newItems[existingItemIndex],
-          quantity: newItems[existingItemIndex].quantity + changingItem.quantity
+          quantity:
+            newItems[existingItemIndex].quantity + changingItem.quantity,
         };
         // Remove the old item
         newState = {
@@ -210,14 +214,12 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     (sum, item) => sum + item.price * (item.weight || 1) * item.quantity,
     0,
   );
-  const deliveryFee = subtotal > 50 ? 0 : 4.99;
-  const total = subtotal + deliveryFee;
+  const total = subtotal;
 
   // Return final state with calculated values
   return {
     ...newState,
     subtotal,
-    deliveryFee,
     total,
   };
 }
