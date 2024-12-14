@@ -252,7 +252,10 @@ export default function CheckoutPage() {
                 </div>
 
                 {isAddressesLoading ? (
-                  <Loader className="border-t-black" />
+                  <div className="flex items-center gap-2">
+                    <Loader className="border-t-black" />
+                    Loading addresses...
+                  </div>
                 ) : (
                   savedAddresses.length > 0 && (
                     <div className="space-y-4 rounded-lg bg-white p-6 shadow-sm">
