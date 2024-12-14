@@ -192,7 +192,7 @@ export const sendOrderConfirmationEmail = async ({
     Delivery Address:
     ${address.address1}
     ${address.address2 ? address.address2 + "\n" : ""}${address.city}
-    ${address.postcode}
+    ${address.postcode.toUpperCase()}
     
     Delivery Date: ${deliveryDate.toLocaleDateString()}
     Delivery Time: ${deliveryTime}
@@ -248,7 +248,7 @@ export const sendOrderConfirmationEmail = async ({
         ${address.address1}<br>
         ${address.address2 ? address.address2 + "<br>" : ""}
         ${address.city}<br>
-        ${address.postcode}
+        ${address.postcode.toUpperCase()}
       </p>
       
       <p>
@@ -376,7 +376,7 @@ export async function sendAdminOrderNotificationEmail({
   deliveryTime: string;
 }) {
   const formattedItems = items
-    .map((item) => `${item.quantity}x ${item.name}`)
+    .map((item) => `${item.quantity}x ${item.product.name}`)
     .join("\n");
 
   const emailContent = `
@@ -392,12 +392,100 @@ export async function sendAdminOrderNotificationEmail({
     ${formattedItems}
   `;
 
-  // Use your email sending implementation here
-  // Example with Resend:
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1>New Order Received!</h1>
+      
+      <p><strong>Order ID:</strong> ${orderId}</p>
+      <p><strong>Customer:</strong> ${customerName}</p>
+      <p><strong>Total:</strong> £${(total / 100).toFixed(2)}</p>
+      <p><strong>Delivery Date:</strong> ${deliveryDate.toLocaleDateString()}</p>
+      <p><strong>Delivery Time:</strong> ${deliveryTime}</p>
+
+      <h2>Items:</h2>
+      <ul>
+        ${items.map((item) => `<li>${item.quantity}x ${item.product.name}</li>`).join("")}
+      </ul>
+    </div>
+  `;
+
   await sendEmail({
     to: email,
     subject: `New Order #${orderId}`,
     text: emailContent,
+    html,
+    emailType: "ORDER_CONFIRMATION",
+  });
+}
+
+export async function sendDeliveryReminderEmail({
+  email,
+  orderId,
+  items,
+  deliveryDate,
+  deliveryTime,
+  customerName,
+}: {
+  email: string;
+  orderId: string;
+  items: any[];
+  deliveryDate: Date;
+  deliveryTime: string;
+  customerName: string;
+}) {
+  const subject = `Your Order #${orderId} Delivery Reminder`;
+
+  const text = `
+Delivery Reminder
+
+Hello ${customerName},
+
+Your order #${orderId} is scheduled for delivery:
+
+Please ensure someone is available to receive the delivery.
+Keep your phone handy - our driver may need to contact you.
+
+Date: ${deliveryDate.toLocaleDateString()}
+Time: ${deliveryTime}
+
+Order Items:
+${items.map((item) => `${item.quantity}x ${item.product.name}`).join("\n")}
+
+Thank you for choosing Tropikal Foods Bradford!
+`;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2>Delivery Reminder</h2>
+      <p>Hello ${customerName},</p>
+      <p>Your order #${orderId} is scheduled for delivery:</p>
+      <p>Please ensure someone is available to receive the delivery</p>
+      <p>Keep your phone handy - our driver may need to contact you</p>
+      <p>
+        <strong>Date:</strong> ${deliveryDate.toLocaleDateString()}<br>
+        <strong>Time:</strong> ${deliveryTime}
+      </p>
+      
+      <h3>Order Items:</h3>
+      <ul>
+        ${items
+          .map(
+            (item) => `
+          <li>${item.quantity}x ${item.product.name}</li>
+        `,
+          )
+          .join("")}
+      </ul>
+      
+      <p>Thank you for choosing Tropikal Foods Bradford!</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject,
+    text,
+    html,
     emailType: "ORDER_CONFIRMATION",
   });
 }

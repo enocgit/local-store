@@ -95,7 +95,7 @@ export function OrderDialog({ order, isOpen, onClose }: OrderDialogProps) {
 
           {/* Customer Section */}
           <div>
-            <p className="text-sm font-medium mb-2">Customer</p>
+            <p className="mb-2 text-sm font-medium">Customer</p>
             <div className="text-sm">
               <p>{order.customer.name}</p>
               <p className="text-muted-foreground">{order.customer.email}</p>
@@ -104,7 +104,7 @@ export function OrderDialog({ order, isOpen, onClose }: OrderDialogProps) {
 
           {/* Delivery Section */}
           <div>
-            <p className="text-sm font-medium mb-2">Delivery Details</p>
+            <p className="mb-2 text-sm font-medium">Delivery Details</p>
             <div className="text-sm">
               <p>Date: {format(order.deliveryDate, "PPP")}</p>
               <p>Time: {order.deliveryTime}</p>
@@ -112,40 +112,40 @@ export function OrderDialog({ order, isOpen, onClose }: OrderDialogProps) {
                 <p>{order.address.address1}</p>
                 {order.address.address2 && <p>{order.address.address2}</p>}
                 <p>{order.address.city}</p>
-                <p>{order.address.postcode}</p>
+                <p>{order.address.postcode.toUpperCase()}</p>
               </div>
             </div>
           </div>
 
           {/* Items Section */}
           <div>
-            <p className="text-sm font-medium mb-2">Order Items</p>
+            <p className="mb-2 text-sm font-medium">Order Items</p>
             <div className="space-y-4">
-            {order?.orderItems?.map((item) => (
-  <div
-    key={item.id}
-    className="flex items-center justify-between text-sm"
-  >
-    <div>
-      <p>{item.productName}</p>
-      <p className="text-muted-foreground">
-        Qty: {item.quantity}
-        {item.weight && ` (${item.weight}kg)`}
-      </p>
-    </div>
-    <p>
-      {new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: "GBP",
-      }).format(item.price)}
-    </p>
-  </div>
-))}
+              {order?.orderItems?.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between text-sm"
+                >
+                  <div>
+                    <p>{item.productName}</p>
+                    <p className="text-muted-foreground">
+                      Qty: {item.quantity}
+                      {item.weight && ` (${item.weight}kg)`}
+                    </p>
+                  </div>
+                  <p>
+                    {new Intl.NumberFormat("en-GB", {
+                      style: "currency",
+                      currency: "GBP",
+                    }).format(item.price)}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Total Section */}
-          <div className="flex justify-between items-center border-t pt-4">
+          <div className="flex items-center justify-between border-t pt-4">
             <p className="text-sm font-medium">Total Amount</p>
             <p className="text-lg font-bold">
               {new Intl.NumberFormat("en-GB", {

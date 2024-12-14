@@ -12,10 +12,10 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Mail } from "lucide-react";
 import { formatDistanceToNow, format } from "date-fns";
 import { OrderDialog } from "./order-dialog";
-import { DeleteOrderAlert } from "./delete-order-alert";
+import { toast } from "sonner";
 
 export type Order = {
   id: string;
@@ -138,7 +138,23 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => {
       const order = row.original;
       const [showDialog, setShowDialog] = useState(false);
-      const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+      const [isSending, setIsSending] = useState(false);
+
+      const sendReminder = async () => {
+        try {
+          setIsSending(true);
+          await fetch("/api/send-reminder", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId: order.id }),
+          });
+          toast.success("Reminder sent successfully");
+        } catch (error) {
+          toast.error("Failed to send reminder");
+        } finally {
+          setIsSending(false);
+        }
+      };
 
       return (
         <>
@@ -153,6 +169,10 @@ export const columns: ColumnDef<Order>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => setShowDialog(true)}>
                 View details
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={sendReminder} disabled={isSending}>
+                <Mail className="mr-2 h-4 w-4" />
+                Send Reminder
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(order.id)}

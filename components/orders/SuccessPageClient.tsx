@@ -55,7 +55,7 @@ export default function SuccessPageClient({ order }: Props) {
               <p>{order.address.address1}</p>
               {order.address.address2 && <p>{order.address.address2}</p>}
               <p>{order.address.city}</p>
-              <p>{order.address.postcode}</p>
+              <p>{order.address.postcode.toUpperCase()}</p>
             </div>
           </div>
 

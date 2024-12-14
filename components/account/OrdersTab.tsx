@@ -172,9 +172,11 @@ export function OrdersTab() {
                     <div className="space-y-1 text-sm">
                       <h4 className="font-medium">Delivery Details</h4>
                       <p>{order.address.address1}</p>
-                      {order.address.address2 && <p>{order.address.address2}</p>}
+                      {order.address.address2 && (
+                        <p>{order.address.address2}</p>
+                      )}
                       <p>{order.address.city}</p>
-                      <p>{order.address.postcode}</p>
+                      <p>{order.address.postcode.toUpperCase()}</p>
                       <p>
                         Delivery on{" "}
                         {format(new Date(order.deliveryDate), "PPP")} at{" "}

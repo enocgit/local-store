@@ -116,7 +116,8 @@ export default function ContactPage() {
                     <p className="text-muted-foreground">
                       {location?.address || ""}
                       <br />
-                      {location?.city || ""}, {location?.postcode || ""}
+                      {location?.city || ""},{" "}
+                      {location?.postcode.toUpperCase() || ""}
                       <br />
                       {location?.country || ""}
                     </p>
