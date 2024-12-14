@@ -86,15 +86,17 @@ export async function POST(req: Request) {
         });
 
         // Send admin notification
-        await sendAdminOrderNotificationEmail({
-          email: "admin@tropikalfoodsbradford.com",
-          orderId: order.id,
-          items: order.items,
-          total: order.total,
-          customerName: `${order.user.firstName} ${order.user.lastName}`,
-          deliveryDate: order.deliveryDate,
-          deliveryTime: order.deliveryTime,
-        });
+        if (process.env.NODE_ENV === "production") {
+          await sendAdminOrderNotificationEmail({
+            email: "admin@tropikalfoodsbradford.com",
+            orderId: order.id,
+            items: order.items,
+            total: order.total,
+            customerName: `${order.user.firstName} ${order.user.lastName}`,
+            deliveryDate: order.deliveryDate,
+            deliveryTime: order.deliveryTime,
+          });
+        }
       } catch (error) {
         console.error("Failed to send emails:", error);
       }
