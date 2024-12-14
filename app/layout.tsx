@@ -24,10 +24,10 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "TropikalFoods - Your Local Food Market",
-    template: "%s | TropikalFoods",
+    default: "TropikalFoods Bradford - Your Local Food Market",
+    template: "%s | TropikalFoods Bradford",
   },
-  description: "TropikalFoods - Your Local Food Market",
+  description: "Authentic flavors from the Caribbean, now in Bradford",
 };
 
 export default async function RootLayout({
