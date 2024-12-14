@@ -61,6 +61,7 @@ export const columns: ColumnDef<Category>[] = [
   {
     accessorKey: "description",
     header: "Description",
+    cell: ({ row }) => row.original.description.slice(0, 30) + "...",
   },
   {
     accessorKey: "productsCount",
@@ -96,7 +97,7 @@ export const columns: ColumnDef<Category>[] = [
             title: "Category deleted",
             description: "The category has been deleted successfully.",
           });
-          
+
           router.refresh();
         } catch (error) {
           toast({
@@ -118,7 +119,9 @@ export const columns: ColumnDef<Category>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => router.push(`/category/${category.id}`)}>
+              <DropdownMenuItem
+                onClick={() => router.push(`/category/${category.id}`)}
+              >
                 <Eye className="mr-2 h-4 w-4" />
                 View
               </DropdownMenuItem>
@@ -138,13 +141,16 @@ export const columns: ColumnDef<Category>[] = [
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <AlertDialog
+            open={showDeleteDialog}
+            onOpenChange={setShowDeleteDialog}
+          >
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will permanently delete the category and remove it from any
-                  associated products.
+                  This will permanently delete the category and remove it from
+                  any associated products.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

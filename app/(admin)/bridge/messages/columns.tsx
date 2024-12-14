@@ -28,33 +28,36 @@ export type Message = {
 async function updateMessageStatus(id: string, status: string) {
   try {
     const response = await fetch(`/api/messages/${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ status }),
     });
-    
+
     if (!response.ok) {
-      throw new Error('Failed to update message status');
+      throw new Error("Failed to update message status");
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error('Error updating message status:', error);
+    console.error("Error updating message status:", error);
     throw error;
   }
 }
 
-export const columns: ColumnDef<{
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  createdAt: Date;
-  status: string;
-}, unknown>[] = [
+export const columns: ColumnDef<
+  {
+    id: string;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    createdAt: Date;
+    status: string;
+  },
+  unknown
+>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -66,12 +69,15 @@ export const columns: ColumnDef<{
   {
     accessorKey: "subject",
     header: "Subject",
+    cell: ({ row }) => row.original.subject.slice(0, 30) + "...",
   },
   {
     accessorKey: "createdAt",
     header: "Received",
     cell: ({ row }) => {
-      return formatDistanceToNow(new Date(row.original.createdAt), { addSuffix: true });
+      return formatDistanceToNow(new Date(row.original.createdAt), {
+        addSuffix: true,
+      });
     },
   },
   {
@@ -79,7 +85,9 @@ export const columns: ColumnDef<{
     header: "Status",
     cell: ({ row }) => {
       return (
-        <Badge variant={row.original.status === "READ" ? "secondary" : "default"}>
+        <Badge
+          variant={row.original.status === "READ" ? "secondary" : "default"}
+        >
           {row.original.status}
         </Badge>
       );
@@ -98,7 +106,7 @@ export const columns: ColumnDef<{
           // Refresh the page to show updated data
           window.location.reload();
         } catch (error) {
-          console.error('Failed to update status:', error);
+          console.error("Failed to update status:", error);
         }
       };
 

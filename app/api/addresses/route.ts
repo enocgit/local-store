@@ -28,8 +28,18 @@ export async function POST(request: Request) {
     }
 
     // If no existing address found, create new one
-    const address = await prisma.address.create({
-      data: {
+    const address = await prisma.address.upsert({
+      where: {
+        userId_address1_address2_city_postcode: {
+          userId: session.user.id,
+          address1,
+          address2: address2 || null,
+          city,
+          postcode,
+        },
+      },
+      update: {}, // no updates needed since it's the same data
+      create: {
         userId: session.user.id,
         address1,
         address2,

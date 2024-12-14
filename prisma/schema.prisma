@@ -131,6 +131,7 @@ model Address {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([userId, address1, address2, city, postcode])
   @@map("addresses")
 }
 

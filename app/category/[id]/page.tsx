@@ -12,6 +12,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (id !== "new-arrivals") {
     category = await prisma.category.findUnique({
       where: { id },
+      select: {
+        name: true,
+        description: true,
+      },
     });
   } else {
     category = {
