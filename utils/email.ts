@@ -192,7 +192,7 @@ export const sendOrderConfirmationEmail = async ({
     Delivery Address:
     ${address.address1}
     ${address.address2 ? address.address2 + "\n" : ""}${address.city}
-    ${address.postcode}
+    ${address.postcode.toUpperCase()}
     
     Delivery Date: ${deliveryDate.toLocaleDateString()}
     Delivery Time: ${deliveryTime}
@@ -248,7 +248,7 @@ export const sendOrderConfirmationEmail = async ({
         ${address.address1}<br>
         ${address.address2 ? address.address2 + "<br>" : ""}
         ${address.city}<br>
-        ${address.postcode}
+        ${address.postcode.toUpperCase()}
       </p>
       
       <p>
@@ -376,7 +376,7 @@ export async function sendAdminOrderNotificationEmail({
   deliveryTime: string;
 }) {
   const formattedItems = items
-    .map((item) => `${item.quantity}x ${item.name}`)
+    .map((item) => `${item.quantity}x ${item.product.name}`)
     .join("\n");
 
   const emailContent = `
@@ -404,7 +404,7 @@ export async function sendAdminOrderNotificationEmail({
 
       <h2>Items:</h2>
       <ul>
-        ${items.map((item) => `<li>${item.quantity}x ${item.name}</li>`).join("")}
+        ${items.map((item) => `<li>${item.quantity}x ${item.product.name}</li>`).join("")}
       </ul>
     </div>
   `;
@@ -449,7 +449,7 @@ Date: ${deliveryDate.toLocaleDateString()}
 Time: ${deliveryTime}
 
 Order Items:
-${items.map((item) => `${item.quantity}x ${item.productName}`).join("\n")}
+${items.map((item) => `${item.quantity}x ${item.product.name}`).join("\n")}
 
 Thank you for choosing Tropikal Foods Bradford!
 `;
@@ -471,7 +471,7 @@ Thank you for choosing Tropikal Foods Bradford!
         ${items
           .map(
             (item) => `
-          <li>${item.quantity}x ${item.productName}</li>
+          <li>${item.quantity}x ${item.product.name}</li>
         `,
           )
           .join("")}

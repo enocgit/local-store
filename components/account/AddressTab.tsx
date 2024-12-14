@@ -106,7 +106,7 @@ export function AddressTab() {
                     {address.address2 && `, ${address.address2}`}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {address.city}, {address.postcode}
+                    {address.city}, {address.postcode.toUpperCase()}
                   </p>
                 </div>
                 <Button

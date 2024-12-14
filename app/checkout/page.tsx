@@ -94,7 +94,7 @@ export default function CheckoutPage() {
         form.setValue("address1", selectedAddress.address1);
         form.setValue("address2", selectedAddress.address2 || "");
         form.setValue("city", selectedAddress.city);
-        form.setValue("postcode", selectedAddress.postcode);
+        form.setValue("postcode", selectedAddress.postcode.toUpperCase());
       }
     }
   }, [selectedAddressId, savedAddresses, form]);
@@ -125,7 +125,7 @@ export default function CheckoutPage() {
             address1: values.address1,
             address2: values.address2,
             city: values.city,
-            postcode: values.postcode,
+            postcode: values.postcode.toUpperCase(),
           }),
         });
 
@@ -292,7 +292,7 @@ export default function CheckoutPage() {
                             >
                               {address.address1}
                               {address.address2 && `, ${address.address2}`}
-                              {`, ${address.city}, ${address.postcode}`}
+                              {`, ${address.city}, ${address.postcode.toUpperCase()}`}
                             </label>
                           </div>
                         ))}

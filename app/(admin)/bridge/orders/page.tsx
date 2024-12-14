@@ -45,7 +45,7 @@ export default async function OrdersPage() {
       address1: order.address.address1,
       address2: order.address.address2,
       city: order.address.city,
-      postcode: order.address.postcode,
+      postcode: order.address.postcode.toUpperCase(),
       isSet: true,
     },
   }));
