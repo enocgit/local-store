@@ -141,6 +141,9 @@ export const columns: ColumnDef<Order>[] = [
       const [isSending, setIsSending] = useState(false);
 
       const sendReminder = async () => {
+        if (order.status !== "PAID") {
+          return;
+        }
         try {
           setIsSending(true);
           await fetch("/api/send-reminder", {
@@ -170,7 +173,10 @@ export const columns: ColumnDef<Order>[] = [
               <DropdownMenuItem onClick={() => setShowDialog(true)}>
                 View details
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={sendReminder} disabled={isSending}>
+              <DropdownMenuItem
+                onClick={sendReminder}
+                disabled={isSending || row.original.status !== "PAID"}
+              >
                 <Mail className="mr-2 h-4 w-4" />
                 Send Reminder
               </DropdownMenuItem>

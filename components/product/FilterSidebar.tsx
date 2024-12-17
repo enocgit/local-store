@@ -11,16 +11,23 @@ import {
 } from "@/components/ui/accordion";
 
 export function FilterSidebar() {
-  const maxPrice = 200;
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  
+
+  const [maxPrice, setMaxPrice] = useState(50);
   const minPrice = Number(searchParams.get("minPrice")) || 0;
-  const maxPriceParam = Number(searchParams.get("maxPrice")) || maxPrice;
+  const maxPriceParam =
+    Number(searchParams.get("maxPrice")) || Math.ceil(maxPrice + 20);
   const defaultValue = [minPrice, maxPriceParam];
 
   const [currentValue, setCurrentValue] = useState(defaultValue);
+
+  useEffect(() => {
+    fetch("/api/products/max-price")
+      .then((res) => res.json())
+      .then((data) => setMaxPrice(data.maxPrice));
+  }, []);
 
   useEffect(() => {
     setCurrentValue([minPrice, maxPriceParam]);

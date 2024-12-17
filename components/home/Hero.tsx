@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useSiteConfig } from "@/hooks/use-site-config";
 import { Skeleton } from "../ui/skeleton";
+import { BLUR_DATA_URL } from "@/enum/image";
 
 interface Homepage {
   title: string;
@@ -26,6 +27,8 @@ function Hero() {
         }
         alt="Fresh food background"
         fill
+        placeholder="blur"
+        blurDataURL={BLUR_DATA_URL}
         className="object-cover brightness-50"
         priority
       />
