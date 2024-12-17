@@ -14,7 +14,12 @@ interface EmailData {
   emailType: EmailType;
 }
 
-type EmailType = "WELCOME" | "ORDER_CONFIRMATION" | "SUPPORT" | "SUBSCRIPTION";
+type EmailType =
+  | "WELCOME"
+  | "ORDER_CONFIRMATION"
+  | "SUPPORT"
+  | "SUBSCRIPTION"
+  | "RATING_REQUEST";
 
 const getFromEmail = (emailType: EmailType): string => {
   const address = (() => {
@@ -35,6 +40,10 @@ const getFromEmail = (emailType: EmailType): string => {
         return (
           process.env.EMAIL_FROM_HELLO || "hello@tropikalfoodsbradford.com"
         );
+      case "RATING_REQUEST":
+        return (
+          process.env.EMAIL_FROM_HELLO || "hello@tropikalfoodsbradford.com"
+        );
       default:
         return (
           process.env.EMAIL_FROM_HELLO || "hello@tropikalfoodsbradford.com"
@@ -52,6 +61,8 @@ const getFromEmail = (emailType: EmailType): string => {
         return "Tropikal Foods Support";
       case "SUBSCRIPTION":
         return "Tropikal Foods Subscriptions";
+      case "RATING_REQUEST":
+        return "Tropikal Foods Rating Requests";
       default:
         return "Tropikal Foods";
     }
@@ -487,5 +498,52 @@ Thank you for choosing Tropikal Foods Bradford!
     text,
     html,
     emailType: "ORDER_CONFIRMATION",
+  });
+}
+
+export async function sendRatingRequestEmail({
+  email,
+  orderId,
+}: {
+  email: string;
+  orderId: string;
+}) {
+  const subject = `How was your order?`;
+  const ratingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/rate-order/${orderId}`;
+
+  const text = `
+We'd love to hear your feedback!
+
+Please rate your recent order from Tropikal Foods Bradford.
+Rate your order here: ${ratingLink}
+
+Thank you for choosing Tropikal Foods Bradford!
+    `;
+
+  const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>How was your order?</h2>
+        <p>We'd love to hear your feedback about your recent order from Tropikal Foods Bradford.</p>
+        <p style="margin: 30px 0; text-align: center;">
+          <a href="${ratingLink}" 
+             style="padding: 12px 24px; 
+                    background: #4CAF50; 
+                    color: white; 
+                    text-decoration: none; 
+                    border-radius: 5px;
+                    display: inline-block;">
+            Rate Your Order
+          </a>
+        </p>
+        <p>Thank you for choosing Tropikal Foods Bradford!</p>
+      </div>
+    `;
+
+  return sendEmail({
+    to: email,
+    subject,
+    text,
+    html,
+    emailType: "RATING_REQUEST",
   });
 }

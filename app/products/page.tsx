@@ -9,8 +9,19 @@ import { useInView } from "react-intersection-observer";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { useSiteConfig } from "@/hooks/use-site-config";
+
+interface Products {
+  title: string;
+  description: string;
+  image: string;
+}
 
 export default function ProductsPage() {
+  const { data: siteConfigs, isLoading: isLoadingSiteConfigs } =
+    useSiteConfig();
+  const products = siteConfigs?.products as Products;
+
   const searchParams = useSearchParams();
   const minPrice = searchParams.get("minPrice");
   const maxPrice = searchParams.get("maxPrice");
@@ -62,9 +73,16 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-background">
       <CategoryHeader
-        title="All Products"
-        description="Browse through our complete collection of products"
-        image="https://utfs.io/f/5aK3NZMlDfcg03ZMPBuFdU6kMY9NLjOwprPiWl8htS3Bygs7"
+        title={products?.title || "All Products"}
+        description={
+          products?.description ||
+          "Browse through our complete collection of products"
+        }
+        image={
+          products?.image ||
+          "https://utfs.io/f/5aK3NZMlDfcg03ZMPBuFdU6kMY9NLjOwprPiWl8htS3Bygs7"
+        }
+        isLoading={isLoadingSiteConfigs}
       />
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-8 lg:flex-row">

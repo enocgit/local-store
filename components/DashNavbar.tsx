@@ -1,11 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  User,
-  CakeIcon,
-  LogOut,
-} from "lucide-react";
+import { User, CakeIcon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -16,14 +12,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import Loader from "./ui/loader";
-
-const NEW_ARRIVALS_SLUG = "new-arrivals";
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-}
 
 export function DashNavbar() {
   const [loggingOut, setLoggingOut] = useState(false);
@@ -107,7 +95,6 @@ export function DashNavbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <CakeIcon className="h-8 w-8" />
               <span className="text-xl font-bold max-[330px]:hidden">
                 TropikalFoods
               </span>
@@ -115,7 +102,6 @@ export function DashNavbar() {
           </div>
 
           <div className="flex items-center space-x-4">
-
             {/* Account */}
             <UserAccountNav />
           </div>

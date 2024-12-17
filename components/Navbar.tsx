@@ -5,7 +5,6 @@ import {
   User,
   Menu,
   Heart,
-  CakeIcon,
   LogOut,
   CreditCard,
   ShoppingCart,
@@ -98,7 +97,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="hidden text-gray-700 hover:bg-gray-100 sm:flex"
+            className="hidden text-gray-700 hover:bg-white sm:flex"
           >
             <User className="h-5 w-5" />
           </Button>
@@ -175,7 +174,7 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="text-xl font-bold max-[330px]:hidden">
+              <span className="text-xl font-bold text-neutral-500 hover:text-neutral-100 max-[330px]:hidden">
                 TropikalFoods
               </span>
             </Link>
