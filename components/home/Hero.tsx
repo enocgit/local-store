@@ -34,7 +34,7 @@ function Hero() {
       />
       <div className="container mx-auto px-4 py-24">
         <div className="relative z-10 text-center text-white">
-          <h1 className="animate-fade-up mb-6 text-5xl font-bold">
+          <h1 className="animate-fade-up mb-6 text-3xl font-bold sm:text-5xl">
             {homepage?.title?.split("|")[0] || "Fresh Caribbean Food"}
             <span className="block text-yellow-300">
               {homepage?.title?.split("|")[1] || "Delivered to Your Door"}

@@ -191,9 +191,11 @@ export default function CartPage() {
                                 <SelectValue placeholder="Select weight" />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="1">
-                                  1 kg - {formatPrice(item.price)}
-                                </SelectItem>
+                                {!item.weightOptions?.includes(1) && (
+                                  <SelectItem value="1">
+                                    1 kg - {formatPrice(item.price)}
+                                  </SelectItem>
+                                )}
                                 {item.weightOptions?.map((weight: number) => (
                                   <SelectItem
                                     key={weight}

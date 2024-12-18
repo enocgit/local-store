@@ -140,9 +140,11 @@ function ProductDetailPage({ product: initialProduct, session }: Props) {
                     <SelectValue placeholder="Choose weight" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">
-                      1 kg - {formatPrice(currentPrice)}
-                    </SelectItem>
+                    {!product.weightOptions?.includes(1) && (
+                      <SelectItem value="1">
+                        1 kg - {formatPrice(currentPrice)}
+                      </SelectItem>
+                    )}
                     {product.weightOptions.map((weight: number) => (
                       <SelectItem key={weight} value={weight.toString()}>
                         {weight} kg - {formatPrice(currentPrice * weight)}
