@@ -26,6 +26,7 @@ import Loader from "./ui/loader";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { SearchButton } from "./ui/search-button";
 import { useSiteConfig } from "@/hooks/use-site-config";
+import Image from "next/image";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -172,13 +173,18 @@ export function Navbar() {
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-neutral-700 hover:text-neutral-500 max-[330px]:hidden">
-                TropikalFoods
-              </span>
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo.png"
+              alt="TropikalFoods Bradford"
+              width={70}
+              height={70}
+              className="max-[425px]:hidden"
+            />
+            <span className="text-xl font-bold text-neutral-700 hover:text-neutral-500">
+              TropikalFoods
+            </span>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:space-x-6">

@@ -3,7 +3,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service and conditions for using TropikalFoods",
+  description:
+    "Terms of Service and conditions for using TropikalFoods Bradford",
 };
 
 export default function TermsOfService() {

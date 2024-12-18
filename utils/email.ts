@@ -54,17 +54,17 @@ const getFromEmail = (emailType: EmailType): string => {
   const name = (() => {
     switch (emailType) {
       case "WELCOME":
-        return "Tropikal Foods";
+        return "TropikalFoods Bradford";
       case "ORDER_CONFIRMATION":
-        return "Tropikal Foods Orders";
+        return "TropikalFoods Bradford Orders";
       case "SUPPORT":
-        return "Tropikal Foods Support";
+        return "TropikalFoods Bradford Support";
       case "SUBSCRIPTION":
-        return "Tropikal Foods Subscriptions";
+        return "TropikalFoods Bradford Subscriptions";
       case "RATING_REQUEST":
-        return "Tropikal Foods Rating Requests";
+        return "TropikalFoods Bradford Rating Requests";
       default:
-        return "Tropikal Foods";
+        return "TropikalFoods Bradford";
     }
   })();
 
@@ -111,13 +111,13 @@ export const sendEmail = async ({
 };
 
 export const sendWelcomeEmail = async (userEmail: string, userName: string) => {
-  const subject = "Welcome to Tropikal Foods Bradford!";
+  const subject = "Welcome to TropikalFoods Bradford!";
   const text = `    
     Hello ${userName},
     
     Thank you for signing up! We're excited to have you as part of our community.
     
-    At Tropikal Foods Bradford, you'll find:
+    At TropikalFoods Bradford, you'll find:
     - A wide selection of authentic African and Caribbean foods
     - Fresh ingredients and quality products
     - Great deals and promotions
@@ -125,21 +125,21 @@ export const sendWelcomeEmail = async (userEmail: string, userName: string) => {
     If you have any questions, feel free to reply to this email.
     
     Best regards,
-    The Tropikal Foods Bradford Team
+    The TropikalFoods Bradford Team
   `;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <p>Hello ${userName},</p>
       <p>Thank you for signing up! We're excited to have you as part of our community.</p>
-      <p>At Tropikal Foods Bradford, you'll find:</p>
+      <p>At TropikalFoods Bradford, you'll find:</p>
       <ul>
         <li>A wide selection of authentic African and Caribbean foods</li>
         <li>Fresh ingredients and quality products</li>
         <li>Great deals and promotions</li>
       </ul>
       <p>If you have any questions, feel free to reply to this email.</p>
-      <p>Best regards,<br>The Tropikal Foods Bradford Team</p>
+      <p>Best regards,<br>The TropikalFoods Bradford Team</p>
     </div>
   `;
 
@@ -182,7 +182,7 @@ export const sendOrderConfirmationEmail = async ({
     
     Hello ${firstName} ${lastName},
     
-    Thank you for your order at Tropikal Foods Bradford! We're preparing your delivery.
+    Thank you for your order at TropikalFoods Bradford! We're preparing your delivery.
     
     Order Details:
     ${items
@@ -211,14 +211,14 @@ export const sendOrderConfirmationEmail = async ({
     If you have any questions about your order, please reply to this email.
     
     Best regards,
-    The Tropikal Foods Bradford Team
+    The TropikalFoods Bradford Team
   `;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h1>Order Confirmation #${orderId}</h1>
       <p>Hello ${firstName} ${lastName},</p>
-      <p>Thank you for your order at Tropikal Foods Bradford! We're preparing your delivery.</p>
+      <p>Thank you for your order at TropikalFoods Bradford! We're preparing your delivery.</p>
       
       <h2>Order Details:</h2>
       <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
@@ -268,7 +268,7 @@ export const sendOrderConfirmationEmail = async ({
       </p>
       
       <p>If you have any questions about your order, please reply to this email.</p>
-      <p>Best regards,<br>The Tropikal Foods Bradford Team</p>
+      <p>Best regards,<br>The TropikalFoods Bradford Team</p>
     </div>
   `;
 
@@ -286,12 +286,12 @@ export const sendSubscriptionVerificationEmail = async (
   userEmail: string,
   token: string,
 ) => {
-  const subject = "Verify your Tropikal Foods subscription";
+  const subject = "Verify your TropikalFoods Bradford subscription";
   const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-subscription?token=${token}`;
   const unsubscribeUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/unsubscribe?email=${encodeURIComponent(userEmail)}`;
 
   const text = `
-    Thank you for subscribing to Tropikal Foods!
+    Thank you for subscribing to TropikalFoods Bradford!
     
     Please verify your subscription by clicking the link below:
     ${verificationUrl}
@@ -299,13 +299,13 @@ export const sendSubscriptionVerificationEmail = async (
     If you didn't request this subscription, you can safely ignore this email.
     
     Best regards,
-    The Tropikal Foods Team
+    The TropikalFoods Team
   `;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <h1 style="color: #333;">Verify Your Subscription</h1>
-      <p>Thank you for subscribing to Tropikal Foods Bradford!</p>
+      <p>Thank you for subscribing to TropikalFoods Bradford!</p>
       <p>Please verify your subscription by clicking the button below:</p>
       <p style="text-align: center; margin: 30px 0;">
         <a href="${verificationUrl}" 
@@ -317,7 +317,7 @@ export const sendSubscriptionVerificationEmail = async (
       <p style="color: #666; font-size: 0.9em;">
         If you didn't request this subscription, you can safely ignore this email.
       </p>
-      <p>Best regards,<br>The Tropikal Foods Bradford Team</p>
+      <p>Best regards,<br>The TropikalFoods Bradford Team</p>
       
       <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
         <p>
@@ -462,7 +462,7 @@ Time: ${deliveryTime}
 Order Items:
 ${items.map((item) => `${item.quantity}x ${item.product.name}`).join("\n")}
 
-Thank you for choosing Tropikal Foods Bradford!
+Thank you for choosing TropikalFoods Bradford!
 `;
 
   const html = `
@@ -488,7 +488,7 @@ Thank you for choosing Tropikal Foods Bradford!
           .join("")}
       </ul>
       
-      <p>Thank you for choosing Tropikal Foods Bradford!</p>
+      <p>Thank you for choosing TropikalFoods Bradford!</p>
     </div>
   `;
 
@@ -514,16 +514,16 @@ export async function sendRatingRequestEmail({
   const text = `
 We'd love to hear your feedback!
 
-Please rate your recent order from Tropikal Foods Bradford.
+Please rate your recent order from TropikalFoods Bradford.
 Rate your order here: ${ratingLink}
 
-Thank you for choosing Tropikal Foods Bradford!
+Thank you for choosing TropikalFoods Bradford!
     `;
 
   const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>How was your order?</h2>
-        <p>We'd love to hear your feedback about your recent order from Tropikal Foods Bradford.</p>
+        <p>We'd love to hear your feedback about your recent order from TropikalFoods Bradford.</p>
         <p style="margin: 30px 0; text-align: center;">
           <a href="${ratingLink}" 
              style="padding: 12px 24px; 
@@ -535,7 +535,7 @@ Thank you for choosing Tropikal Foods Bradford!
             Rate Your Order
           </a>
         </p>
-        <p>Thank you for choosing Tropikal Foods Bradford!</p>
+        <p>Thank you for choosing TropikalFoods Bradford!</p>
       </div>
     `;
 

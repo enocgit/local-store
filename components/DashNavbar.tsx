@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import Loader from "./ui/loader";
+import Image from "next/image";
 
 export function DashNavbar() {
   const [loggingOut, setLoggingOut] = useState(false);
@@ -93,13 +94,18 @@ export function DashNavbar() {
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <span className="text-xl font-bold max-[330px]:hidden">
-                TropikalFoods
-              </span>
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/logo.png"
+              alt="TropikalFoods Bradford"
+              width={70}
+              height={70}
+              className="max-[425px]:hidden"
+            />
+            <span className="text-xl font-bold max-[330px]:hidden">
+              TropikalFoods
+            </span>
+          </Link>
 
           <div className="flex items-center space-x-4">
             {/* Account */}
