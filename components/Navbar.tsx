@@ -174,7 +174,7 @@ export function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="text-xl font-bold text-neutral-500 hover:text-neutral-100 max-[330px]:hidden">
+              <span className="text-xl font-bold text-neutral-700 hover:text-neutral-500 max-[330px]:hidden">
                 TropikalFoods
               </span>
             </Link>
