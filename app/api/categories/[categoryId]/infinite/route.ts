@@ -21,7 +21,7 @@ export async function GET(
     const skip = (page - 1) * limit;
 
     if (categoryId === "new-arrivals") {
-      const [products, total, newArrivals] = await Promise.all([
+      const [products, newArrivals] = await Promise.all([
         prisma.product.findMany({
           where: {
             ...(minPrice !== undefined &&
@@ -35,8 +35,7 @@ export async function GET(
           orderBy: {
             createdAt: "desc",
           },
-          skip,
-          take: limit,
+          take: 15,
           select: {
             id: true,
             name: true,
@@ -59,17 +58,6 @@ export async function GET(
             },
           },
         }),
-        prisma.product.count({
-          where: {
-            ...(minPrice !== undefined &&
-              maxPrice !== undefined && {
-                price: {
-                  gte: minPrice,
-                  lte: maxPrice,
-                },
-              }),
-          },
-        }),
         prisma.siteConfig.findUnique({
           where: {
             key: "new_arrivals",
@@ -90,8 +78,8 @@ export async function GET(
             "https://utfs.io/f/5aK3NZMlDfcg03ZMPBuFdU6kMY9NLjOwprPiWl8htS3Bygs7",
         },
         products,
-        totalPages: Math.ceil(total / limit),
-        currentPage: page,
+        totalPages: 1,
+        currentPage: 1,
       });
     }
 

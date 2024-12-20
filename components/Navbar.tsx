@@ -169,7 +169,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-r from-yellow-400/95 to-primary-foreground/95 text-white backdrop-blur-sm">
+    <header className="sticky top-0 z-50 bg-yellow-300/95 backdrop-blur-sm">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -181,7 +181,7 @@ export function Navbar() {
               height={70}
               className="max-[425px]:hidden"
             />
-            <span className="text-xl font-bold text-neutral-700 hover:text-neutral-500">
+            <span className="text-xl font-bold text-neutral-800 hover:text-neutral-600">
               TropikalFoods
             </span>
           </Link>
@@ -202,7 +202,7 @@ export function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-500"
+                  className="text-sm font-medium text-neutral-600 transition-colors hover:text-primary"
                 >
                   {item.name}
                 </Link>
@@ -216,7 +216,7 @@ export function Navbar() {
             <SearchButton
               isSearchOpen={isSearchOpen}
               setIsSearchOpen={setIsSearchOpen}
-              className="max-[420px]:hidden"
+              className="text-neutral-600 hover:text-primary max-[420px]:hidden"
             />
 
             {/* Wishlist */}
@@ -224,7 +224,7 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-700 hover:bg-gray-100"
+                className="text-neutral-600 hover:bg-neutral-100 hover:text-primary"
               >
                 <Heart className="h-5 w-5" />
               </Button>
@@ -235,7 +235,7 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-gray-700 hover:bg-gray-100"
+                className="relative text-neutral-600 hover:bg-neutral-100 hover:text-primary"
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
@@ -253,7 +253,7 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-gray-700 hover:bg-gray-100 lg:hidden"
+                  className="text-neutral-600 hover:bg-neutral-100 hover:text-primary lg:hidden"
                 >
                   <Menu className="h-5 w-5" />
                 </Button>

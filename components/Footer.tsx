@@ -5,13 +5,14 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Icons } from "./Icons";
 
 const footerLinks = {
   company: [
     { name: "About Us", href: "/about" },
     { name: "Terms of Service", href: "/terms-of-service" },
   ],
-  support: [{ name: "Track Order", href: "#" }],
+  // support: [{ name: "Track Order", href: "#" }],
   connect: [
     { name: "Contact Us", href: "/contact" },
     { name: "Feedback", href: "/feedback" },
@@ -19,9 +20,9 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { name: "Facebook", icon: Facebook, href: "#" },
-  { name: "Instagram", icon: Instagram, href: "#" },
-  { name: "X", icon: Twitter, href: "#" },
+  { name: "Facebook", icon: Icons.facebook, href: "#" },
+  { name: "Instagram", icon: Icons.instagram, href: "#" },
+  { name: "X", icon: Icons.twitter, href: "#" },
 ];
 
 export function Footer() {
@@ -92,7 +93,7 @@ export function Footer() {
           </div>
 
           {/* Support */}
-          <div>
+          {/* <div>
             <h3 className="mb-4 text-sm font-semibold text-gray-900">
               Support
             </h3>
@@ -108,7 +109,7 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Connect */}
           <div>
