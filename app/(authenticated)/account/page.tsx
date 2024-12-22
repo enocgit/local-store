@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrdersTab } from "@/components/account/OrdersTab";
 import { ProfileTab } from "@/components/account/ProfileTab";
 import { AddressTab } from "@/components/account/AddressTab";
+import DangerZoneTab from "@/components/account/DangerZoneTab";
 
 export default async function AccountPage() {
   const session = await auth();
@@ -20,6 +21,7 @@ export default async function AccountPage() {
           <TabsTrigger value="orders">Orders</TabsTrigger>
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="addresses">Addresses</TabsTrigger>
+          {/* <TabsTrigger value="delete">Danger Zone</TabsTrigger> */}
         </TabsList>
         <TabsContent value="orders">
           <OrdersTab />
@@ -30,6 +32,9 @@ export default async function AccountPage() {
         <TabsContent value="addresses">
           <AddressTab />
         </TabsContent>
+        {/* <TabsContent value="delete">
+          <DangerZoneTab />
+        </TabsContent> */}
       </Tabs>
     </div>
   );

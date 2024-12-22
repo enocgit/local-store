@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import RatingStars from "@/components/RatingStars";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function FeedbackPage() {
+  const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -15,8 +24,11 @@ export default function FeedbackPage() {
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
-      subject: formData.get("subject"),
+      rating: rating,
+      category: formData.get("category"),
+      productId: formData.get("productId") || null,
       message: formData.get("message"),
+      status: "PENDING",
     };
 
     try {
@@ -37,6 +49,7 @@ export default function FeedbackPage() {
         description: "Thank you for your feedback.",
       });
       (e.target as HTMLFormElement).reset();
+      setRating(5);
     } catch (error) {
       toast({
         title: "Error",
@@ -91,17 +104,45 @@ export default function FeedbackPage() {
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Rating
+              </label>
+              <RatingStars rating={rating} onChange={setRating} editable />
+            </div>
+
+            <div>
               <label
-                htmlFor="subject"
+                htmlFor="category"
                 className="block text-sm font-medium text-gray-700"
               >
-                Subject
+                Category
+              </label>
+              <Select name="category" required>
+                <SelectTrigger id="category">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="GENERAL">General Feedback</SelectItem>
+                  <SelectItem value="PRODUCT">Product Feedback</SelectItem>
+                  <SelectItem value="SERVICE">Service Feedback</SelectItem>
+                  <SelectItem value="WEBSITE">Website Feedback</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="productId"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Product ID (optional)
               </label>
               <input
                 type="text"
-                name="subject"
-                id="subject"
-                placeholder="What is this about?"
+                name="productId"
+                id="productId"
+                placeholder="If about a specific product"
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
