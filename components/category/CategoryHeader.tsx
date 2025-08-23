@@ -1,4 +1,4 @@
-import { BLUR_DATA_URL } from "@/enum/image";
+import { BLUR_DATA_URL } from "@/constants/image";
 import Image from "next/image";
 import { Skeleton } from "../ui/skeleton";
 

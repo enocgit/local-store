@@ -24,7 +24,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { BLUR_DATA_URL } from "@/enum/image";
+import { BLUR_DATA_URL } from "@/constants/image";
 
 export function ProductCard({ product }: ProductCardProps) {
   const { state, dispatch } = useCart();

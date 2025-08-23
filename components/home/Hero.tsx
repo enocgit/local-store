@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useSiteConfig } from "@/hooks/use-site-config";
 import { Skeleton } from "../ui/skeleton";
-import { BLUR_DATA_URL } from "@/enum/image";
+import { BLUR_DATA_URL } from "@/constants/image";
 
 interface Homepage {
   title: string;

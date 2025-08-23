@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSiteConfig } from "@/hooks/use-site-config";
 import { Package, Heart, Globe, ArrowRight } from "lucide-react";
-import { BLUR_DATA_URL } from "@/enum/image";
+import { BLUR_DATA_URL } from "@/constants/image";
 import { motion } from "framer-motion";
 
 interface AboutMission {

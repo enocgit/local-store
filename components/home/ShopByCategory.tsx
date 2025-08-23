@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { getCategories } from "@/lib/api/categories";
 import Link from "next/link";
-import { BLUR_DATA_URL } from "@/enum/image";
+import { BLUR_DATA_URL } from "@/constants/image";
 
 async function ShopByCategory() {
   const categories = await getCategories();
