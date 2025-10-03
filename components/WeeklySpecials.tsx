@@ -56,7 +56,7 @@ function WeeklySpecials() {
           </p>
           <form
             onSubmit={handleSubscribe}
-            className="mx-auto flex min-w-0 max-w-md flex-wrap gap-2"
+            className="mx-auto flex min-w-0 max-w-md flex-wrap items-center gap-2"
           >
             <input
               name="email"

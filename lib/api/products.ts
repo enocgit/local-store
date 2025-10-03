@@ -225,20 +225,7 @@ export async function getProductById(productId: string) {
             name: true,
           },
         },
-        reviews: {
-          include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                image: true,
-              },
-            },
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        },
+        reviews: true,
       },
     });
   } catch (error) {

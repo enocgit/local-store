@@ -8,6 +8,7 @@ import {
   LogOut,
   CreditCard,
   ShoppingCart,
+  CakeIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -26,7 +27,6 @@ import Loader from "./ui/loader";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { SearchButton } from "./ui/search-button";
 import { useSiteConfig } from "@/hooks/use-site-config";
-import Image from "next/image";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -98,7 +98,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="hidden text-gray-700 hover:bg-white sm:flex"
+            className="hidden hover:bg-gray-100 sm:flex"
           >
             <User className="h-5 w-5" />
           </Button>
@@ -169,20 +169,14 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-yellow-300/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b bg-white">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="TropikalFoods Bradford"
-              width={70}
-              height={70}
-              className="max-[425px]:hidden"
-            />
-            <span className="text-xl font-bold text-neutral-800 hover:text-neutral-600">
-              TropikalFoods
+          <Link href="/" className="flex items-center space-x-2">
+            <CakeIcon className="h-8 w-8" />
+            <span className="text-xl font-bold max-[330px]:hidden">
+              Local Market
             </span>
           </Link>
 
@@ -198,11 +192,11 @@ export function Navbar() {
                 ))}
               </>
             ) : (
-              navigation.map((item) => (
+              navigation.map((item, index) => (
                 <Link
-                  key={item.name}
+                  key={item.href || `nav-item-${index}`}
                   href={item.href}
-                  className="text-sm font-medium text-neutral-600 transition-colors hover:text-primary"
+                  className="text-sm font-medium text-gray-700 transition-colors hover:text-gray-900"
                 >
                   {item.name}
                 </Link>
@@ -216,16 +210,12 @@ export function Navbar() {
             <SearchButton
               isSearchOpen={isSearchOpen}
               setIsSearchOpen={setIsSearchOpen}
-              className="text-neutral-600 hover:text-primary max-[420px]:hidden"
+              className="max-[420px]:hidden"
             />
 
             {/* Wishlist */}
             <Link href="/wishlist" className="max-sm:hidden">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-neutral-600 hover:bg-neutral-100 hover:text-primary"
-              >
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
                 <Heart className="h-5 w-5" />
               </Button>
             </Link>
@@ -235,7 +225,7 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative text-neutral-600 hover:bg-neutral-100 hover:text-primary"
+                className="relative hover:bg-gray-100"
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-white">
@@ -253,7 +243,7 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-neutral-600 hover:bg-neutral-100 hover:text-primary lg:hidden"
+                  className="hover:bg-gray-100 lg:hidden"
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
@@ -272,9 +262,9 @@ export function Navbar() {
                           ))}
                         </>
                       ) : (
-                        navigation.map((item) => (
+                        navigation.map((item, index) => (
                           <Link
-                            key={item.name}
+                            key={item.href || `mobile-nav-item-${index}`}
                             href={item.href}
                             className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                             onClick={() => setIsMobileMenuOpen(false)}

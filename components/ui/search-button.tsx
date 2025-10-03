@@ -49,7 +49,7 @@ export function SearchButton({
           <Search className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="top" className="w-full">
+      <SheetContent side="top" className="w-full bg-opacity-90">
         <div className="mx-auto mt-8 max-w-2xl">
           <div className="flex items-center space-x-2">
             <Input
@@ -58,7 +58,7 @@ export function SearchButton({
               className="flex-1"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyPress}
             />
             <Button onClick={handleSearch}>Search</Button>
           </div>

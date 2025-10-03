@@ -149,7 +149,7 @@ export function Footer() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="rounded-md bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-500/90 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+                className="rounded-md bg-rose-500 px-4 py-2 text-sm font-medium text-white hover:bg-rose-500/90 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
               >
                 {isLoading ? "Subscribing..." : "Subscribe"}
               </button>
