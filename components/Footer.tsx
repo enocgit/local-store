@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Icons } from "./Icons";
+import siteMeta from "@/data/site-meta";
 
 const footerLinks = {
   company: [
@@ -164,20 +165,22 @@ export function Footer() {
               {socialLinks.map((link) => {
                 const Icon = link.icon;
                 return (
-                  <Link
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
                     key={link.name}
                     href={link.href}
                     className="text-gray-600 hover:text-gray-900"
                   >
                     <span className="sr-only">{link.name}</span>
                     <Icon className="h-5 w-5" />
-                  </Link>
+                  </a>
                 );
               })}
             </div>
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} TropikalFoods Bradford. All rights
-              reserved.
+              © {new Date().getFullYear()}{" "}
+              {siteMeta.site_name || "Local Store"}. All rights reserved.
             </p>
           </div>
         </div>

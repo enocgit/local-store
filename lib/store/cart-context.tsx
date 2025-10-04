@@ -7,7 +7,6 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { useSiteConfig } from "@/hooks/use-site-config";
 
 interface CartItem {
   id: string;
@@ -63,6 +62,8 @@ const initialState: CartState = {
   subtotal: 0,
   total: 0,
 };
+
+const LOCAL_STORAGE_CART_KEY = "localstore-cart";
 
 function cartReducer(state: CartState, action: CartAction): CartState {
   let newState: CartState;
@@ -229,7 +230,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
+    const savedCart = localStorage.getItem(LOCAL_STORAGE_CART_KEY);
     if (savedCart) {
       const { items, deliveryDate, deliveryTime, postcode } =
         JSON.parse(savedCart);
@@ -253,7 +254,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Save cart to localStorage on changes
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(state));
+    localStorage.setItem(LOCAL_STORAGE_CART_KEY, JSON.stringify(state));
   }, [state]);
 
   return (

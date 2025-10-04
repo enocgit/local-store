@@ -1,4 +1,10 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Auth Error",
+  description: "Authentication error",
+};
 
 export default function AuthErrorPage() {
   return (

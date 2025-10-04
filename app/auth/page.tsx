@@ -1,5 +1,11 @@
 import { AuthForm } from "@/components/auth/AuthForm";
 import { auth } from "@/auth";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Auth",
+  description: "Authenticate your account",
+};
 
 export default async function AuthPage() {
   const session = await auth();

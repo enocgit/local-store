@@ -5,6 +5,7 @@ import {
   sendOrderConfirmationEmail,
   sendAdminOrderNotificationEmail,
 } from "@/utils/email";
+import siteMeta from "@/data/site-meta";
 // import { sendEventToClient } from "@/app/api/order-updates/route";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -88,7 +89,7 @@ export async function POST(req: Request) {
         // Send admin notification
         if (process.env.NODE_ENV === "production") {
           await sendAdminOrderNotificationEmail({
-            email: "admin@tropikalfoodsbradford.com",
+            email: `admin@${siteMeta.email_domain}`,
             orderId: order.id,
             items: order.items,
             total: order.total,

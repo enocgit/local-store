@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
@@ -24,10 +23,11 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "TropikalFoods Bradford - Your Local Food Market",
-    template: "%s | TropikalFoods Bradford",
+    default: "Local Store - Fresh Flavors, Delivered Fast",
+    template: "%s | Local Store",
   },
-  description: "Authentic flavors from the Caribbean, now in Bradford",
+  description:
+    "Your one-stop shop for premium groceries, snacks, and essentials – all at your fingertips.",
 };
 
 export default async function RootLayout({

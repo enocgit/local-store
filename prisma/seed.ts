@@ -1,3 +1,4 @@
+import siteMeta from "@/data/site-meta";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -5,7 +6,7 @@ const prisma = new PrismaClient();
 const siteConfigs = [
   {
     key: "contact_email",
-    value: "support@tropikalfoodsbradford.com",
+    value: `support@${siteMeta.email_domain}`,
     type: "text",
     label: "Email Us",
     group: "contact",

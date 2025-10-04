@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import Loader from "./ui/loader";
 import Image from "next/image";
+import siteMeta from "@/data/site-meta";
 
 export function DashNavbar() {
   const [loggingOut, setLoggingOut] = useState(false);
@@ -97,13 +98,13 @@ export function DashNavbar() {
           <Link href="/" className="flex items-center">
             <Image
               src="/logo.png"
-              alt="TropikalFoods Bradford"
+              alt={siteMeta.site_name || "Local Store"}
               width={70}
               height={70}
               className="max-[425px]:hidden"
             />
             <span className="text-xl font-bold max-[330px]:hidden">
-              TropikalFoods
+              {siteMeta.site_name || "Local Store"}
             </span>
           </Link>
 

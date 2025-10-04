@@ -27,6 +27,7 @@ import Loader from "./ui/loader";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { SearchButton } from "./ui/search-button";
 import { useSiteConfig } from "@/hooks/use-site-config";
+import siteMeta from "@/data/site-meta";
 
 const NEW_ARRIVALS_SLUG = "new-arrivals";
 
@@ -176,7 +177,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center space-x-2">
             <CakeIcon className="h-8 w-8" />
             <span className="text-xl font-bold max-[330px]:hidden">
-              Local Market
+              {siteMeta?.site_name || "Local Store"}
             </span>
           </Link>
 

@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Feedback",
-  description: "Share your feedback with TropikalFoods Bradford",
+  description: "Share your feedback with Local Store",
 };
 
 export default function FeedbackLayout({

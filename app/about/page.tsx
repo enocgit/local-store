@@ -5,7 +5,7 @@ import AboutPageClient from "@/components/about/AboutPageClient";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn more about our mission, values, and the team behind TropikalFoods Bradford",
+    "Learn more about our mission, values, and the team behind Local Store",
 };
 
 export default function AboutPage() {

@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Contact us at Local Store",
+  title: "Products",
+  description: "Browse our products",
 };
 
-export default function ContactLayout({
+export default function ProductsLayout({
   children,
 }: {
   children: React.ReactNode;
