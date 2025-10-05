@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   },
   description:
     "Your one-stop shop for premium groceries, snacks, and essentials – all at your fingertips.",
+  appleWebApp: {
+    title: "LocalStore",
+  },
 };
 
 export default async function RootLayout({
